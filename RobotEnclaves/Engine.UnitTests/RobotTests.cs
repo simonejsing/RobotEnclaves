@@ -21,10 +21,11 @@ namespace Engine.UnitTests
             program.Setup(p => p.GetNextStatement()).Returns(statement.Object);
             statement.Setup(s => s.Execute(It.IsAny<IMemoryBank>())).Callback((IMemoryBank mb) => mb.Set(0, expected));
 
+            robot.MemoryBank.Set(0, 0);
             robot.CurrentProgram = program.Object;
             robot.ExecuteNextProgramStatement();
 
-            robot.MemoryBank.Get(0).Should().Be(expected);
+            robot.MemoryBank.GetByte(0).Should().Be(expected);
         }
     }
 }
