@@ -19,7 +19,7 @@ namespace Engine.UnitTests
             var statement = new Mock<IStatement>();
             var program = new Mock<IProgram>();
             program.Setup(p => p.GetNextStatement()).Returns(statement.Object);
-            statement.Setup(s => s.Execute(It.IsAny<IMemoryBank>())).Callback((IMemoryBank mb) => mb.Set(0, expected));
+            statement.Setup(s => s.Execute(It.IsAny<IComputer>())).Callback((IComputer c) => c.MemoryBank.Set(0, expected));
 
             robot.MemoryBank.Set(0, 0);
             robot.CurrentProgram = program.Object;

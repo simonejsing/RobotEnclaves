@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Engine.Computer
+namespace Engine.World
 {
-    public interface IStatement
+    using VectorMath;
+
+    public interface IObject
     {
-        void Execute(IComputer computer);
+        Vector2 Position { get; set; }
     }
 }

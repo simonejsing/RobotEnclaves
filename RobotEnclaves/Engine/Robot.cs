@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 namespace Engine
 {
     using Engine.Computer;
+    using Engine.World;
+    using VectorMath;
 
-    public class Robot : IRobot
+    public class Robot : IComputer, IObject
     {
         public IMemoryBank MemoryBank { get; private set; }
         public IProgram CurrentProgram { get; set; }
@@ -20,12 +22,9 @@ namespace Engine
 
         public void ExecuteNextProgramStatement()
         {
-            CurrentProgram.GetNextStatement().Execute(MemoryBank);
+            CurrentProgram.GetNextStatement().Execute(this);
         }
-    }
 
-    public interface IRobot
-    {
-        void ExecuteNextProgramStatement();
+        public Vector2 Position { get; set; }
     }
 }

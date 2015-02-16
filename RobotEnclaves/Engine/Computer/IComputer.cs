@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Engine.Computer
 {
-    public interface IStatement
+    public interface IComputer
     {
-        void Execute(IComputer computer);
+        IMemoryBank MemoryBank { get; }
+        IProgram CurrentProgram { get; }
     }
 }
