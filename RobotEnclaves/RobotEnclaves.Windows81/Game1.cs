@@ -14,16 +14,14 @@ namespace RobotEnclaves.Windows81
     public class Game1 : Game
     {
         private readonly RenderEngine renderEngine;
-        private readonly WorldRenderer worldRenderer;
-        private readonly World world;
+        private WorldRenderer worldRenderer;
+        private World world;
 
         SpriteBatch spriteBatch;
 
         public Game1()
         {
             renderEngine = new RenderEngine(this);
-            worldRenderer = new WorldRenderer(renderEngine);
-            world = new World();
             Content.RootDirectory = "Content";
         }
 
@@ -36,11 +34,8 @@ namespace RobotEnclaves.Windows81
         protected override void Initialize()
         {
             renderEngine.Initialize();
-
-            var robot = new Robot();
-            robot.Position = renderEngine.Viewport/2;
-
-            world.InsertObject(robot);
+            world = TestWorld.Generate();
+            worldRenderer = new WorldRenderer(renderEngine, world);
 
             base.Initialize();
         }
@@ -86,7 +81,7 @@ namespace RobotEnclaves.Windows81
         {
             renderEngine.Clear();
             renderEngine.Begin();
-            worldRenderer.Render(world);
+            worldRenderer.Render();
             renderEngine.End();
 
             base.Draw(gameTime);

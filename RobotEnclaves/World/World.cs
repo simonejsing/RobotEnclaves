@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Engine.World
 {
+    using VectorMath;
+
     public class World
     {
         private readonly List<IObject> Objects = new List<IObject>();

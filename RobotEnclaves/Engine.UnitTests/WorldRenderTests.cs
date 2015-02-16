@@ -24,8 +24,8 @@ namespace Engine.UnitTests
             var obj = new StubObject { Position = expectedPoint };
             world.InsertObject(obj);
 
-            var render = new WorldRenderer(renderEngine.Object);
-            render.Render(world);
+            var render = new WorldRenderer(renderEngine.Object, world);
+            render.Render();
 
             renderEngine.Verify(r => r.DrawCircle(expectedPoint, It.IsAny<float>(), It.IsAny<Color>()), Times.Once);
         }
