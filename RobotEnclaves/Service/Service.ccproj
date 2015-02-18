@@ -37,16 +37,6 @@
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RobotEnclavesService\RobotEnclavesService.csproj">
-      <Name>RobotEnclavesService</Name>
-      <Project>{6386e2d4-4d86-4ac4-a923-d03911929479}</Project>
-      <Private>True</Private>
-      <RoleType>Worker</RoleType>
-      <RoleName>RobotEnclavesService</RoleName>
-      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="RobotEnclavesServiceContent\" />
   </ItemGroup>
   <ItemGroup>

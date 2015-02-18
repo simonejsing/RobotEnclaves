@@ -6,19 +6,24 @@ using System.Threading.Tasks;
 
 namespace Rendering.Graphics
 {
+    using Engine;
     using Engine.World;
     using VectorMath;
 
-    class RobotMapSprite : ObjectMapSprite
+    class RobotMapSprite : IGraphics
     {
-        public RobotMapSprite(Vector2 objectPosition)
-            : base(objectPosition)
+        private Robot Robot;
+
+        const float Radius = 10f;
+
+        public RobotMapSprite(Robot robot)
         {
+            Robot = robot;
         }
 
-        public override void Render(IRenderEngine renderEngine)
+        public void Render(IRenderEngine renderEngine)
         {
-            renderEngine.DrawCircle(ObjectPosition, 2f, Color.Red);
+            renderEngine.DrawCircle(Robot.Position, Radius, Color.Red);
         }
     }
 }

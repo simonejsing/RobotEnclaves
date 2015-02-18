@@ -13,10 +13,8 @@ namespace Engine
         public static World.World Generate()
         {
             var world = new World.World();
-            world.InsertObject(new Headquarter() { Position = Vector2.Zero });
-            world.InsertObject(new Robot() { Position = new Vector2(-30f, -30f) });
-            world.InsertObject(new Robot() { Position = new Vector2(0f, -30f) });
-            world.InsertObject(new Robot() { Position = new Vector2(30f, -30f) });
+            world.InsertObject(new Spaceship() { Position = Vector2.Zero });
+            world.InsertObject(new Robot() { Position = new Vector2(0f, 0f) });
 
             return world;
         }

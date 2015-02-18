@@ -36,7 +36,7 @@
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
     <ProjectReference Include="..\Engine\Engine.csproj">
-      <Project>{510947F5-A241-4B25-9022-DF61AB0FB379}</Project>
+      <Project>{510947f5-a241-4b25-9022-df61ab0fb379}</Project>
       <Name>Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\VectorMath\VectorMath.csproj">
@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GraphicsFactory.cs" />
-    <Compile Include="Graphics\HeadquarterMapSprite.cs" />
+    <Compile Include="Graphics\SpaceshipMapSprite.cs" />
     <Compile Include="Graphics\ObjectMapSprite.cs" />
     <Compile Include="Graphics\RobotMapSprite.cs" />
     <Compile Include="IGraphics.cs" />

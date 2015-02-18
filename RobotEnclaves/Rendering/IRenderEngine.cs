@@ -18,6 +18,8 @@ namespace Rendering
 
         void Translate(Vector2 vector);
 
+        void Scale(float factor);
+
         void ResetTransformation();
 
         void DrawPolygon(Vector2[] points, Color color);

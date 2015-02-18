@@ -15,9 +15,9 @@ namespace Rendering
         public static IGraphics CreateFromObject(IObject obj)
         {
             if (obj is Robot)
-                return new RobotMapSprite(obj.Position);
-            if (obj is Headquarter)
-                return new HeadquarterMapSprite(obj.Position);
+                return new RobotMapSprite(obj as Robot);
+            if (obj is Spaceship)
+                return new SpaceshipMapSprite(obj as Spaceship);
 
             throw new Exception("Unknown object type");
         }

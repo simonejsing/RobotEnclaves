@@ -9,8 +9,16 @@ namespace Engine
     using Engine.World;
     using VectorMath;
 
-    public class Headquarter : IObject
+    public class Spaceship : IObject
     {
         public Vector2 Position { get; set; }
+
+        public bool Crashed
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }

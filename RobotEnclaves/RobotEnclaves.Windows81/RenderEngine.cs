@@ -25,6 +25,7 @@ namespace RobotEnclaves.Windows81
         private SpriteFont _defaultFont;
 
         private XnaVector2 TranslationVector = new XnaVector2(0f, 0f);
+        private float ScalingFactor = 1.0f;
 
         public RenderEngine(Game game)
         {
@@ -67,14 +68,14 @@ namespace RobotEnclaves.Windows81
             _spriteBatch.End();
         }
 
-        private XnaVector2 Transform(XnaVector2 vector)
+        private XnaVector2 TransformVector(XnaVector2 vector)
         {
-            return vector + TranslationVector;
+            return vector * ScalingFactor + TranslationVector;
         }
 
         private float TransformScalar(float radius)
         {
-            return radius;
+            return radius * ScalingFactor;
         }
 
         public void Translate(Vector2 vector)
@@ -82,9 +83,15 @@ namespace RobotEnclaves.Windows81
             TranslationVector += new XnaVector2(vector.X, vector.Y);
         }
 
+        public void Scale(float factor)
+        {
+            ScalingFactor *= factor;
+        }
+
         public void ResetTransformation()
         {
             TranslationVector = new XnaVector2(0f, 0f);
+            ScalingFactor = 1.0f;
         }
 
         public void DrawPolygon(Vector2[] points, Color color)
@@ -94,8 +101,8 @@ namespace RobotEnclaves.Windows81
                 var from = points[i];
                 var to = points[(i + 1) % points.Length];
                 _spriteBatch.DrawLine(
-                    Transform(new XnaVector2(from.X, from.Y)),
-                    Transform(new XnaVector2(to.X, to.Y)),
+                    this.TransformVector(new XnaVector2(from.X, from.Y)),
+                    this.TransformVector(new XnaVector2(to.X, to.Y)),
                     new XnaColor(color.R, color.G, color.B, color.A));
             }
         }
@@ -103,9 +110,9 @@ namespace RobotEnclaves.Windows81
         public void DrawCircle(Vector2 origin, float radius, Color color)
         {
             _spriteBatch.DrawCircle(
-                Transform(new XnaVector2(origin.X, origin.Y)),
+                this.TransformVector(new XnaVector2(origin.X, origin.Y)),
                 this.TransformScalar(radius),
-                10,
+                20,
                 new XnaColor(color.R, color.G, color.B, color.A));
         }
 
@@ -114,22 +121,22 @@ namespace RobotEnclaves.Windows81
             _spriteBatch.DrawString(
                 _defaultFont,
                 text,
-                Transform(new XnaVector2(origin.X, origin.Y)),
+                this.TransformVector(new XnaVector2(origin.X, origin.Y)),
                 new XnaColor(color.R, color.G, color.B, color.A));
         }
 
         public void FillRectangle(Vector2 topLeft, Vector2 bottomRight, Color color)
         {
             _spriteBatch.FillRectangle(
-                Transform(new XnaVector2(topLeft.X, topLeft.Y)),
-                Transform(new XnaVector2(bottomRight.X, bottomRight.Y)),
+                this.TransformVector(new XnaVector2(topLeft.X, topLeft.Y)),
+                this.TransformVector(new XnaVector2(bottomRight.X, bottomRight.Y)),
                 new XnaColor(color.R, color.G, color.B, color.A));
         }
 
         public void DrawPoint(Vector2 origin, Color color)
         {
             _spriteBatch.PutPixel(
-                Transform(new XnaVector2(origin.X, origin.Y)),
+                this.TransformVector(new XnaVector2(origin.X, origin.Y)),
                 new XnaColor(color.R, color.G, color.B, color.A));
         }
 
@@ -137,8 +144,8 @@ namespace RobotEnclaves.Windows81
         {
             var to = origin + vector;
             _spriteBatch.DrawLine(
-                Transform(new XnaVector2(origin.X, origin.Y)),
-                Transform(new XnaVector2(to.X, to.Y)),
+                this.TransformVector(new XnaVector2(origin.X, origin.Y)),
+                this.TransformVector(new XnaVector2(to.X, to.Y)),
                 new XnaColor(color.R, color.G, color.B, color.A));
         }
 
@@ -167,8 +174,8 @@ namespace RobotEnclaves.Windows81
 
             // Draw line
             _spriteBatch.DrawLine(
-                Transform(new XnaVector2(from.X, from.Y)),
-                Transform(new XnaVector2(to.X, to.Y)),
+                this.TransformVector(new XnaVector2(from.X, from.Y)),
+                this.TransformVector(new XnaVector2(to.X, to.Y)),
                 new XnaColor(color.R, color.G, color.B, color.A));
         }
     }
