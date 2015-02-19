@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Rendering;
-using Engine.World;
 
 namespace RobotEnclaves.Windows81
 {
@@ -13,15 +11,14 @@ namespace RobotEnclaves.Windows81
     /// </summary>
     public class Game1 : Game
     {
-        private readonly RenderEngine renderEngine;
-        private WorldRenderer worldRenderer;
-        private World world;
-
-        SpriteBatch spriteBatch;
+        private readonly MonoRenderEngine renderEngine;
+        private readonly MonoKeyboardInput keyboardInput;
+        private GameEngine gameEngine;
 
         public Game1()
         {
-            renderEngine = new RenderEngine(this);
+            this.renderEngine = new MonoRenderEngine(this);
+            this.keyboardInput = new MonoKeyboardInput();
             Content.RootDirectory = "Content";
         }
 
@@ -34,8 +31,10 @@ namespace RobotEnclaves.Windows81
         protected override void Initialize()
         {
             renderEngine.Initialize();
-            world = TestWorld.Generate();
-            worldRenderer = new WorldRenderer(renderEngine, world);
+            this.gameEngine = new GameEngine(
+                this.renderEngine, 
+                new TopologicalUserInterface(this.renderEngine.Viewport),
+                this.keyboardInput);
 
             base.Initialize();
         }
@@ -46,10 +45,7 @@ namespace RobotEnclaves.Windows81
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            renderEngine.LoadContent();
         }
 
         /// <summary>
@@ -68,8 +64,8 @@ namespace RobotEnclaves.Windows81
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
-
+            keyboardInput.Update();
+            gameEngine.Process();
             base.Update(gameTime);
         }
 
@@ -79,11 +75,7 @@ namespace RobotEnclaves.Windows81
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            renderEngine.Clear();
-            renderEngine.Begin();
-            worldRenderer.Render();
-            renderEngine.End();
-
+            gameEngine.RenderFrame();
             base.Draw(gameTime);
         }
     }

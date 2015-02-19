@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rendering.Graphics
 {
+    using Engine;
     using VectorMath;
 
     abstract class ObjectMapSprite : IGraphics

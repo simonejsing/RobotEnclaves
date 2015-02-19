@@ -4,14 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rendering
+namespace Engine
 {
     using VectorMath;
 
     public interface IRenderEngine
     {
         Vector2 Viewport { get; }
+
         void Initialize();
+
+        void LoadContent();
+
         void Clear();
         void Begin();
         void End();
@@ -27,7 +31,7 @@ namespace Rendering
         void DrawVector(Vector2 origin, Vector2 vector, Color color);
         void DrawLine(Vector2 origin, Vector2 vector, Color color);
         void DrawText(Vector2 origin, string text, Color color);
-        void FillRectangle(Vector2 topLeft, Vector2 bottomRight, Color color);
+        void FillRectangle(Vector2 topLeft, Vector2 size, Color color);
         void DrawCircle(Vector2 origin, float radius, Color color);
     }
 }

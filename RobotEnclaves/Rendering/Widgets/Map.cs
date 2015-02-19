@@ -4,32 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rendering
+namespace Rendering.Widgets
 {
+    using Engine;
     using Engine.World;
     using VectorMath;
 
-    public class Map
+    public class Map : Widget
     {
         const float GridSpacing = 100.0f;
 
-        private Vector2 CanvasPosition;
-        private Vector2 CanvasSize;
         private float ZoomFactor = 1.0f;
 
-        public Map(Vector2 canvasPosition, Vector2 canvasSize)
+        public Map(Vector2 position, Vector2 size)
+            : base(position, size)
         {
-            this.CanvasPosition = canvasPosition;
-            this.CanvasSize = canvasSize;
         }
 
         public void Render(IRenderEngine renderEngine, IEnumerable<IGraphics> graphics)
         {
-            renderEngine.Translate(this.CanvasPosition);
-            renderEngine.FillRectangle(Vector2.Zero, this.CanvasSize - this.CanvasPosition, Color.Sand);
+            renderEngine.Translate(this.Position);
+            renderEngine.FillRectangle(Vector2.Zero, this.Size, Color.Sand);
 
             // Center (0,0)
-            renderEngine.Translate(this.CanvasSize / 2);
+            renderEngine.Translate(this.Size / 2);
             renderEngine.Scale(ZoomFactor);
 
             this.RenderGridLines(renderEngine);
@@ -44,7 +42,7 @@ namespace Rendering
 
         private void RenderGridLines(IRenderEngine renderEngine)
         {
-            Vector2 mapSize = CanvasSize / this.ZoomFactor;
+            Vector2 mapSize = Size / this.ZoomFactor;
 
             DrawVerticalGridLine(renderEngine, 0, mapSize.Y);
             DrawHorizontalGridLine(renderEngine, 0, mapSize.X);

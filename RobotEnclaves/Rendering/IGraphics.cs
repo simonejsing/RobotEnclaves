@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rendering
 {
+    using Engine;
     using Engine.World;
 
     public interface IGraphics

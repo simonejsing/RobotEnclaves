@@ -17,7 +17,9 @@ using Rendering;
 
 namespace RobotEnclaves.Windows81
 {
-    class RenderEngine : IRenderEngine
+    using Engine;
+
+    class MonoRenderEngine : IRenderEngine
     {
         private readonly Game _game;
         private readonly GraphicsDeviceManager _graphics;
@@ -27,7 +29,7 @@ namespace RobotEnclaves.Windows81
         private XnaVector2 TranslationVector = new XnaVector2(0f, 0f);
         private float ScalingFactor = 1.0f;
 
-        public RenderEngine(Game game)
+        public MonoRenderEngine(Game game)
         {
             _game = game;
             _graphics = new GraphicsDeviceManager(game);
@@ -47,10 +49,10 @@ namespace RobotEnclaves.Windows81
             _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
         }
 
-        public void LoadFonts(ContentManager content)
+        public void LoadContent()
         {
             // Load fonts
-            _defaultFont = content.Load<SpriteFont>("DefaultFont");
+            _defaultFont = _game.Content.Load<SpriteFont>("DefaultFont");
         }
 
         public void Clear()
@@ -66,6 +68,11 @@ namespace RobotEnclaves.Windows81
         public void End()
         {
             _spriteBatch.End();
+        }
+
+        private XnaVector2 ScaleVector(XnaVector2 vector)
+        {
+            return vector*ScalingFactor;
         }
 
         private XnaVector2 TransformVector(XnaVector2 vector)
@@ -125,11 +132,11 @@ namespace RobotEnclaves.Windows81
                 new XnaColor(color.R, color.G, color.B, color.A));
         }
 
-        public void FillRectangle(Vector2 topLeft, Vector2 bottomRight, Color color)
+        public void FillRectangle(Vector2 topLeft, Vector2 size, Color color)
         {
             _spriteBatch.FillRectangle(
                 this.TransformVector(new XnaVector2(topLeft.X, topLeft.Y)),
-                this.TransformVector(new XnaVector2(bottomRight.X, bottomRight.Y)),
+                this.ScaleVector(new XnaVector2(size.X, size.Y)),
                 new XnaColor(color.R, color.G, color.B, color.A));
         }
 

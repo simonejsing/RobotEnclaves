@@ -6,6 +6,7 @@ namespace Engine.UnitTests
     using System.Linq;
     using Moq;
     using Rendering;
+    using Rendering.Widgets;
     using VectorMath;
 
     [TestClass]

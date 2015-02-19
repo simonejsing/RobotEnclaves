@@ -81,5 +81,12 @@ namespace VectorMath
                 return new Color() { R = 198, G = 130, B = 89 };
             }
         }
+
+        public static Color White {
+            get
+            {
+                return new Color() {R = 255, G = 255, B = 255};
+            }
+        }
     }
 }

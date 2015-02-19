@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A1962D5E-3274-433B-955B-817F9145A5F7}</ProjectGuid>
+    <ProjectGuid>{70C59C48-432D-410A-9298-BB42AEFCDE65}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rendering</RootNamespace>
-    <AssemblyName>Rendering</AssemblyName>
+    <RootNamespace>Common</RootNamespace>
+    <AssemblyName>Common</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,38 +35,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{70C59C48-432D-410A-9298-BB42AEFCDE65}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\Engine.csproj">
-      <Project>{510947f5-a241-4b25-9022-df61ab0fb379}</Project>
-      <Name>Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UserInput\UserInput.csproj">
-      <Project>{E760BBD1-FBF1-40C1-A604-ABF79FFFF7DE}</Project>
-      <Name>UserInput</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VectorMath\VectorMath.csproj">
-      <Project>{E28A40E7-8894-4524-B748-8F89E8014E30}</Project>
-      <Name>VectorMath</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\World\World.csproj">
-      <Project>{F013C946-FDDF-4108-9491-0AE810C38ACC}</Project>
-      <Name>World</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Widgets\Console.cs" />
-    <Compile Include="GraphicsFactory.cs" />
-    <Compile Include="Graphics\SpaceshipMapSprite.cs" />
-    <Compile Include="Graphics\ObjectMapSprite.cs" />
-    <Compile Include="Graphics\RobotMapSprite.cs" />
-    <Compile Include="IGraphics.cs" />
-    <Compile Include="Widgets\InputField.cs" />
-    <Compile Include="Widgets\Map.cs" />
-    <Compile Include="Widgets\Widget.cs" />
-    <Compile Include="TopologicalUserInterface.cs" />
+    <Compile Include="TextBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
