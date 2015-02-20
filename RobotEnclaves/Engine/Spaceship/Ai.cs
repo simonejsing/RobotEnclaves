@@ -24,10 +24,10 @@ namespace Engine.Spaceship
             OwnedRobots.Add(r);
         }
 
-        public void Boot(TextBuffer console)
+        public void Boot(TextList console)
         {
             const string consoleInitialContent =
-@"Hard-Core OS booting...
+@"Hard-Core OS v" + Version.Text + @" booting...
 BIOS check... OK
 RAM check... FATAL ERROR
 Peripheral sensor calibration... FATAL ERROR

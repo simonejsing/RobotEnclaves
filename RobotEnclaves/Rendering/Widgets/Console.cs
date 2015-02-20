@@ -12,14 +12,14 @@ namespace Rendering.Widgets
 
     public class Console : Widget
     {
-        private TextBuffer ConsoleBuffer = null;
+        private TextList ConsoleBuffer = null;
 
         public Console(Vector2 position, Vector2 size)
             : base(position, size)
         {
         }
 
-        public void SetBuffer(TextBuffer buffer)
+        public void SetBuffer(TextList buffer)
         {
             ConsoleBuffer = buffer;
         }

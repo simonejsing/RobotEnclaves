@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Common
 {
-    public class TextBuffer
+    public class TextList
     {
         private readonly List<string> Buffer = new List<string>();
 

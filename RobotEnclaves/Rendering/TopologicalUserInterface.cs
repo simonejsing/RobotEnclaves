@@ -19,7 +19,7 @@ namespace Rendering
         private List<Widget> Widgets = new List<Widget>(); 
         private Map Map;
         private Console Console;
-        private InputField InputField;
+        private Label InputLabel;
 
         public TopologicalUserInterface(Vector2 viewport)
         {
@@ -32,11 +32,23 @@ namespace Rendering
 
             Map = new Map(mapPosition, mapSize);
             Console = new Console(consolePosition, consoleSize);
-            InputField = new InputField(consolePosition + new Vector2(0, consoleSize.Y), new Vector2(consoleSize.X, 20));
+            this.InputLabel = new Label(consolePosition + new Vector2(0, consoleSize.Y), new Vector2(consoleSize.X, 20));
 
-            Widgets.Add(Map);
-            Widgets.Add(Console);
-            Widgets.Add(InputField);
+            this.AddWidget(this.Map);
+            this.AddWidget(this.Console);
+            this.AddWidget(this.InputLabel);
+        }
+
+        private void AddWidget(Widget widget)
+        {
+            this.Widgets.Add(widget);
+        }
+
+        public void AddLabel(Vector2 position, Vector2 size, TextLabel text)
+        {
+            var label = new Label(position, size);
+            label.SetLabel(text);
+            this.AddWidget(label);
         }
 
         public void Render(IRenderEngine renderEngine)
@@ -51,14 +63,14 @@ namespace Rendering
             }
         }
 
-        public void SetConsoleBuffer(TextBuffer buffer)
+        public void SetConsoleBuffer(TextList buffer)
         {
             Console.SetBuffer(buffer);
         }
 
-        public void SetInputText(string line)
+        public void SetInputLabel(TextLabel label)
         {
-            InputField.Text = line;
+            this.InputLabel.SetLabel(label);
         }
 
         public void UpdateWorld(World world)

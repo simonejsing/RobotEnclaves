@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 namespace Engine
 {
     using Common;
+    using VectorMath;
 
     public interface IUserInterface
     {
+        void AddLabel(Vector2 position, Vector2 size, TextLabel text);
         void UpdateWorld(World.World world);
 
         void Render(IRenderEngine renderEngine);
 
-        void SetConsoleBuffer(TextBuffer buffer);
+        void SetConsoleBuffer(TextList buffer);
 
-        void SetInputText(string line);
+        void SetInputLabel(TextLabel label);
     }
 }

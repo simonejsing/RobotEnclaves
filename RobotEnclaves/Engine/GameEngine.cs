@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine
 {
+    using System.Reflection;
     using Common;
     using Engine.Robotics;
     using Engine.Spaceship;
@@ -16,9 +17,11 @@ namespace Engine
     {
         private readonly IUserInterface userInterface;
 
+        private readonly FrequencyCounter fpsCounter = new FrequencyCounter(50);
         private readonly List<Robot> robots; 
-        private readonly TextBuffer console = new TextBuffer();
-        private string inputString = "";
+        private readonly TextList console = new TextList();
+        private readonly TextLabel inputLabel = new TextLabel();
+        private readonly TextLabel fpsLabel = new TextLabel();
 
         public World.World World { get; private set; }
 
@@ -39,7 +42,10 @@ namespace Engine
             this.userInterface = userInterface;
 
             this.userInterface.SetConsoleBuffer(this.console);
+            this.userInterface.SetInputLabel(this.inputLabel);
             this.userInterface.UpdateWorld(this.World);
+
+            this.userInterface.AddLabel(Vector2.Zero, new Vector2(), fpsLabel);
         }
 
         public static GameEngine CreateTutorialWorld(IUserInterface userInterface)
@@ -65,14 +71,14 @@ namespace Engine
             foreach (var keystroke in keystrokes)
             {
                 if (keystroke.IsValid)
-                    this.inputString += char.ToLower(keystroke.Character);
-                else if (keystroke.IsBackspace && this.inputString.Length > 0)
-                    this.inputString = this.inputString.Substring(0, this.inputString.Length - 1);
+                    this.inputLabel.Text += char.ToLower(keystroke.Character);
+                else if (keystroke.IsBackspace && this.inputLabel.Text.Length > 0)
+                    this.inputLabel.Text = this.inputLabel.Text.Substring(0, this.inputLabel.Text.Length - 1);
                 else if (keystroke.IsEnter)
                 {
-                    console.Add("> " + this.inputString);
-                    console.AddRange(Ai.InterpretCommand(this.inputString));
-                    this.inputString = "";
+                    console.Add("> " + this.inputLabel.Text);
+                    console.AddRange(Ai.InterpretCommand(this.inputLabel.Text));
+                    this.inputLabel.Text = "";
                 }
             }
         }
@@ -86,6 +92,8 @@ namespace Engine
 
         public void ProgressTime(float deltaT)
         {
+            fpsCounter.Update();
+
             foreach (var robot in Robots)
             {
                 robot.Position += robot.Direction*robot.Engine.Speed*deltaT;
@@ -94,9 +102,11 @@ namespace Engine
 
         public void RenderFrame(IRenderEngine renderEngine)
         {
+            // Update FPS label
+            fpsLabel.Text = String.Format("FPS: {0:0.0}", fpsCounter.Frequency);
+
             renderEngine.Clear();
             renderEngine.Begin();
-            userInterface.SetInputText(inputString);
             userInterface.Render(renderEngine);
             renderEngine.End();
         }

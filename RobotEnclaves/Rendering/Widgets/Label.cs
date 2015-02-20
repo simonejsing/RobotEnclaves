@@ -6,16 +6,22 @@ using System.Threading.Tasks;
 
 namespace Rendering.Widgets
 {
+    using Common;
     using Engine;
     using VectorMath;
 
-    class InputField : Widget
+    class Label : Widget
     {
-        public string Text { get; set; }
+        private TextLabel text;
 
-        public InputField(Vector2 position, Vector2 size)
+        public Label(Vector2 position, Vector2 size)
             : base(position, size)
         {
+        }
+
+        public void SetLabel(TextLabel label)
+        {
+            text = label;
         }
 
         public override void Render(IRenderEngine renderEngine)
@@ -24,7 +30,7 @@ namespace Rendering.Widgets
 
             renderEngine.FillRectangle(Vector2.Zero, Size, Color.Black);
 
-            renderEngine.DrawText(Vector2.Zero, "> " + (this.Text ?? ""), Color.White);
+            renderEngine.DrawText(Vector2.Zero, this.text.Text, Color.White);
         }
     }
 }
