@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Rendering.Graphics
 {
     using Engine;
+    using Engine.Robotics;
     using Engine.World;
     using VectorMath;
 

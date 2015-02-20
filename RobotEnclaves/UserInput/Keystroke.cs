@@ -29,17 +29,29 @@ namespace UserInput
             }
         }
 
-        public bool IsAlphaNumeric
+        public bool IsValid
         {
             get
             {
-                return (Character >= 'A' && Character <= 'Z') || (Character >= '0' && Character <= '9');
+                return (Character >= 'A' && Character <= 'Z') || (Character >= '0' && Character <= '9') || Character == '.' || Character == '=' || Character == ' ';
             }
         }
 
         public Keystroke(char character)
         {
             this.Character = character;
+        }
+
+        public static Keystroke[] FromString(string s)
+        {
+            List<Keystroke> keys = new List<Keystroke>();
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                keys.Add(new Keystroke(s[i]));
+            }
+
+            return keys.ToArray();
         }
     }
 }

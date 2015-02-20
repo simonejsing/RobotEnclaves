@@ -10,5 +10,7 @@ namespace Engine.Computer
     {
         IMemoryBank MemoryBank { get; }
         IProgram CurrentProgram { get; }
+
+        void ExecuteStatement(string statement);
     }
 }

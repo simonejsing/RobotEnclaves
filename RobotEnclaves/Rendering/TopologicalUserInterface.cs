@@ -12,16 +12,14 @@ namespace Rendering
     using Engine.World;
     using Rendering.Graphics;
     using Rendering.Widgets;
-    using UserInput;
     using VectorMath;
 
     public class TopologicalUserInterface : IUserInterface
     {
+        private List<Widget> Widgets = new List<Widget>(); 
         private Map Map;
         private Console Console;
         private InputField InputField;
-
-        List<IGraphics> Graphics = new List<IGraphics>();
 
         public TopologicalUserInterface(Vector2 viewport)
         {
@@ -36,6 +34,9 @@ namespace Rendering
             Console = new Console(consolePosition, consoleSize);
             InputField = new InputField(consolePosition + new Vector2(0, consoleSize.Y), new Vector2(consoleSize.X, 20));
 
+            Widgets.Add(Map);
+            Widgets.Add(Console);
+            Widgets.Add(InputField);
         }
 
         public void Render(IRenderEngine renderEngine)
@@ -43,14 +44,11 @@ namespace Rendering
             renderEngine.Clear();
 
             // Renders a map widget
-            renderEngine.ResetTransformation();
-            Map.Render(renderEngine, this.Graphics);
-
-            renderEngine.ResetTransformation();
-            Console.Render(renderEngine);
-
-            renderEngine.ResetTransformation();
-            InputField.Render(renderEngine);
+            foreach (var widget in Widgets)
+            {
+                renderEngine.ResetTransformation();
+                widget.Render(renderEngine);
+            }
         }
 
         public void SetConsoleBuffer(TextBuffer buffer)
@@ -63,13 +61,9 @@ namespace Rendering
             InputField.Text = line;
         }
 
-        public void ProcessKeystrokes(IEnumerable<Keystroke> keystrokes)
+        public void UpdateWorld(World world)
         {
-        }
-
-        public void SetActiveWorld(World world)
-        {
-            this.Graphics = new List<IGraphics>(world.GetObjects().Select(GraphicsFactory.CreateFromObject));
+            Map.Graphics = new List<IGraphics>(world.GetObjects().Select(GraphicsFactory.CreateFromObject));
         }
     }
 }

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace Rendering
 {
     using Engine;
+    using Engine.Robotics;
+    using Engine.Spaceship;
     using Engine.World;
     using Rendering.Graphics;
 

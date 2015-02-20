@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Rendering.Graphics
 {
     using Engine;
+    using Engine.Spaceship;
     using VectorMath;
 
     class SpaceshipMapSprite : IGraphics

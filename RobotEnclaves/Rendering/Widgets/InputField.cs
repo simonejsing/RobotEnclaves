@@ -18,7 +18,7 @@ namespace Rendering.Widgets
         {
         }
 
-        public void Render(IRenderEngine renderEngine)
+        public override void Render(IRenderEngine renderEngine)
         {
             renderEngine.Translate(Position);
 

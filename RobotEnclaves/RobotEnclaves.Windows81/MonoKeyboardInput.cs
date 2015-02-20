@@ -45,7 +45,25 @@ namespace RobotEnclaves.Windows81
 
         private void OnKeyDown(Keys key)
         {
-            keystrokeBuffer.Add((char)key);
+            char c;
+
+            switch(key)
+            {
+                case Keys.Space:
+                    c = ' ';
+                    break;
+                case Keys.OemPeriod:
+                    c = '.';
+                    break;
+                case Keys.OemPlus:
+                    c = '=';
+                    break;
+                default:
+                    c = (char)key;
+                    break;
+            }
+
+            keystrokeBuffer.Add(c);
         }
 
         private void OnKeyUp(Keys key)

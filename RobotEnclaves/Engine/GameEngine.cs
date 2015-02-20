@@ -7,39 +7,96 @@ using System.Threading.Tasks;
 namespace Engine
 {
     using Common;
+    using Engine.Robotics;
+    using Engine.Spaceship;
     using UserInput;
+    using VectorMath;
 
     public class GameEngine
     {
-        private readonly IRenderEngine renderEngine;
         private readonly IUserInterface userInterface;
-        private readonly ITextInput consoleInput;
-        private readonly SpaceshipAi Ai;
 
-        public GameEngine(IRenderEngine renderEngine, IUserInterface userInterface, ITextInput consoleInput)
+        private readonly List<Robot> robots; 
+        private readonly TextBuffer console = new TextBuffer();
+        private string inputString = "";
+
+        public World.World World { get; private set; }
+
+        public Ai Ai { get; private set; }
+        public IEnumerable<Robot> Robots {
+            get
+            {
+                return robots;
+            }
+        } 
+
+        public GameEngine(IUserInterface userInterface)
         {
-            this.Ai = new SpaceshipAi();
-            this.renderEngine = renderEngine;
+            this.World = new World.World();
+            this.Ai = new Ai();
+            this.robots = new List<Robot>();
+            this.Ai.Boot(this.console);
             this.userInterface = userInterface;
-            this.consoleInput = consoleInput;
 
-            World.World world = TestWorld.Generate();
-            this.userInterface.SetConsoleBuffer(Ai.Console);
-            this.userInterface.SetActiveWorld(world);
+            this.userInterface.SetConsoleBuffer(this.console);
+            this.userInterface.UpdateWorld(this.World);
         }
 
-        public void Process()
+        public static GameEngine CreateTutorialWorld(IUserInterface userInterface)
+        {
+            var gameEngine = new GameEngine(userInterface);
+            gameEngine.World.InsertObject(new Spaceship.Spaceship() { Position = Vector2.Zero });
+            gameEngine.AddRobot(new Robot("AZ15") {Position = new Vector2(0f, 0f)});
+
+            gameEngine.userInterface.UpdateWorld(gameEngine.World);
+
+            return gameEngine;
+        }
+
+        public void AddRobot(Robot robot)
+        {
+            this.robots.Add(robot);
+            this.Ai.AddRobot(robot);
+            this.World.InsertObject(robot);
+        }
+
+        private void ProcessKeystrokes(IEnumerable<Keystroke> keystrokes)
+        {
+            foreach (var keystroke in keystrokes)
+            {
+                if (keystroke.IsValid)
+                    this.inputString += char.ToLower(keystroke.Character);
+                else if (keystroke.IsBackspace && this.inputString.Length > 0)
+                    this.inputString = this.inputString.Substring(0, this.inputString.Length - 1);
+                else if (keystroke.IsEnter)
+                {
+                    console.Add("> " + this.inputString);
+                    console.AddRange(Ai.InterpretCommand(this.inputString));
+                    this.inputString = "";
+                }
+            }
+        }
+
+        public void ProcessInput(ITextInput consoleInput)
         {
             // Capture user keyboard input
             var keystrokes = consoleInput.GetNewKeystrokes();
-            Ai.ProcessKeystrokes(keystrokes);
+            ProcessKeystrokes(keystrokes);
         }
 
-        public void RenderFrame()
+        public void ProgressTime(float deltaT)
+        {
+            foreach (var robot in Robots)
+            {
+                robot.Position += robot.Direction*robot.Engine.Speed*deltaT;
+            }
+        }
+
+        public void RenderFrame(IRenderEngine renderEngine)
         {
             renderEngine.Clear();
             renderEngine.Begin();
-            userInterface.SetInputText(Ai.Input);
+            userInterface.SetInputText(inputString);
             userInterface.Render(renderEngine);
             renderEngine.End();
         }

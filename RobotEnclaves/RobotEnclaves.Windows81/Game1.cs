@@ -31,10 +31,7 @@ namespace RobotEnclaves.Windows81
         protected override void Initialize()
         {
             renderEngine.Initialize();
-            this.gameEngine = new GameEngine(
-                this.renderEngine, 
-                new TopologicalUserInterface(this.renderEngine.Viewport),
-                this.keyboardInput);
+            this.gameEngine = GameEngine.CreateTutorialWorld(new TopologicalUserInterface(this.renderEngine.Viewport));
 
             base.Initialize();
         }
@@ -65,7 +62,8 @@ namespace RobotEnclaves.Windows81
         protected override void Update(GameTime gameTime)
         {
             keyboardInput.Update();
-            gameEngine.Process();
+            gameEngine.ProcessInput(this.keyboardInput);
+            gameEngine.ProgressTime((float)gameTime.ElapsedGameTime.TotalSeconds);
             base.Update(gameTime);
         }
 
@@ -75,7 +73,7 @@ namespace RobotEnclaves.Windows81
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            gameEngine.RenderFrame();
+            gameEngine.RenderFrame(renderEngine);
             base.Draw(gameTime);
         }
     }

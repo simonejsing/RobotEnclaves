@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rendering.Widgets
 {
+    using Engine;
     using VectorMath;
 
     public abstract class Widget
@@ -18,5 +19,7 @@ namespace Rendering.Widgets
             this.Position = position;
             this.Size = size;
         }
+
+        public abstract void Render(IRenderEngine renderEngine);
     }
 }

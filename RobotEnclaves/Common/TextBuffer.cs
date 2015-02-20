@@ -7,23 +7,23 @@ namespace Common
 {
     public class TextBuffer
     {
-        private readonly List<string> ConsoleBuffer = new List<string>();
+        private readonly List<string> Buffer = new List<string>();
 
         public IEnumerable<string> Lines {
             get
             {
-                return ConsoleBuffer;
+                return this.Buffer;
             }
         }
 
         public void Add(string line)
         {
-            ConsoleBuffer.Add(line);
+            this.Buffer.Add(line);
         }
 
         public void AddRange(IEnumerable<string> lines)
         {
-            ConsoleBuffer.AddRange(lines);
+            this.Buffer.AddRange(lines);
         }
     }
 }

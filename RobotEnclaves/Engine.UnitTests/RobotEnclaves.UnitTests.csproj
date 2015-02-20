@@ -78,6 +78,10 @@
       <Project>{a1962d5e-3274-433b-955b-817f9145a5f7}</Project>
       <Name>Rendering</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UserInput\UserInput.csproj">
+      <Project>{E760BBD1-FBF1-40C1-A604-ABF79FFFF7DE}</Project>
+      <Name>UserInput</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VectorMath\VectorMath.csproj">
       <Project>{e28a40e7-8894-4524-b748-8f89e8014e30}</Project>
       <Name>VectorMath</Name>

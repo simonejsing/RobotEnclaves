@@ -16,12 +16,15 @@ namespace Rendering.Widgets
 
         private float ZoomFactor = 1.0f;
 
+        public List<IGraphics> Graphics { get; set; }
+
         public Map(Vector2 position, Vector2 size)
             : base(position, size)
         {
+            Graphics = new List<IGraphics>();
         }
 
-        public void Render(IRenderEngine renderEngine, IEnumerable<IGraphics> graphics)
+        public override void Render(IRenderEngine renderEngine)
         {
             renderEngine.Translate(this.Position);
             renderEngine.FillRectangle(Vector2.Zero, this.Size, Color.Sand);
@@ -32,7 +35,7 @@ namespace Rendering.Widgets
 
             this.RenderGridLines(renderEngine);
 
-            foreach (var graphic in graphics)
+            foreach (var graphic in Graphics)
             {
                 graphic.Render(renderEngine);
             }
