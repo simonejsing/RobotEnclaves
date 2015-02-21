@@ -8,38 +8,41 @@ namespace UserInput
 {
     public class Keystroke
     {
-        const char CharBackspace = (char)8;
-        const char CharEnter = (char)13;
+        public enum KeystrokeType { Literal, Backspace, Enter, Up, Down }
 
-        public char Character { get; private set; }
-
-        public bool IsBackspace
-        {
-            get
-            {
-                return Character == CharBackspace;
-            }
-        }
-
-        public bool IsEnter
-        {
-            get
-            {
-                return Character == CharEnter;
-            }
-        }
+        public KeystrokeType Type { get; private set; }
+        public char? Literal { get; private set; }
 
         public bool IsValid
         {
             get
             {
-                return (Character >= 'A' && Character <= 'Z') || (Character >= '0' && Character <= '9') || Character == '.' || Character == '=' || Character == ' ';
+                return 
+                    (this.Literal >= 'A' && this.Literal <= 'Z') || 
+                    (this.Literal >= 'a' && this.Literal <= 'z') || 
+                    (this.Literal >= '0' && this.Literal <= '9') ||
+                    this.Literal == '(' ||
+                    this.Literal == ')' ||
+                    this.Literal == '.' ||
+                    this.Literal == '=' || 
+                    this.Literal == ' ';
             }
         }
 
-        public Keystroke(char character)
+        private Keystroke(KeystrokeType type, char? literal)
         {
-            this.Character = character;
+            this.Type = type;
+            this.Literal = literal;
+        }
+
+        public static Keystroke SpecialKeystroke(KeystrokeType type)
+        {
+            return new Keystroke(type, null);
+        }
+
+        public static Keystroke LiteralKeystroke(char c)
+        {
+            return new Keystroke(KeystrokeType.Literal, c);
         }
 
         public static Keystroke[] FromString(string s)
@@ -48,7 +51,7 @@ namespace UserInput
 
             for (int i = 0; i < s.Length; i++)
             {
-                keys.Add(new Keystroke(s[i]));
+                keys.Add(Keystroke.LiteralKeystroke(s[i]));
             }
 
             return keys.ToArray();

@@ -16,7 +16,7 @@ namespace Engine.Spaceship
 
         public Robot FindRobotByName(string name)
         {
-            return OwnedRobots.First(r => r.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            return OwnedRobots.FirstOrDefault(r => r.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         public void AddRobot(Robot r)
@@ -44,11 +44,13 @@ Systems online";
                 StringSplitOptions.None));
         }
 
-        public IEnumerable<string> InterpretCommand(string command)
+        public CommandResult InterpretCommand(string command)
         {
-            if (command == "robots")
+            var result = new CommandResult(true);
+
+            if (command.Equals("robots()", StringComparison.OrdinalIgnoreCase))
             {
-                return this.OwnedRobots.Select(r => r.Name);
+                result.AddMessages(this.OwnedRobots.Select(r => r.Name));
             }
 
             var tokens = command.Split(new[] {'.'}, 2);
@@ -58,10 +60,17 @@ Systems online";
                 var instruction = tokens[1];
 
                 var robot = this.FindRobotByName(robotName);
+                if (robot == null)
+                {
+                    var noSuchRobotResult = new CommandResult(false);
+                    noSuchRobotResult.AddMessages(String.Format("Robot with name '{0}' does not exist.", robotName));
+                    return noSuchRobotResult;
+                }
+
                 robot.ExecuteStatement(instruction);
             }
 
-            return Enumerable.Empty<string>();
+            return result;
         }
     }
 }

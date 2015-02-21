@@ -13,7 +13,7 @@ namespace RobotEnclaves.Windows81
     {
         private Keys[] lastPressedKeys;
 
-        private List<char> keystrokeBuffer = new List<char>(); 
+        private List<Keystroke> keystrokeBuffer = new List<Keystroke>(); 
 
         public MonoKeyboardInput()
         {
@@ -32,23 +32,38 @@ namespace RobotEnclaves.Windows81
                     OnKeyUp(key);
             }
 
+            var shiftPressed = kbState.IsKeyDown(Keys.LeftShift) || kbState.IsKeyDown(Keys.RightShift);
+
             //check if the currently pressed keys were already pressed
             foreach (Keys key in pressedKeys)
             {
                 if (!lastPressedKeys.Contains(key))
-                    OnKeyDown(key);
+                    OnKeyDown(key, shiftPressed);
             }
 
             //save the currently pressed keys so we can compare on the next update
             lastPressedKeys = pressedKeys;
         }
 
-        private void OnKeyDown(Keys key)
+        private void OnKeyDown(Keys key, bool shift)
         {
             char c;
 
             switch(key)
             {
+                case Keys.Enter:
+                    keystrokeBuffer.Add(Keystroke.SpecialKeystroke(Keystroke.KeystrokeType.Enter));
+                    return;
+                case Keys.Back:
+                    keystrokeBuffer.Add(Keystroke.SpecialKeystroke(Keystroke.KeystrokeType.Backspace));
+                    return;
+                case Keys.Up:
+                    keystrokeBuffer.Add(Keystroke.SpecialKeystroke(Keystroke.KeystrokeType.Up));
+                    return;
+                case Keys.Down:
+                    keystrokeBuffer.Add(Keystroke.SpecialKeystroke(Keystroke.KeystrokeType.Down));
+                    return;
+
                 case Keys.Space:
                     c = ' ';
                     break;
@@ -59,11 +74,27 @@ namespace RobotEnclaves.Windows81
                     c = '=';
                     break;
                 default:
-                    c = (char)key;
+                    if (shift)
+                    {
+                        switch (key)
+                        {
+                            case Keys.D9:
+                                c = '(';
+                                break;
+                            case Keys.D0:
+                                c = ')';
+                                break;
+                            default:
+                                c = (char)key;
+                                break;
+                        }
+                    }
+                    else
+                        c = char.ToLower((char)key);
                     break;
             }
 
-            keystrokeBuffer.Add(c);
+            keystrokeBuffer.Add(Keystroke.LiteralKeystroke(c));
         }
 
         private void OnKeyUp(Keys key)
@@ -73,7 +104,7 @@ namespace RobotEnclaves.Windows81
 
         public IEnumerable<Keystroke> GetNewKeystrokes()
         {
-            var returnValue = keystrokeBuffer.Select(k => new Keystroke(k)).ToArray();
+            var returnValue = keystrokeBuffer.ToArray();
             keystrokeBuffer.Clear();
             return returnValue;
         }

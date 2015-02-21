@@ -22,6 +22,8 @@ namespace Engine
         private readonly TextList console = new TextList();
         private readonly TextLabel inputLabel = new TextLabel();
         private readonly TextLabel fpsLabel = new TextLabel();
+        private readonly List<string> inputHistory = new List<string>();
+        private int inputHistoryIndex = -1;
 
         public World.World World { get; private set; }
 
@@ -70,17 +72,83 @@ namespace Engine
         {
             foreach (var keystroke in keystrokes)
             {
-                if (keystroke.IsValid)
-                    this.inputLabel.Text += char.ToLower(keystroke.Character);
-                else if (keystroke.IsBackspace && this.inputLabel.Text.Length > 0)
-                    this.inputLabel.Text = this.inputLabel.Text.Substring(0, this.inputLabel.Text.Length - 1);
-                else if (keystroke.IsEnter)
-                {
-                    console.Add("> " + this.inputLabel.Text);
-                    console.AddRange(Ai.InterpretCommand(this.inputLabel.Text));
-                    this.inputLabel.Text = "";
-                }
+                this.ProcessSingleKeystroke(keystroke);
             }
+        }
+
+        private void ProcessSingleKeystroke(Keystroke keystroke)
+        {
+            switch (keystroke.Type)
+            {
+                case Keystroke.KeystrokeType.Literal:
+                    if (keystroke.IsValid)
+                    {
+                        this.inputLabel.Text += keystroke.Literal;
+                    }
+                    break;
+                case Keystroke.KeystrokeType.Backspace:
+                    if (this.inputLabel.Text.Length > 0)
+                    {
+                        this.inputLabel.Text = this.inputLabel.Text.Substring(0, this.inputLabel.Text.Length - 1);
+                    }
+                    break;
+                case Keystroke.KeystrokeType.Enter:
+                    this.ExecuteCommand(this.inputLabel.Text);
+                    break;
+                case Keystroke.KeystrokeType.Up:
+                    this.GoUpInCommandHistory();
+                    break;
+                case Keystroke.KeystrokeType.Down:
+                    this.GoDownInCommandHistory();
+                    break;
+            }
+        }
+
+        private void GoUpInCommandHistory()
+        {
+            if (inputHistoryIndex < inputHistory.Count - 1)
+            {
+                inputHistoryIndex++;
+                PromoteHistoryToCommandLine();
+            }
+        }
+
+        private void GoDownInCommandHistory()
+        {
+            if (inputHistoryIndex == 0)
+            {
+                inputHistoryIndex--;
+                this.inputLabel.Text = "";
+            }
+            else if (inputHistoryIndex > 0)
+            {
+                inputHistoryIndex--;
+                PromoteHistoryToCommandLine();
+            }
+        }
+
+        private void PromoteHistoryToCommandLine()
+        {
+            if (inputHistoryIndex >= 0 && inputHistoryIndex < inputHistory.Count)
+            {
+                this.inputLabel.Text = inputHistory[inputHistoryIndex];
+            }
+        }
+
+        private void ExecuteCommand(string command)
+        {
+            this.console.Add("> " + command);
+            this.AddCommandToHistory(command);
+            
+            var result = this.Ai.InterpretCommand(command);
+            this.console.AddRange(result.Messages);
+            this.inputLabel.Text = "";
+        }
+
+        private void AddCommandToHistory(string command)
+        {
+            this.inputHistory.Insert(0, command);
+            inputHistoryIndex = -1;
         }
 
         public void ProcessInput(ITextInput consoleInput)
