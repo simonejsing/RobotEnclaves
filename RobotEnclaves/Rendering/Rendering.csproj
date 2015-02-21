@@ -57,6 +57,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Graphics\CollectableItemSprite.cs" />
     <Compile Include="Widgets\Console.cs" />
     <Compile Include="GraphicsFactory.cs" />
     <Compile Include="Graphics\SpaceshipMapSprite.cs" />

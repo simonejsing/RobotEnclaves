@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\ComponentPropertyDoesNotExistException.cs" />
     <Compile Include="FrequencyCounter.cs" />
+    <Compile Include="Items\CollectableItem.cs" />
     <Compile Include="Robotics\RobotComponentParameter.cs" />
     <Compile Include="Robotics\IRobotComponent.cs" />
     <Compile Include="Robotics\RobotComponentBase.cs" />

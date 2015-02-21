@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Rendering
 {
     using Engine;
+    using Engine.Items;
     using Engine.Robotics;
     using Engine.Spaceship;
     using Engine.World;
@@ -18,6 +19,8 @@ namespace Rendering
         {
             if (obj is Robot)
                 return new RobotMapSprite(obj as Robot);
+            if(obj is CollectableItem)
+                return new CollectableItemSprite(obj as CollectableItem);
             if (obj is Spaceship)
                 return new SpaceshipMapSprite(obj as Spaceship);
 

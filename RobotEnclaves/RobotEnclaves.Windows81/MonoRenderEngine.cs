@@ -101,7 +101,7 @@ namespace RobotEnclaves.Windows81
             ScalingFactor = 1.0f;
         }
 
-        public void DrawPolygon(Vector2[] points, Color color)
+        public void DrawPolygon(Vector2[] points, Color color, float thickness = 1.0f)
         {
             for (var i = 0; i < points.Length; i++)
             {
@@ -110,17 +110,19 @@ namespace RobotEnclaves.Windows81
                 _spriteBatch.DrawLine(
                     this.TransformVector(new XnaVector2(from.X, from.Y)),
                     this.TransformVector(new XnaVector2(to.X, to.Y)),
-                    new XnaColor(color.R, color.G, color.B, color.A));
+                    new XnaColor(color.R, color.G, color.B, color.A),
+                    thickness);
             }
         }
 
-        public void DrawCircle(Vector2 origin, float radius, Color color)
+        public void DrawCircle(Vector2 origin, float radius, Color color, float thickness = 1.0f)
         {
             _spriteBatch.DrawCircle(
                 this.TransformVector(new XnaVector2(origin.X, origin.Y)),
                 this.TransformScalar(radius),
                 20,
-                new XnaColor(color.R, color.G, color.B, color.A));
+                new XnaColor(color.R, color.G, color.B, color.A),
+                thickness);
         }
 
         public void DrawText(Vector2 origin, string text, Color color)
@@ -147,16 +149,17 @@ namespace RobotEnclaves.Windows81
                 new XnaColor(color.R, color.G, color.B, color.A));
         }
 
-        public void DrawVector(Vector2 origin, Vector2 vector, Color color)
+        public void DrawVector(Vector2 origin, Vector2 vector, Color color, float thickness = 1.0f)
         {
             var to = origin + vector;
             _spriteBatch.DrawLine(
                 this.TransformVector(new XnaVector2(origin.X, origin.Y)),
                 this.TransformVector(new XnaVector2(to.X, to.Y)),
-                new XnaColor(color.R, color.G, color.B, color.A));
+                new XnaColor(color.R, color.G, color.B, color.A),
+                thickness);
         }
 
-        public void DrawLine(Vector2 origin, Vector2 vector, Color color)
+        public void DrawLine(Vector2 origin, Vector2 vector, Color color, float thickness = 1.0f)
         {
             // Compute extended line that spans entire viewport
             Vector2 from, to;
@@ -183,7 +186,8 @@ namespace RobotEnclaves.Windows81
             _spriteBatch.DrawLine(
                 this.TransformVector(new XnaVector2(from.X, from.Y)),
                 this.TransformVector(new XnaVector2(to.X, to.Y)),
-                new XnaColor(color.R, color.G, color.B, color.A));
+                new XnaColor(color.R, color.G, color.B, color.A),
+                thickness);
         }
     }
 }

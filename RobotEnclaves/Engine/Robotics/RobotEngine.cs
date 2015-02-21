@@ -8,7 +8,7 @@ namespace Engine.Robotics
 {
     public class RobotEngine : RobotComponentBase
     {
-        const float MaxSpeed = 50.0f / 3.6f;
+        const float MaxSpeed = 80.0f / 3.6f;
         const string ThrottlePropertyName = "throttle";
 
         public float Speed

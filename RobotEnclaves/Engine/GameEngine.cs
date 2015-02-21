@@ -8,6 +8,7 @@ namespace Engine
 {
     using System.Reflection;
     using Common;
+    using Engine.Items;
     using Engine.Robotics;
     using Engine.Spaceship;
     using UserInput;
@@ -55,6 +56,7 @@ namespace Engine
             var gameEngine = new GameEngine(userInterface);
             gameEngine.World.InsertObject(new Spaceship.Spaceship() { Position = Vector2.Zero });
             gameEngine.AddRobot(new Robot("AZ15") {Position = new Vector2(0f, 0f)});
+            gameEngine.World.InsertObject(new CollectableItem("Memory Core [1 MB]") { Position = new Vector2(140, -10)});
 
             gameEngine.userInterface.UpdateWorld(gameEngine.World);
 
