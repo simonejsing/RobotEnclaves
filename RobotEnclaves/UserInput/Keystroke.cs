@@ -13,19 +13,23 @@ namespace UserInput
         public KeystrokeType Type { get; private set; }
         public char? Literal { get; private set; }
 
+        private readonly char[] validSigns =
+        {
+            '(', ')', '.', '=', ' '
+        };
+
         public bool IsValid
         {
             get
             {
-                return 
-                    (this.Literal >= 'A' && this.Literal <= 'Z') || 
-                    (this.Literal >= 'a' && this.Literal <= 'z') || 
+                if (Literal == null)
+                    return false;
+
+                return
+                    (this.Literal >= 'A' && this.Literal <= 'Z') ||
+                    (this.Literal >= 'a' && this.Literal <= 'z') ||
                     (this.Literal >= '0' && this.Literal <= '9') ||
-                    this.Literal == '(' ||
-                    this.Literal == ')' ||
-                    this.Literal == '.' ||
-                    this.Literal == '=' || 
-                    this.Literal == ' ';
+                    validSigns.Contains(this.Literal.Value);
             }
         }
 
