@@ -53,11 +53,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AverageTimeCounter.cs" />
+    <Compile Include="TimeCounter.cs" />
     <Compile Include="Exceptions\ComponentPropertyDoesNotExistException.cs" />
     <Compile Include="Exceptions\InvalidRobotMethodException.cs" />
     <Compile Include="Exceptions\InvalidRobotPropertyException.cs" />
     <Compile Include="Exceptions\RobotException.cs" />
-    <Compile Include="FrequencyCounter.cs" />
+    <Compile Include="FrequencyTimeCounter.cs" />
     <Compile Include="IObject.cs" />
     <Compile Include="Items\CollectableItem.cs" />
     <Compile Include="Robotics\IProgrammableComponent.cs" />

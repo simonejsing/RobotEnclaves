@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine
 {
+    using System.Diagnostics;
     using System.Reflection;
     using Common;
     using Engine.Items;
@@ -20,7 +21,12 @@ namespace Engine
 
         private readonly IUserInterface userInterface;
 
-        private readonly FrequencyCounter fpsCounter = new FrequencyCounter(50);
+        private long lastFrameTime = DateTime.Now.Ticks;
+        private readonly LapStopwatch stopwatch = new LapStopwatch();
+
+        private readonly TimeCounter fpsCounter = new FrequencyTimeCounter(50);
+        private readonly TimeCounter updateTimer = new AverageTimeCounter(50);
+        private readonly TimeCounter renderTimer = new AverageTimeCounter(50);
         private readonly TextList console = new TextList();
         private readonly TextLabel inputLabel = new TextLabel();
         private readonly TextLabel fpsLabel = new TextLabel();
@@ -152,6 +158,8 @@ namespace Engine
 
         public void ProcessInput(ITextInput consoleInput)
         {
+            stopwatch.Restart();
+
             // Capture user keyboard input
             var keystrokes = consoleInput.GetNewKeystrokes();
             ProcessKeystrokes(keystrokes);
@@ -159,11 +167,25 @@ namespace Engine
 
         public void ProgressTime(float deltaT)
         {
-            fpsCounter.Update();
-
             this.MoveRobots(deltaT);
-
             this.DiscoverItemInCloseProximity();
+
+            this.updateTimer.Update(stopwatch.LapMilliseconds);
+        }
+
+        public void RenderFrame(IRenderEngine renderEngine)
+        {
+            // Update FPS label
+            fpsLabel.Text = String.Format("FPS: {0}, U/R: {1}/{2}", this.fpsCounter, this.updateTimer, this.renderTimer);
+            renderEngine.Clear();
+            renderEngine.Begin();
+            userInterface.Render(renderEngine);
+            renderEngine.End();
+
+            this.renderTimer.Update(stopwatch.LapMilliseconds);
+
+            this.fpsCounter.Update((DateTime.Now.Ticks - lastFrameTime) / 10000);
+            lastFrameTime = DateTime.Now.Ticks;
         }
 
         private void DiscoverItemInCloseProximity()
@@ -186,17 +208,6 @@ namespace Engine
             {
                 robot.Position += robot.Direction*robot.Engine.Speed*deltaT;
             }
-        }
-
-        public void RenderFrame(IRenderEngine renderEngine)
-        {
-            // Update FPS label
-            fpsLabel.Text = String.Format("FPS: {0:0.0}", fpsCounter.Frequency);
-
-            renderEngine.Clear();
-            renderEngine.Begin();
-            userInterface.Render(renderEngine);
-            renderEngine.End();
         }
 
     }
