@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 namespace Rendering
 {
     using Engine;
-    using Engine.World;
 
     public interface IGraphics
     {
+        bool Visible { get; }
+
         void Render(IRenderEngine renderEngine);
     }
 }

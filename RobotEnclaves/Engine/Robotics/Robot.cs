@@ -7,25 +7,28 @@ using System.Threading.Tasks;
 namespace Engine.Robotics
 {
     using Engine.Computer;
-    using Engine.World;
     using VectorMath;
 
     public class Robot : IComputer, IObject
     {
         public IMemoryBank MemoryBank { get; private set; }
         public IProgram CurrentProgram { get; set; }
-        public RobotEngine Engine { get; private set; }
-        public IEnumerable<IRobotComponent> Components
+        public ProgrammableEngine Engine { get; private set; }
+        public ProgrammableCrane Crane { get; private set; }
+        public IEnumerable<IProgrammableComponent> Components
         {
             get
             {
                 yield return Engine;
+                yield return Crane;
             }
         }
 
         public string Name { get; private set; }
         public Vector2 Position { get; set; }
         public UnitVector2 Direction { get; set; }
+        public World World { get; private set; }
+
 
         public Robot(string name)
         {
@@ -33,7 +36,13 @@ namespace Engine.Robotics
             Direction = UnitVector2.GetInstance(1f, 0f);
             Name = name;
             MemoryBank = new MemoryBank(200);
-            Engine = new RobotEngine();
+            Engine = new ProgrammableEngine();
+            Crane = new ProgrammableCrane(this, 40f);
+        }
+
+        public void SetCurrentWorld(World world)
+        {
+            this.World = world;
         }
 
         public void ExecuteStatement(string statement)
@@ -42,17 +51,17 @@ namespace Engine.Robotics
             if (tokens.Length > 1)
             {
                 var componentName = tokens[0];
-                var instruction = tokens[1];
+                var instruction = tokens[1].Trim();
 
                 var component = Components.First(c => c.Name.Equals(componentName));
 
-                var propertyTokens = instruction.Split(new char[] {'='}, 2);
-                if (propertyTokens.Length > 1)
+                if (instruction.EndsWith(")"))
                 {
-                    var propertyName = propertyTokens[0].Trim();
-                    var propertyValue = float.Parse(propertyTokens[1].Trim());
-
-                    component[propertyName] = propertyValue;
+                    component.EvaluateMethodInvocation(instruction);
+                }
+                else
+                {
+                    component.EvaluatePropertyInstruction(instruction);
                 }
             }
         }
@@ -61,5 +70,11 @@ namespace Engine.Robotics
         {
             CurrentProgram.GetNextStatement().Execute(this);
         }
+
+        public bool ObjectInRange(IObject obj, float range)
+        {
+            return (this.Position - obj.Position).LengthSquared < range * range;
+        }
     }
+
 }

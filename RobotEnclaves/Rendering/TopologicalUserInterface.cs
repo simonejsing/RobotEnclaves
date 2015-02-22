@@ -9,7 +9,6 @@ namespace Rendering
     using System.Collections;
     using Common;
     using Engine;
-    using Engine.World;
     using Rendering.Graphics;
     using Rendering.Widgets;
     using VectorMath;
@@ -75,7 +74,7 @@ namespace Rendering
 
         public void UpdateWorld(World world)
         {
-            Map.Graphics = new List<IGraphics>(world.GetObjects().Select(GraphicsFactory.CreateFromObject));
+            Map.Graphics = new List<IGraphics>(world.Objects.Select(GraphicsFactory.CreateFromObject));
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Engine.Robotics
 {
     using Engine.Exceptions;
 
-    public abstract class RobotComponentBase : IRobotComponent
+    public abstract class ProgrammableComponentBase : IProgrammableComponent
     {
         public abstract string Name { get; }
 
@@ -26,7 +26,38 @@ namespace Engine.Robotics
             }
         }
 
+        public object EvaluatePropertyInstruction(string instruction)
+        {
+            var propertyTokens = instruction.Split(new char[] { '=' }, 2);
+            if (propertyTokens.Length > 1)
+            {
+                var propertyName = propertyTokens[0].Trim();
+                var propertyValue = float.Parse(propertyTokens[1].Trim());
+
+                this[propertyName] = propertyValue;
+            }
+
+            return null;
+        }
+
+        public object EvaluateMethodInvocation(string instruction)
+        {
+            var methodTokens = instruction.Split(new char[] { '(' }, 2);
+            if (methodTokens.Length > 1)
+            {
+                var methodName = methodTokens[0].Trim();
+                var arguments = methodTokens[1].Trim();
+                arguments = arguments.Substring(0, arguments.Length - 1);
+
+                var method = Methods.FirstOrDefault(m => m.Key.Equals(methodName, StringComparison.OrdinalIgnoreCase));
+                return method.Value(arguments.Split(','));
+            }
+
+            throw new InvalidRobotMethodException();
+        }
+
         public abstract string[] Properties { get; }
+        public abstract KeyValuePair<string, Func<string[], object>>[] Methods { get; }
 
         private float GetProperty(string propertyName)
         {

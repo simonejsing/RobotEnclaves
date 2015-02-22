@@ -10,7 +10,6 @@ namespace Rendering
     using Engine.Items;
     using Engine.Robotics;
     using Engine.Spaceship;
-    using Engine.World;
     using Rendering.Graphics;
 
     static class GraphicsFactory

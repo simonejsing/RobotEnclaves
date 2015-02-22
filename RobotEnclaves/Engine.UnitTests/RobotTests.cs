@@ -4,11 +4,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Engine.UnitTests
 {
     using Engine.Computer;
+    using Engine.Items;
     using Engine.Robotics;
     using Engine.Spaceship;
     using FluentAssertions;
     using Moq;
     using UserInput;
+    using VectorMath;
 
     [TestClass]
     public class RobotTests
@@ -56,5 +58,17 @@ namespace Engine.UnitTests
 
             robot.Position.X.Should().BeGreaterThan(0);
         }
+
+        [TestMethod]
+        public void RobotWithCraneCanPickupItemsInRange()
+        {
+            var smallDistance = new Vector2(1,1);
+            var robot = new Robot("AZ15") {Position = Vector2.Zero};
+            var item = new CollectableItem("cpu", "CPU") {Position = Vector2.Zero + smallDistance};
+
+            robot.Crane.PickUpItem(item);
+            item.Collected.Should().BeTrue();
+        }
+
     }
 }

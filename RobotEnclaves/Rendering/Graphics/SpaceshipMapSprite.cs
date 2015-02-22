@@ -10,7 +10,7 @@ namespace Rendering.Graphics
     using Engine.Spaceship;
     using VectorMath;
 
-    class SpaceshipMapSprite : IGraphics
+    class SpaceshipMapSprite : ObjectMapSprite
     {
         private Spaceship Spaceship;
         private float cosAndSinOfPiQuarter;
@@ -20,7 +20,7 @@ namespace Rendering.Graphics
         private Vector2 crossTopRight;
         private Vector2 crossTopLeft;
 
-        public SpaceshipMapSprite(Spaceship spaceship)
+        public SpaceshipMapSprite(Spaceship spaceship) : base(spaceship.Position)
         {
             this.cosAndSinOfPiQuarter = (float)(Math.Sqrt(2.0) / 2.0);
             Spaceship = spaceship;
@@ -29,7 +29,7 @@ namespace Rendering.Graphics
             this.crossTopLeft = new Vector2(-cosAndSinOfPiQuarter * Radius, cosAndSinOfPiQuarter * Radius);
         }
 
-        public void Render(IRenderEngine renderEngine)
+        public override void Render(IRenderEngine renderEngine)
         {
             renderEngine.DrawCircle(Spaceship.Position, Radius, Color.Blue);
 

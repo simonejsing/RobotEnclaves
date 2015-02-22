@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Engine.UnitTests.Stubs
+namespace Engine
 {
     using VectorMath;
 
-    class StubObject : IObject
+    public interface IObject
     {
-        public Vector2 Position { get; set; }
+        Vector2 Position { get; set; }
     }
 }

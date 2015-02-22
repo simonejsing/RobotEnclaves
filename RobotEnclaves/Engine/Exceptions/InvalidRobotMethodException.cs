@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Engine.Robotics
+namespace Engine.Exceptions
 {
-    public class RobotComponentParameter
+    public class InvalidRobotMethodException : RobotException
     {
-        public string Name { get; private set; }
     }
 }

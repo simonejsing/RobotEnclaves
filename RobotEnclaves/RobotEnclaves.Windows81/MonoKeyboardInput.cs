@@ -73,6 +73,9 @@ namespace RobotEnclaves.Windows81
                 case Keys.OemPlus:
                     c = '=';
                     break;
+                case Keys.OemQuotes:
+                    c = '"';
+                    break;
                 default:
                     if (shift)
                     {

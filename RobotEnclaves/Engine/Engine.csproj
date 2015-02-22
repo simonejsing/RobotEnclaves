@@ -54,12 +54,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\ComponentPropertyDoesNotExistException.cs" />
+    <Compile Include="Exceptions\InvalidRobotMethodException.cs" />
+    <Compile Include="Exceptions\InvalidRobotPropertyException.cs" />
+    <Compile Include="Exceptions\RobotException.cs" />
     <Compile Include="FrequencyCounter.cs" />
+    <Compile Include="IObject.cs" />
     <Compile Include="Items\CollectableItem.cs" />
-    <Compile Include="Robotics\RobotComponentParameter.cs" />
-    <Compile Include="Robotics\IRobotComponent.cs" />
-    <Compile Include="Robotics\RobotComponentBase.cs" />
-    <Compile Include="Robotics\RobotEngine.cs" />
+    <Compile Include="Robotics\IProgrammableComponent.cs" />
+    <Compile Include="Robotics\ProgrammableComponentBase.cs" />
+    <Compile Include="Robotics\ProgrammableCrane.cs" />
+    <Compile Include="Robotics\ProgrammableEngine.cs" />
     <Compile Include="Spaceship\Ai.cs" />
     <Compile Include="Computer\IComputer.cs" />
     <Compile Include="Computer\IMemoryBank.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="Spaceship\Spaceship.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Robotics\Robot.cs" />
+    <Compile Include="World.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

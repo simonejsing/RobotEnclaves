@@ -6,18 +6,46 @@ using System.Threading.Tasks;
 
 namespace Engine.Items
 {
-    using Engine.World;
+    using Engine.Robotics;
     using VectorMath;
 
     public class CollectableItem : IObject
     {
         public string Name { get; private set; }
+        public string Label { get; private set; }
+        public Robot OwningRobot { get; private set; }
+        public World World { get; private set; }
 
-        public CollectableItem(string name)
+
+        public CollectableItem(string name, string label)
         {
+            OwningRobot = null;
             Name = name;
+            Label = label;
         }
 
         public Vector2 Position { get; set; }
+        public bool Discovered { get; private set; }
+        public bool Collected {
+            get
+            {
+                return OwningRobot != null;
+            }
+        }
+
+        public void SetCurrentWorld(World world)
+        {
+            World = world;
+        }
+
+        public void SetDiscovered()
+        {
+            Discovered = true;
+        }
+
+        public void SetPickedUp(Robot byRobot)
+        {
+            OwningRobot = byRobot;
+        }
     }
 }

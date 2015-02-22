@@ -66,6 +66,8 @@
     <Compile Include="Stubs\StubObject.cs" />
     <Compile Include="MapRenderingTests.cs" />
     <Compile Include="AiTests.cs" />
+    <Compile Include="CollectableItemTests.cs" />
+    <Compile Include="GameEngineTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

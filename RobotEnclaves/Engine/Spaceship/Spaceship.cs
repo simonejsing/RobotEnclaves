@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Engine.Spaceship
 {
-    using Engine.World;
     using VectorMath;
 
     public class Spaceship : IObject

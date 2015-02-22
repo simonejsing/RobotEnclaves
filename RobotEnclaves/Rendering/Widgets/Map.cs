@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace Rendering.Widgets
 {
     using Engine;
-    using Engine.World;
     using VectorMath;
 
     public class Map : Widget
@@ -35,7 +34,7 @@ namespace Rendering.Widgets
 
             this.RenderGridLines(renderEngine);
 
-            foreach (var graphic in Graphics)
+            foreach (var graphic in Graphics.Where(g => g.Visible))
             {
                 graphic.Render(renderEngine);
             }

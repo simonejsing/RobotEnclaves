@@ -16,31 +16,24 @@ namespace Engine
 
     public class GameEngine
     {
+        private const float RobotDetectionRangeSqaured = 100.0f * 100.0f;
+
         private readonly IUserInterface userInterface;
 
         private readonly FrequencyCounter fpsCounter = new FrequencyCounter(50);
-        private readonly List<Robot> robots; 
         private readonly TextList console = new TextList();
         private readonly TextLabel inputLabel = new TextLabel();
         private readonly TextLabel fpsLabel = new TextLabel();
         private readonly List<string> inputHistory = new List<string>();
         private int inputHistoryIndex = -1;
 
-        public World.World World { get; private set; }
-
         public Ai Ai { get; private set; }
-        public IEnumerable<Robot> Robots {
-            get
-            {
-                return robots;
-            }
-        } 
+        public World World { get; private set; }
 
         public GameEngine(IUserInterface userInterface)
         {
-            this.World = new World.World();
+            this.World = new World();
             this.Ai = new Ai();
-            this.robots = new List<Robot>();
             this.Ai.Boot(this.console);
             this.userInterface = userInterface;
 
@@ -54,9 +47,9 @@ namespace Engine
         public static GameEngine CreateTutorialWorld(IUserInterface userInterface)
         {
             var gameEngine = new GameEngine(userInterface);
-            gameEngine.World.InsertObject(new Spaceship.Spaceship() { Position = Vector2.Zero });
+            gameEngine.World.AddObject(new Spaceship.Spaceship() { Position = Vector2.Zero });
             gameEngine.AddRobot(new Robot("AZ15") {Position = new Vector2(0f, 0f)});
-            gameEngine.World.InsertObject(new CollectableItem("Memory Core [1 MB]") { Position = new Vector2(140, -10)});
+            gameEngine.AddItem(new CollectableItem("memory", "Memory Core [1 MB]") { Position = new Vector2(140, -10)});
 
             gameEngine.userInterface.UpdateWorld(gameEngine.World);
 
@@ -65,9 +58,13 @@ namespace Engine
 
         public void AddRobot(Robot robot)
         {
-            this.robots.Add(robot);
             this.Ai.AddRobot(robot);
-            this.World.InsertObject(robot);
+            this.World.AddRobot(robot);
+        }
+
+        public void AddItem(CollectableItem item)
+        {
+            this.World.AddItem(item);
         }
 
         private void ProcessKeystrokes(IEnumerable<Keystroke> keystrokes)
@@ -164,7 +161,28 @@ namespace Engine
         {
             fpsCounter.Update();
 
-            foreach (var robot in Robots)
+            this.MoveRobots(deltaT);
+
+            this.DiscoverItemInCloseProximity();
+        }
+
+        private void DiscoverItemInCloseProximity()
+        {
+            foreach (var item in World.Items.Where(i => i.Discovered == false))
+            {
+                foreach (var robot in World.Robots)
+                {
+                    if ((robot.Position - item.Position).LengthSquared < RobotDetectionRangeSqaured)
+                    {
+                        item.SetDiscovered();
+                    }
+                }
+            }
+        }
+
+        private void MoveRobots(float deltaT)
+        {
+            foreach (var robot in World.Robots)
             {
                 robot.Position += robot.Direction*robot.Engine.Speed*deltaT;
             }
@@ -180,5 +198,6 @@ namespace Engine
             userInterface.Render(renderEngine);
             renderEngine.End();
         }
+
     }
 }

@@ -8,21 +8,20 @@ namespace Rendering.Graphics
 {
     using Engine;
     using Engine.Robotics;
-    using Engine.World;
     using VectorMath;
 
-    class RobotMapSprite : IGraphics
+    class RobotMapSprite : ObjectMapSprite
     {
-        private Robot Robot;
+        private readonly Robot Robot;
 
         const float Radius = 10f;
 
-        public RobotMapSprite(Robot robot)
+        public RobotMapSprite(Robot robot) : base(robot.Position)
         {
             Robot = robot;
         }
 
-        public void Render(IRenderEngine renderEngine)
+        public override void Render(IRenderEngine renderEngine)
         {
             renderEngine.DrawCircle(Robot.Position, Radius, Color.Red);
         }

@@ -9,9 +9,17 @@ namespace Rendering.Graphics
     using Engine;
     using VectorMath;
 
-    abstract class ObjectMapSprite : IGraphics
+    public abstract class ObjectMapSprite : IGraphics
     {
         protected readonly Vector2 ObjectPosition;
+
+        public virtual bool Visible
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         protected ObjectMapSprite(Vector2 objectPosition)
         {

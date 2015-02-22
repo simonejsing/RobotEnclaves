@@ -10,13 +10,25 @@ namespace Rendering.Graphics
     using Engine.Items;
     using VectorMath;
 
-    class CollectableItemSprite : ObjectMapSprite
+    public class CollectableItemSprite : ObjectMapSprite
     {
         private CollectableItem Item;
+
+        public override bool Visible
+        {
+            get
+            {
+                return !Item.Collected;
+            }
+        }
+
         private Color Color {
             get
             {
-                return Color.Black;
+                if (Item.World.Robots.Any(r => r.Crane.ItemInRange(Item)))
+                    return Color.Green;
+
+                return Item.Discovered ? Color.White : Color.Black;
             }
         }
 
@@ -30,6 +42,11 @@ namespace Rendering.Graphics
         {
             renderEngine.DrawVector(ObjectPosition - new Vector2(5, 5), new Vector2(10, 10), this.Color, 2f);
             renderEngine.DrawVector(ObjectPosition - new Vector2(5, -5), new Vector2(10, -10), this.Color, 2f);
+
+            if (Item.Discovered)
+            {
+                renderEngine.DrawText(ObjectPosition, Item.Name + ":" + Item.Label, this.Color);
+            }
         }
     }
 }

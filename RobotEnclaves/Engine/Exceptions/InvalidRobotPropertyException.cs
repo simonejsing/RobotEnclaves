@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Engine.World
+namespace Engine.Exceptions
 {
-    using VectorMath;
-
-    public interface IObject
+    public class InvalidRobotPropertyException : RobotException
     {
-        Vector2 Position { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace Engine
     public interface IUserInterface
     {
         void AddLabel(Vector2 position, Vector2 size, TextLabel text);
-        void UpdateWorld(World.World world);
+        void UpdateWorld(World world);
 
         void Render(IRenderEngine renderEngine);
 
