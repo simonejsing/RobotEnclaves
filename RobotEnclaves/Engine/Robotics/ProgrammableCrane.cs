@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine.Robotics
 {
+    using Engine.Exceptions;
     using Engine.Items;
 
     public class ProgrammableCrane : ProgrammableComponentBase
@@ -70,9 +71,13 @@ namespace Engine.Robotics
 
         public float PickUpItem(CollectableItem item)
         {
+            if(item.Collected)
+                throw new RobotException("Attempt to pick up an item that is already owned by a robot.");
+
             if (ItemInRange(item))
             {
                 item.SetPickedUp(robot);
+                robot.CargoBay.LoadItem(item);
             }
 
             return 0;

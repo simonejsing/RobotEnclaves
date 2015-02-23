@@ -15,12 +15,14 @@ namespace Engine.Robotics
         public IProgram CurrentProgram { get; set; }
         public ProgrammableEngine Engine { get; private set; }
         public ProgrammableCrane Crane { get; private set; }
+        public ProgrammableCargoBay CargoBay { get; set; }
         public IEnumerable<IProgrammableComponent> Components
         {
             get
             {
                 yield return Engine;
                 yield return Crane;
+                yield return CargoBay;
             }
         }
 
@@ -28,7 +30,6 @@ namespace Engine.Robotics
         public Vector2 Position { get; set; }
         public UnitVector2 Direction { get; set; }
         public World World { get; private set; }
-
 
         public Robot(string name)
         {
@@ -38,6 +39,7 @@ namespace Engine.Robotics
             MemoryBank = new MemoryBank(200);
             Engine = new ProgrammableEngine();
             Crane = new ProgrammableCrane(this, 40f);
+            CargoBay = new ProgrammableCargoBay();
         }
 
         public void SetCurrentWorld(World world)

@@ -70,5 +70,26 @@ namespace Engine.UnitTests
             item.Collected.Should().BeTrue();
         }
 
+        [TestMethod]
+        public void WhenRobotPicksUpAnItemItShowsUpInTheCargoBay()
+        {
+            var smallDistance = new Vector2(1, 1);
+            var robot = new Robot("AZ15") { Position = Vector2.Zero };
+            var item = new CollectableItem("cpu", "CPU") { Position = Vector2.Zero + smallDistance };
+
+            robot.Crane.PickUpItem(item);
+            robot.CargoBay.Items.Should().Contain(item);
+        }
+
+        [TestMethod]
+        public void APickedUpItemGetsTheLocationOfTheRobot()
+        {
+            var smallDistance = new Vector2(1, 1);
+            var robot = new Robot("AZ15") { Position = Vector2.Zero };
+            var item = new CollectableItem("cpu", "CPU") { Position = Vector2.Zero + smallDistance };
+
+            robot.Crane.PickUpItem(item);
+            item.Position.Should().Be(robot.Position);
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace Rendering.Graphics
 
             if (Item.Discovered)
             {
-                renderEngine.DrawText(ObjectPosition, Item.Name + ":" + Item.Label, this.Color);
+                renderEngine.DrawText(ObjectPosition, Item.ToString(), this.Color);
             }
         }
     }

@@ -56,8 +56,21 @@ namespace Engine.Robotics
             throw new InvalidRobotMethodException();
         }
 
-        public abstract string[] Properties { get; }
-        public abstract KeyValuePair<string, Func<string[], object>>[] Methods { get; }
+        public virtual string[] Properties
+        {
+            get
+            {
+                return new string[0];
+            }
+        }
+
+        public virtual KeyValuePair<string, Func<string[], object>>[] Methods
+        {
+            get
+            {
+                return new KeyValuePair<string, Func<string[], object>>[0];
+            }
+        }
 
         private float GetProperty(string propertyName)
         {

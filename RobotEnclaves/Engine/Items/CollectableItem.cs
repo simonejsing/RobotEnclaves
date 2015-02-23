@@ -24,7 +24,25 @@ namespace Engine.Items
             Label = label;
         }
 
-        public Vector2 Position { get; set; }
+        private Vector2 itemPosition = Vector2.Zero;
+
+        public Vector2 Position
+        {
+            get
+            {
+                if (Collected)
+                {
+                    return OwningRobot.Position;
+                }
+
+                return itemPosition;
+            }
+            set
+            {
+                itemPosition = value;
+            }
+        }
+
         public bool Discovered { get; private set; }
         public bool Collected {
             get
@@ -46,6 +64,11 @@ namespace Engine.Items
         public void SetPickedUp(Robot byRobot)
         {
             OwningRobot = byRobot;
+        }
+
+        public override string ToString()
+        {
+            return Name + ":" + Label;
         }
     }
 }

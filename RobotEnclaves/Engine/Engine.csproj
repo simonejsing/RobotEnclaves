@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AverageTimeCounter.cs" />
+    <Compile Include="Robotics\ProgrammableCargoBay.cs" />
     <Compile Include="TimeCounter.cs" />
     <Compile Include="Exceptions\ComponentPropertyDoesNotExistException.cs" />
     <Compile Include="Exceptions\InvalidRobotMethodException.cs" />
