@@ -13,7 +13,7 @@ namespace Engine.Robotics
         string Name { get; }
         KeyValuePair<string, Func<ComputerType, ComputerType>>[] Methods { get; }
 
-        ComputerType EvaluatePropertyInstruction(string instruction);
-        ComputerType EvaluateMethodInvocation(string instruction);
+        IComputerType EvaluatePropertyInstruction(string instruction);
+        IComputerType EvaluateMethodInvocation(string instruction);
     }
 }

@@ -7,8 +7,8 @@
         string Name { get; }
         bool IsReadOnly { get; }
 
-        ComputerType Get();
+        IComputerType Get();
 
-        void Set(ComputerType value);
+        void Set(IComputerType value);
     }
 }

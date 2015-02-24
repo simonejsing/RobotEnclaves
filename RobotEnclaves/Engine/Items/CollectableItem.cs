@@ -15,11 +15,12 @@ namespace Engine.Items
         public string Label { get; private set; }
         public Robot OwningRobot { get; private set; }
         public World World { get; private set; }
-
+        public float Mass { get; set; }
 
         public CollectableItem(string name, string label)
         {
             OwningRobot = null;
+            Mass = 1.0f;
             Name = name;
             Label = label;
         }

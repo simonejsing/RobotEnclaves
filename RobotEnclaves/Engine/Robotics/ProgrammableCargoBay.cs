@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Engine.Robotics
 {
     using Engine.Computer;
+    using Engine.Exceptions;
     using Engine.Items;
 
     public class ProgrammableCargoBay : ProgrammableComponentBase
@@ -54,6 +55,13 @@ namespace Engine.Robotics
             }
         }
 
+        public float TotalMass {
+            get
+            {
+                return items.Sum(i => i.Mass);
+            }
+        }
+
         private ComputerType ListItems()
         {
             var itemList = this.Items.Select(i => new ComputerTypeString(i.Name)).ToArray();
@@ -62,6 +70,11 @@ namespace Engine.Robotics
 
         public void LoadItem(CollectableItem item)
         {
+            if (Capacity < TotalMass + item.Mass)
+            {
+                throw new RobotException(string.Format("Cannot pick up '{0}' insufficient room in cargo bay.", item.Name));
+            }
+
             items.Add(item);
         }
     }

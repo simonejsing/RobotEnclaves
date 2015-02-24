@@ -9,7 +9,7 @@ namespace Engine.Computer
     using System.Globalization;
     using Engine.Exceptions;
 
-    public abstract class ComputerType
+    public abstract class ComputerType : IComputerType
     {
         public abstract string TypeName { get; }
         public abstract override string ToString();

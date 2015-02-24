@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Engine.UnitTests
 {
     using Engine.Computer;
+    using Engine.Exceptions;
     using Engine.Items;
     using Engine.Robotics;
     using Engine.Spaceship;
@@ -99,25 +100,45 @@ namespace Engine.UnitTests
             var robot = new Robot("AZ15") { Position = Vector2.Zero };
             var item = new CollectableItem("cpu", "CPU") { Position = Vector2.Zero + smallDistance };
 
-            robot.Crane.PickUpItem(item);
-
+            item.SetPickedUp(robot);
             robot.Position = new Vector2(12, 34);
 
             item.Position.Should().Be(robot.Position);
         }
 
         [TestMethod]
-        public void AiCoreCanInspectRobotsCargoBay()
+        public void PickedUpItemIncreasesWeightOfRobot()
         {
-            var ai = new Ai();
+            const float robotBaseMass = 100.0f;
+            const float itemBaseMass = 20.0f;
+
             var robot = new Robot("AZ15");
             var item = new CollectableItem("cpu", "CPU 1 Ghz");
+
+            robot.BaseMass = robotBaseMass;
+            item.Mass = itemBaseMass;
+
             robot.CargoBay.LoadItem(item);
-            ai.AddRobot(robot);
+            
+            robot.Mass.Should().Be(robotBaseMass + itemBaseMass);
+        }
 
-            var result = ai.InterpretCommand("AZ15.cargobay.items()");
+        [TestMethod]
+        public void PickingUpAnItemThatWouldExceedTheRobotsCapacityThrowsException()
+        {
+            const float robotBaseMass = 100.0f;
+            const float itemBaseMass = 20.0f;
 
-            result.Messages.Should().Contain("cpu");
+            var robot = new Robot("AZ15");
+            var item1 = new CollectableItem("cpu", "CPU 1 Ghz") {Mass = itemBaseMass};
+
+            robot.CargoBay.LoadItem(item1);
+
+            var extraRoom = robot.CargoBay.Capacity - itemBaseMass;
+            var item2 = new CollectableItem("memory", "20 Mb") {Mass = extraRoom + 10.0f};
+
+            Action action = () => robot.CargoBay.LoadItem(item2);
+            action.ShouldThrow<RobotException>();
         }
     }
 }

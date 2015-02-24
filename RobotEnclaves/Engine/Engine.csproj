@@ -60,6 +60,7 @@
     <Compile Include="Computer\ComputerTypeFloat.cs" />
     <Compile Include="Computer\ComputerTypeString.cs" />
     <Compile Include="Computer\ComputerTypeVoid.cs" />
+    <Compile Include="Computer\IComputerType.cs" />
     <Compile Include="Exceptions\SettingReadOnlyPropertyException.cs" />
     <Compile Include="Exceptions\ComputerSyntaxException.cs" />
     <Compile Include="Robotics\IProgrammableProperty.cs" />

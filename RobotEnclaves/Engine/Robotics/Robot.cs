@@ -28,12 +28,21 @@ namespace Engine.Robotics
 
         public string Name { get; private set; }
         public Vector2 Position { get; set; }
+        public float Mass {
+            get
+            {
+                return BaseMass + CargoBay.TotalMass;
+            }
+        }
         public UnitVector2 Direction { get; set; }
         public World World { get; private set; }
+        public float BaseMass { get; set; }
 
         public Robot(string name)
         {
             Position = Vector2.Zero;
+            BaseMass = 100.0f;
+
             Direction = UnitVector2.GetInstance(1f, 0f);
             Name = name;
             MemoryBank = new MemoryBank(200);
@@ -47,7 +56,7 @@ namespace Engine.Robotics
             this.World = world;
         }
 
-        public ComputerType ExecuteStatement(string statement)
+        public IComputerType ExecuteStatement(string statement)
         {
             var tokens = statement.Split(new[] { '.' }, 2);
             if (tokens.Length > 1)

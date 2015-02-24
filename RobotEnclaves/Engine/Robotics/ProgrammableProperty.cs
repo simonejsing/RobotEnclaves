@@ -34,12 +34,12 @@ namespace Engine.Robotics
             }
         }
 
-        public ComputerType Get()
+        public IComputerType Get()
         {
             return Getter();
         }
 
-        public void Set(ComputerType value)
+        public void Set(IComputerType value)
         {
             Setter(value as T);
         }

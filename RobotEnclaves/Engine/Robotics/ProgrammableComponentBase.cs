@@ -20,7 +20,7 @@ namespace Engine.Robotics
             properties.Add(property);
         }
 
-        public ComputerType EvaluatePropertyInstruction(string instruction)
+        public IComputerType EvaluatePropertyInstruction(string instruction)
         {
             var propertyTokens = instruction.Split(new char[] { '=' }, 2);
             var property = this.FindProperty(propertyTokens[0].Trim());
@@ -62,7 +62,7 @@ namespace Engine.Robotics
             return property;
         }
 
-        public ComputerType EvaluateMethodInvocation(string instruction)
+        public IComputerType EvaluateMethodInvocation(string instruction)
         {
             var methodTokens = instruction.Split(new char[] { '(' }, 2);
             if (methodTokens.Length > 1)

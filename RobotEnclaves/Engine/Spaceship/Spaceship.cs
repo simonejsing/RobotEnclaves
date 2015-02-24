@@ -11,6 +11,12 @@ namespace Engine.Spaceship
     public class Spaceship : IObject
     {
         public Vector2 Position { get; set; }
+        public float Mass {
+            get
+            {
+                return 10000.0f;
+            }
+        }
 
         public bool Crashed
         {
