@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Engine.UnitTests
 {
+    using Engine.Computer;
     using Engine.Spaceship;
     using FluentAssertions;
 

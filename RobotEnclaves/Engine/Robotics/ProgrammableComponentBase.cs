@@ -6,97 +6,102 @@ using System.Threading.Tasks;
 
 namespace Engine.Robotics
 {
+    using Engine.Computer;
     using Engine.Exceptions;
 
     public abstract class ProgrammableComponentBase : IProgrammableComponent
     {
         public abstract string Name { get; }
 
-        private readonly Dictionary<string,float> propertyValues = new Dictionary<string, float>();
+        private readonly List<IProgrammableProperty> properties = new List<IProgrammableProperty>();
 
-        public float this[string propertyName]
+        public void RegisterProperty(IProgrammableProperty property)
         {
-            get
-            {
-                return GetProperty(propertyName);
-            }
-            set
-            {
-                SetProperty(propertyName, value);
-            }
+            properties.Add(property);
         }
 
-        public object EvaluatePropertyInstruction(string instruction)
+        public ComputerType EvaluatePropertyInstruction(string instruction)
         {
             var propertyTokens = instruction.Split(new char[] { '=' }, 2);
-            if (propertyTokens.Length > 1)
-            {
-                var propertyName = propertyTokens[0].Trim();
-                var propertyValue = float.Parse(propertyTokens[1].Trim());
+            var property = this.FindProperty(propertyTokens[0].Trim());
 
-                this[propertyName] = propertyValue;
+            // Get property
+            if (propertyTokens.Length == 1)
+            {
+                return property.Get();
             }
 
-            return null;
+            // Set property
+            if (propertyTokens.Length > 1)
+            {
+                SetPropertyValue(property, propertyTokens);
+                return new ComputerTypeVoid();
+            }
+
+            throw new InvalidRobotPropertyException();
         }
 
-        public object EvaluateMethodInvocation(string instruction)
+        private static void SetPropertyValue(IProgrammableProperty property, string[] propertyTokens)
+        {
+            if (property.IsReadOnly)
+            {
+                throw new SettingReadOnlyPropertyException(property.Name);
+            }
+
+            property.Set(ComputerType.Parse(propertyTokens[1].Trim()));
+        }
+
+        private IProgrammableProperty FindProperty(string name)
+        {
+            var property = properties.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (property == null)
+            {
+                throw new PropertyDoesNotExistException(name);
+            }
+
+            return property;
+        }
+
+        public ComputerType EvaluateMethodInvocation(string instruction)
         {
             var methodTokens = instruction.Split(new char[] { '(' }, 2);
             if (methodTokens.Length > 1)
             {
                 var methodName = methodTokens[0].Trim();
+                var method = Methods.FirstOrDefault(m => m.Key.Equals(methodName, StringComparison.OrdinalIgnoreCase));
+
                 var arguments = methodTokens[1].Trim();
                 arguments = arguments.Substring(0, arguments.Length - 1);
 
-                var method = Methods.FirstOrDefault(m => m.Key.Equals(methodName, StringComparison.OrdinalIgnoreCase));
-                return method.Value(arguments.Split(','));
+                ComputerType methodArgument;
+                if (string.IsNullOrEmpty(arguments))
+                {
+                    methodArgument = new ComputerTypeVoid();
+                }
+                else
+                {
+                    var argumentList = arguments.Split(',');
+                    if (argumentList.Length == 1)
+                    {
+                        methodArgument = ComputerType.Parse(argumentList[0]);
+                    }
+                    else
+                    {
+                        methodArgument = new ComputerTypeList(argumentList.Select(ComputerType.Parse).ToArray());
+                    }
+                }
+
+                return method.Value(methodArgument);
             }
 
             throw new InvalidRobotMethodException();
         }
 
-        public virtual string[] Properties
+        public virtual KeyValuePair<string, Func<ComputerType, ComputerType>>[] Methods
         {
             get
             {
-                return new string[0];
-            }
-        }
-
-        public virtual KeyValuePair<string, Func<string[], object>>[] Methods
-        {
-            get
-            {
-                return new KeyValuePair<string, Func<string[], object>>[0];
-            }
-        }
-
-        private float GetProperty(string propertyName)
-        {
-            float value;
-            this.AssertPropertyExists(propertyName);
-            return this.propertyValues.TryGetValue(propertyName, out value) ? value : 0.0f;
-        }
-
-        private void SetProperty(string propertyName, float value)
-        {
-            this.AssertPropertyExists(propertyName);
-            if (this.propertyValues.ContainsKey(propertyName))
-            {
-                this.propertyValues[propertyName] = value;
-            }
-            else
-            {
-                this.propertyValues.Add(propertyName, value);
-            }
-        }
-
-        private void AssertPropertyExists(string propertyName)
-        {
-            if (!Properties.Contains(propertyName))
-            {
-                throw new ComponentPropertyDoesNotExistException(propertyName);
+                return new KeyValuePair<string, Func<ComputerType, ComputerType>>[0];
             }
         }
     }

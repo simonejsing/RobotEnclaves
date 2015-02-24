@@ -69,6 +69,8 @@
     <Compile Include="CollectableItemTests.cs" />
     <Compile Include="GameEngineTests.cs" />
     <Compile Include="TimerTests.cs" />
+    <Compile Include="ComputerTests.cs" />
+    <Compile Include="ProgrammableComponentTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

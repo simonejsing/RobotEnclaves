@@ -6,10 +6,24 @@ using System.Threading.Tasks;
 
 namespace Engine.Robotics
 {
+    using Engine.Computer;
+    using Engine.Exceptions;
+
     public class ProgrammableEngine : ProgrammableComponentBase
     {
         const float MaxSpeed = 80.0f / 3.6f;
-        const string ThrottlePropertyName = "throttle";
+
+        public ProgrammableEngine()
+        {
+            var throttleProperty = new ProgrammableProperty<ComputerTypeFloat>(
+                "throttle",
+                () => new ComputerTypeFloat(this.Throttle),
+                ct => { this.Throttle = ct.Value; }); 
+
+            this.RegisterProperty(throttleProperty);
+
+            Throttle = 0f;
+        }
 
         public float Speed
         {
@@ -19,15 +33,21 @@ namespace Engine.Robotics
             }
         }
 
+        private float throttle;
         public float Throttle
         {
             get
             {
-                return this[ThrottlePropertyName];
+                return throttle;
             }
             set
             {
-                this[ThrottlePropertyName] = value;
+                if (value > 1.0f)
+                {
+                    throw new RobotException(string.Format("Throttle level cannot exceed 1.0, attempt to set to {0}", value));
+                }
+
+                throttle = value;
             }
         }
 
@@ -36,22 +56,6 @@ namespace Engine.Robotics
             get
             {
                 return "engine";
-            }
-        }
-
-        public override string[] Properties
-        {
-            get
-            {
-                return new[] { ThrottlePropertyName };
-            }
-        }
-
-        public override KeyValuePair<string, Func<string[], object>>[] Methods
-        {
-            get
-            {
-                return new KeyValuePair<string, Func<string[], object>>[0];
             }
         }
     }

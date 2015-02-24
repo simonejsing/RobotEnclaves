@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 
 namespace Engine.Robotics
 {
+    using Engine.Computer;
+
     public interface IProgrammableComponent
     {
         string Name { get; }
-        string[] Properties { get; }
-        KeyValuePair<string, Func<string[], object>>[] Methods { get; }
+        KeyValuePair<string, Func<ComputerType, ComputerType>>[] Methods { get; }
 
-        float this[string propertyName] { get; set; }
-
-        object EvaluatePropertyInstruction(string instruction);
-        object EvaluateMethodInvocation(string instruction);
+        ComputerType EvaluatePropertyInstruction(string instruction);
+        ComputerType EvaluateMethodInvocation(string instruction);
     }
 }

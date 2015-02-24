@@ -67,7 +67,8 @@ Systems online";
                     return noSuchRobotResult;
                 }
 
-                robot.ExecuteStatement(instruction);
+                var robotResult = robot.ExecuteStatement(instruction);
+                result.AddMessages(robotResult.ToString());
             }
 
             return result;

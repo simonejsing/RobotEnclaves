@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Engine.Exceptions
 {
-    public class ComponentPropertyDoesNotExistException : RobotException
+    class ComputerSyntaxException : RobotException
     {
-        public ComponentPropertyDoesNotExistException()
+        public ComputerSyntaxException()
         {
         }
 
-        public ComponentPropertyDoesNotExistException(string message)
+        public ComputerSyntaxException(string message)
             : base(message)
         {
         }

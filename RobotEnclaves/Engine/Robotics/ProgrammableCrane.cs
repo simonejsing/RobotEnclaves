@@ -6,32 +6,29 @@ using System.Threading.Tasks;
 
 namespace Engine.Robotics
 {
+    using Engine.Computer;
     using Engine.Exceptions;
     using Engine.Items;
 
     public class ProgrammableCrane : ProgrammableComponentBase
     {
-        const string RangePropertyName = "range";
-
         private readonly Robot robot;
 
         public ProgrammableCrane(Robot robot, float range)
         {
+            var rangeProperty = new ProgrammableProperty<ComputerTypeFloat>(
+                "range",
+                () => new ComputerTypeFloat(this.Range),
+                ct => { this.Range = ct.Value; },
+                ProgrammablePropertyType.ReadOnly);
+
+            this.RegisterProperty(rangeProperty);
+
             this.robot = robot;
             this.Range = range;
         }
 
-        public float Range
-        {
-            get
-            {
-                return this[RangePropertyName];
-            }
-            private set
-            {
-                this[RangePropertyName] = value;
-            }
-        }
+        public float Range { get; private set; }
 
         public override string Name
         {
@@ -41,35 +38,24 @@ namespace Engine.Robotics
             }
         }
 
-        public override string[] Properties
-        {
-            get
-            {
-                return new[] { RangePropertyName };
-            }
-        }
-
-        public override KeyValuePair<string, Func<string[], object>>[] Methods
+        public override KeyValuePair<string, Func<ComputerType, ComputerType>>[] Methods
         {
             get
             {
                 return new[]
                        {
-                           new KeyValuePair<string, Func<string[], object>>("pickup", this.PickUpNamedItem),
+                           new KeyValuePair<string, Func<ComputerType, ComputerType>>("pickup", this.PickUpNamedItem),
                        };
             }
         }
 
-        private object PickUpNamedItem(string[] arguments)
+        private ComputerType PickUpNamedItem(ComputerType arguments)
         {
-            var itemName = arguments[0].Substring(1, arguments[0].Length - 2);
-
-            var item = robot.World.FindItemByName(itemName);
-            this.PickUpItem(item);
-            return null;
+            var item = this.robot.World.FindItemByName(arguments.ToString());
+            return new ComputerTypeBoolean(this.PickUpItem(item));
         }
 
-        public float PickUpItem(CollectableItem item)
+        public bool PickUpItem(CollectableItem item)
         {
             if(item.Collected)
                 throw new RobotException("Attempt to pick up an item that is already owned by a robot.");
@@ -78,9 +64,11 @@ namespace Engine.Robotics
             {
                 item.SetPickedUp(robot);
                 robot.CargoBay.LoadItem(item);
+
+                return true;
             }
 
-            return 0;
+            return false;
         }
 
         public bool ItemInRange(CollectableItem item)

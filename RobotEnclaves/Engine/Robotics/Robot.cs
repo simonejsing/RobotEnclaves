@@ -39,7 +39,7 @@ namespace Engine.Robotics
             MemoryBank = new MemoryBank(200);
             Engine = new ProgrammableEngine();
             Crane = new ProgrammableCrane(this, 40f);
-            CargoBay = new ProgrammableCargoBay();
+            CargoBay = new ProgrammableCargoBay(100.0f);
         }
 
         public void SetCurrentWorld(World world)
@@ -47,7 +47,7 @@ namespace Engine.Robotics
             this.World = world;
         }
 
-        public void ExecuteStatement(string statement)
+        public ComputerType ExecuteStatement(string statement)
         {
             var tokens = statement.Split(new[] { '.' }, 2);
             if (tokens.Length > 1)
@@ -59,13 +59,13 @@ namespace Engine.Robotics
 
                 if (instruction.EndsWith(")"))
                 {
-                    component.EvaluateMethodInvocation(instruction);
+                    return component.EvaluateMethodInvocation(instruction);
                 }
-                else
-                {
-                    component.EvaluatePropertyInstruction(instruction);
-                }
+
+                return component.EvaluatePropertyInstruction(instruction);
             }
+
+            return new ComputerTypeVoid();
         }
 
         public void ExecuteNextProgramStatement()

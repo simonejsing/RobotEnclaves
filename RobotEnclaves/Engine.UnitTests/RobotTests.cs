@@ -66,8 +66,19 @@ namespace Engine.UnitTests
             var robot = new Robot("AZ15") {Position = Vector2.Zero};
             var item = new CollectableItem("cpu", "CPU") {Position = Vector2.Zero + smallDistance};
 
-            robot.Crane.PickUpItem(item);
+            robot.Crane.PickUpItem(item).Should().BeTrue();
             item.Collected.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void RobotWithCraneCannotePickupItemsOutOfRange()
+        {
+            var smallDistance = new Vector2(1, 1);
+            var robot = new Robot("AZ15") { Position = Vector2.Zero };
+            var item = new CollectableItem("cpu", "CPU") { Position = robot.Position + new Vector2(robot.Crane.Range, 0) + smallDistance };
+
+            robot.Crane.PickUpItem(item).Should().BeFalse();
+            item.Collected.Should().BeFalse();
         }
 
         [TestMethod]
@@ -82,14 +93,31 @@ namespace Engine.UnitTests
         }
 
         [TestMethod]
-        public void APickedUpItemGetsTheLocationOfTheRobot()
+        public void APickedUpItemHasTheLocationOfTheRobot()
         {
             var smallDistance = new Vector2(1, 1);
             var robot = new Robot("AZ15") { Position = Vector2.Zero };
             var item = new CollectableItem("cpu", "CPU") { Position = Vector2.Zero + smallDistance };
 
             robot.Crane.PickUpItem(item);
+
+            robot.Position = new Vector2(12, 34);
+
             item.Position.Should().Be(robot.Position);
+        }
+
+        [TestMethod]
+        public void AiCoreCanInspectRobotsCargoBay()
+        {
+            var ai = new Ai();
+            var robot = new Robot("AZ15");
+            var item = new CollectableItem("cpu", "CPU 1 Ghz");
+            robot.CargoBay.LoadItem(item);
+            ai.AddRobot(robot);
+
+            var result = ai.InterpretCommand("AZ15.cargobay.items()");
+
+            result.Messages.Should().Contain("cpu");
         }
     }
 }

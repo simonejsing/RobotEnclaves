@@ -54,9 +54,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AverageTimeCounter.cs" />
+    <Compile Include="Computer\ComputerType.cs" />
+    <Compile Include="Computer\ComputerTypeBoolean.cs" />
+    <Compile Include="Computer\ComputerTypeList.cs" />
+    <Compile Include="Computer\ComputerTypeFloat.cs" />
+    <Compile Include="Computer\ComputerTypeString.cs" />
+    <Compile Include="Computer\ComputerTypeVoid.cs" />
+    <Compile Include="Exceptions\SettingReadOnlyPropertyException.cs" />
+    <Compile Include="Exceptions\ComputerSyntaxException.cs" />
+    <Compile Include="Robotics\IProgrammableProperty.cs" />
     <Compile Include="Robotics\ProgrammableCargoBay.cs" />
+    <Compile Include="Robotics\ProgrammableProperty.cs" />
     <Compile Include="TimeCounter.cs" />
-    <Compile Include="Exceptions\ComponentPropertyDoesNotExistException.cs" />
+    <Compile Include="Exceptions\PropertyDoesNotExistException.cs" />
     <Compile Include="Exceptions\InvalidRobotMethodException.cs" />
     <Compile Include="Exceptions\InvalidRobotPropertyException.cs" />
     <Compile Include="Exceptions\RobotException.cs" />

@@ -6,11 +6,24 @@ using System.Threading.Tasks;
 
 namespace Engine.Robotics
 {
+    using Engine.Computer;
     using Engine.Items;
 
     public class ProgrammableCargoBay : ProgrammableComponentBase
     {
         private readonly List<CollectableItem> items = new List<CollectableItem>();
+
+        public ProgrammableCargoBay(float capacity)
+        {
+            var capacityProperty = new ProgrammableProperty<ComputerTypeFloat>(
+                "capacity",
+                () => new ComputerTypeFloat(this.Capacity),
+                ct => this.Capacity = ct.Value);
+
+            this.RegisterProperty(capacityProperty);
+
+            Capacity = capacity;
+        }
 
         public override string Name
         {
@@ -20,6 +33,8 @@ namespace Engine.Robotics
             }
         }
 
+        public float Capacity { get; private set; }
+
         public IEnumerable<CollectableItem> Items
         {
             get
@@ -28,15 +43,21 @@ namespace Engine.Robotics
             }
         }
 
-        public override KeyValuePair<string, Func<string[], object>>[] Methods
+        public override KeyValuePair<string, Func<ComputerType, ComputerType>>[] Methods
         {
             get
             {
                 return new[]
                        {
-                           new KeyValuePair<string, Func<string[], object>>("items", (args) => Items.Select(i => i.Name))
+                           new KeyValuePair<string, Func<ComputerType, ComputerType>>("items", (args) => this.ListItems())
                        };
             }
+        }
+
+        private ComputerType ListItems()
+        {
+            var itemList = this.Items.Select(i => new ComputerTypeString(i.Name)).ToArray();
+            return new ComputerTypeList(itemList);
         }
 
         public void LoadItem(CollectableItem item)
