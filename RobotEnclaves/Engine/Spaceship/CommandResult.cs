@@ -25,6 +25,12 @@ namespace Engine.Spaceship
             this.Success = success;
         }
 
+        public CommandResult(bool success, params string[] messages)
+        {
+            this.Success = success;
+            this.AddMessages(messages);
+        }
+
         public void AddMessages(IEnumerable<string> lines)
         {
             messages.AddRange(lines);

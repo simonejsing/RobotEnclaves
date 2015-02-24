@@ -11,9 +11,7 @@ namespace Engine.Robotics
     public interface IProgrammableComponent
     {
         string Name { get; }
-        KeyValuePair<string, Func<ComputerType, ComputerType>>[] Methods { get; }
 
-        IComputerType EvaluatePropertyInstruction(string instruction);
-        IComputerType EvaluateMethodInvocation(string instruction);
+        IComputerType EvaluateInstruction(string instruction);
     }
 }

@@ -18,11 +18,10 @@ namespace Engine.Robotics
         {
             var rangeProperty = new ProgrammableProperty<ComputerTypeFloat>(
                 "range",
-                () => new ComputerTypeFloat(this.Range),
-                ct => { this.Range = ct.Value; },
-                ProgrammablePropertyType.ReadOnly);
+                () => new ComputerTypeFloat(this.Range));
 
             this.RegisterProperty(rangeProperty);
+            this.RegisterMethod(new ProgrammableMethod("pickup", this.PickUpNamedItem));
 
             this.robot = robot;
             this.Range = range;
@@ -36,20 +35,12 @@ namespace Engine.Robotics
             {
                 return "crane";
             }
-        }
-
-        public override KeyValuePair<string, Func<ComputerType, ComputerType>>[] Methods
-        {
-            get
+            protected set
             {
-                return new[]
-                       {
-                           new KeyValuePair<string, Func<ComputerType, ComputerType>>("pickup", this.PickUpNamedItem),
-                       };
             }
         }
 
-        private ComputerType PickUpNamedItem(ComputerType arguments)
+        private ComputerType PickUpNamedItem(IComputerType arguments)
         {
             var item = this.robot.World.FindItemByName(arguments.ToString());
             return new ComputerTypeBoolean(this.PickUpItem(item));

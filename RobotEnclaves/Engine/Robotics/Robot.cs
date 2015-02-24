@@ -8,15 +8,16 @@ namespace Engine.Robotics
 {
     using Engine.Computer;
     using VectorMath;
+    using ExtensionMethods;
 
-    public class Robot : IComputer, IObject
+    public class Robot : ProgrammableComponentBase, IComputer, IObject
     {
         public IMemoryBank MemoryBank { get; private set; }
         public IProgram CurrentProgram { get; set; }
         public ProgrammableEngine Engine { get; private set; }
         public ProgrammableCrane Crane { get; private set; }
         public ProgrammableCargoBay CargoBay { get; set; }
-        public IEnumerable<IProgrammableComponent> Components
+        public virtual IEnumerable<IProgrammableComponent> Components
         {
             get
             {
@@ -26,7 +27,12 @@ namespace Engine.Robotics
             }
         }
 
-        public string Name { get; private set; }
+        private ComputerType ListComponents()
+        {
+            return new ComputerTypeList(Components.Select(c => new ComputerTypeString(c.Name)));
+        }
+
+        public override string Name { get; protected set; }
         public Vector2 Position { get; set; }
         public float Mass {
             get
@@ -40,6 +46,12 @@ namespace Engine.Robotics
 
         public Robot(string name)
         {
+            var massProperty = new ProgrammableProperty<ComputerTypeFloat>(
+                "mass",
+                () => new ComputerTypeFloat(this.Mass));
+            this.RegisterProperty(massProperty);
+
+            this.RegisterMethod(new ProgrammableMethod("components", ct => this.ListComponents()));
             Position = Vector2.Zero;
             BaseMass = 100.0f;
 
@@ -56,25 +68,24 @@ namespace Engine.Robotics
             this.World = world;
         }
 
-        public IComputerType ExecuteStatement(string statement)
+        public override IComputerType EvaluateInstruction(string instruction)
         {
-            var tokens = statement.Split(new[] { '.' }, 2);
-            if (tokens.Length > 1)
+            var tokens = instruction.Split(new[] { '.' }, 2);
+            var componentName = tokens[0];
+            if (tokens.Length > 1 && ComponentExists(componentName))
             {
-                var componentName = tokens[0];
-                var instruction = tokens[1].Trim();
-
+                var componentInstruction = tokens[1].Trim();
                 var component = Components.First(c => c.Name.Equals(componentName));
 
-                if (instruction.EndsWith(")"))
-                {
-                    return component.EvaluateMethodInvocation(instruction);
-                }
-
-                return component.EvaluatePropertyInstruction(instruction);
+                return component.EvaluateInstruction(componentInstruction);
             }
 
-            return new ComputerTypeVoid();
+            return base.EvaluateInstruction(instruction);
+        }
+
+        private bool ComponentExists(string name)
+        {
+            return Components.Any(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         public void ExecuteNextProgramStatement()

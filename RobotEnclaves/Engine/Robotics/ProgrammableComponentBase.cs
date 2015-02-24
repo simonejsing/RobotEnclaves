@@ -11,19 +11,62 @@ namespace Engine.Robotics
 
     public abstract class ProgrammableComponentBase : IProgrammableComponent
     {
-        public abstract string Name { get; }
+        public abstract string Name { get; protected set; }
 
         private readonly List<IProgrammableProperty> properties = new List<IProgrammableProperty>();
+        private readonly List<IProgrammableMethod> methods = new List<IProgrammableMethod>();
 
-        public void RegisterProperty(IProgrammableProperty property)
+        public IEnumerable<IProgrammableProperty> Properties
+        {
+            get
+            {
+                return properties;
+            }
+        }
+
+        public IEnumerable<IProgrammableMethod> Methods
+        {
+            get
+            {
+                return methods;
+            }
+        }
+
+        protected ProgrammableComponentBase()
+        {
+            this.RegisterMethod(new ProgrammableMethod("properties", ct => ListProperties()));
+        }
+
+        private IComputerType ListProperties()
+        {
+            return new ComputerTypeList(Properties.Select(p => new ComputerTypeString(p.Name)));
+        }
+
+        protected void RegisterProperty(IProgrammableProperty property)
         {
             properties.Add(property);
         }
 
-        public IComputerType EvaluatePropertyInstruction(string instruction)
+        protected void RegisterMethod(IProgrammableMethod method)
+        {
+            methods.Add(method);
+        }
+
+        public virtual IComputerType EvaluateInstruction(string instruction)
+        {
+            if (instruction.EndsWith(")"))
+            {
+                return EvaluateMethodInvocation(instruction);
+            }
+
+            return EvaluatePropertyInstruction(instruction);
+        }
+
+        protected IComputerType EvaluatePropertyInstruction(string instruction)
         {
             var propertyTokens = instruction.Split(new char[] { '=' }, 2);
-            var property = this.FindProperty(propertyTokens[0].Trim());
+            var propertyName = propertyTokens[0].Trim();
+            var property = this.FindProperty(propertyName);
 
             // Get property
             if (propertyTokens.Length == 1)
@@ -32,13 +75,8 @@ namespace Engine.Robotics
             }
 
             // Set property
-            if (propertyTokens.Length > 1)
-            {
-                SetPropertyValue(property, propertyTokens);
-                return new ComputerTypeVoid();
-            }
-
-            throw new InvalidRobotPropertyException();
+            SetPropertyValue(property, propertyTokens);
+            return new ComputerTypeVoid();
         }
 
         private static void SetPropertyValue(IProgrammableProperty property, string[] propertyTokens)
@@ -56,19 +94,24 @@ namespace Engine.Robotics
             var property = properties.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (property == null)
             {
-                throw new PropertyDoesNotExistException(name);
+                throw new InvalidRobotPropertyException(name);
             }
 
             return property;
         }
 
-        public IComputerType EvaluateMethodInvocation(string instruction)
+        protected IComputerType EvaluateMethodInvocation(string instruction)
         {
             var methodTokens = instruction.Split(new char[] { '(' }, 2);
             if (methodTokens.Length > 1)
             {
                 var methodName = methodTokens[0].Trim();
-                var method = Methods.FirstOrDefault(m => m.Key.Equals(methodName, StringComparison.OrdinalIgnoreCase));
+                var method = methods.FirstOrDefault(m => m.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase));
+
+                if (method == null)
+                {
+                    throw new InvalidRobotMethodException(methodName);
+                }
 
                 var arguments = methodTokens[1].Trim();
                 arguments = arguments.Substring(0, arguments.Length - 1);
@@ -87,22 +130,15 @@ namespace Engine.Robotics
                     }
                     else
                     {
-                        methodArgument = new ComputerTypeList(argumentList.Select(ComputerType.Parse).ToArray());
+                        methodArgument = new ComputerTypeList(argumentList.Select(ComputerType.Parse));
                     }
                 }
 
-                return method.Value(methodArgument);
+                return method.Invoke(methodArgument);
             }
 
             throw new InvalidRobotMethodException();
         }
 
-        public virtual KeyValuePair<string, Func<ComputerType, ComputerType>>[] Methods
-        {
-            get
-            {
-                return new KeyValuePair<string, Func<ComputerType, ComputerType>>[0];
-            }
-        }
     }
 }

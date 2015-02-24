@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExtensionMethods;
 
 namespace UserInput
 {
@@ -26,9 +27,7 @@ namespace UserInput
                     return false;
 
                 return
-                    (this.Literal >= 'A' && this.Literal <= 'Z') ||
-                    (this.Literal >= 'a' && this.Literal <= 'z') ||
-                    (this.Literal >= '0' && this.Literal <= '9') ||
+                    this.Literal.Value.IsAlphaNumeric() ||
                     validSigns.Contains(this.Literal.Value);
             }
         }

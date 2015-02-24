@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace Engine.Spaceship
 {
     using Common;
+    using Engine.Computer;
+    using Engine.Exceptions;
     using Engine.Robotics;
     using UserInput;
 
@@ -51,6 +53,7 @@ Systems online";
             if (command.Equals("robots()", StringComparison.OrdinalIgnoreCase))
             {
                 result.AddMessages(this.OwnedRobots.Select(r => r.Name));
+                return result;
             }
 
             var tokens = command.Split(new[] {'.'}, 2);
@@ -67,8 +70,21 @@ Systems online";
                     return noSuchRobotResult;
                 }
 
-                var robotResult = robot.ExecuteStatement(instruction);
-                result.AddMessages(robotResult.ToString());
+                try
+                {
+                    var robotResult = robot.EvaluateInstruction(instruction);
+                    if (!(robotResult is ComputerTypeVoid))
+                    {
+                        result.AddMessages(
+                            robotResult.ToString().Split(
+                                new[] {Environment.NewLine},
+                                StringSplitOptions.RemoveEmptyEntries));
+                    }
+                }
+                catch (RobotException rex)
+                {
+                    return new CommandResult(false, rex.Message);
+                }
             }
 
             return result;

@@ -18,9 +18,13 @@ namespace Engine.Robotics
             var throttleProperty = new ProgrammableProperty<ComputerTypeFloat>(
                 "throttle",
                 () => new ComputerTypeFloat(this.Throttle),
-                ct => { this.Throttle = ct.Value; }); 
+                ct => { this.Throttle = ct.Value; });
+            var speedProperty = new ProgrammableProperty<ComputerTypeFloat>(
+                "speed",
+                () => new ComputerTypeFloat(this.Speed));
 
             this.RegisterProperty(throttleProperty);
+            this.RegisterProperty(speedProperty);
 
             Throttle = 0f;
         }
@@ -56,6 +60,9 @@ namespace Engine.Robotics
             get
             {
                 return "engine";
+            }
+            protected set
+            {
             }
         }
     }

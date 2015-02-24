@@ -22,6 +22,7 @@ namespace Engine.Robotics
                 ct => this.Capacity = ct.Value);
 
             this.RegisterProperty(capacityProperty);
+            this.RegisterMethod(new ProgrammableMethod("items", ct => this.ListItems()));
 
             Capacity = capacity;
         }
@@ -31,6 +32,9 @@ namespace Engine.Robotics
             get
             {
                 return "cargobay";
+            }
+            protected set
+            {
             }
         }
 
@@ -44,17 +48,6 @@ namespace Engine.Robotics
             }
         }
 
-        public override KeyValuePair<string, Func<ComputerType, ComputerType>>[] Methods
-        {
-            get
-            {
-                return new[]
-                       {
-                           new KeyValuePair<string, Func<ComputerType, ComputerType>>("items", (args) => this.ListItems())
-                       };
-            }
-        }
-
         public float TotalMass {
             get
             {
@@ -64,7 +57,7 @@ namespace Engine.Robotics
 
         private ComputerType ListItems()
         {
-            var itemList = this.Items.Select(i => new ComputerTypeString(i.Name)).ToArray();
+            var itemList = this.Items.Select(i => new ComputerTypeString(i.Name));
             return new ComputerTypeList(itemList);
         }
 

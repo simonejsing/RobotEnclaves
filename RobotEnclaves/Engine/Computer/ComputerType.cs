@@ -31,7 +31,7 @@ namespace Engine.Computer
                 }
                 else
                 {
-                    methodArgument = new ComputerTypeList(argumentList.Select(ComputerType.ParseSingleComputerType).ToArray());
+                    methodArgument = new ComputerTypeList(argumentList.Select(ComputerType.ParseSingleComputerType));
                 }
             }
 

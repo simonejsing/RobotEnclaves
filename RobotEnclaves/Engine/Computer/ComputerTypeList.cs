@@ -16,6 +16,12 @@ namespace Engine.Computer
             this.Value.AddRange(values);
         }
 
+        public ComputerTypeList(IEnumerable<ComputerType> values)
+        {
+            this.Value = new List<ComputerType>();
+            this.Value.AddRange(values.ToArray());
+        }
+
         public override string TypeName
         {
             get

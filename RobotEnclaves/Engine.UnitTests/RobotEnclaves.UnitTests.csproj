@@ -67,6 +67,8 @@
     <Compile Include="AiTests.cs" />
     <Compile Include="CollectableItemTests.cs" />
     <Compile Include="GameEngineTests.cs" />
+    <Compile Include="Stubs\TestableProgrammableComponent.cs" />
+    <Compile Include="Stubs\TestableRobot.cs" />
     <Compile Include="TimerTests.cs" />
     <Compile Include="ComputerTests.cs" />
     <Compile Include="ProgrammableComponentTests.cs" />

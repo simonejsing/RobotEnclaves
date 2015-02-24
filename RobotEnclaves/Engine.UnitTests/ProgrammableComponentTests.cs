@@ -17,7 +17,7 @@ namespace Engine.UnitTests
             const float range = 15.0f;
             var crane = new ProgrammableCrane(new Robot("AZ15"), range);
 
-            (crane.EvaluatePropertyInstruction("range") as ComputerTypeFloat).Value.Should().Be(range);
+            (crane.EvaluateInstruction("range") as ComputerTypeFloat).Value.Should().Be(range);
         }
 
         [TestMethod]
@@ -26,8 +26,8 @@ namespace Engine.UnitTests
             const float throttleValue = 0.8f;
             var engine = new ProgrammableEngine();
 
-            engine.EvaluatePropertyInstruction(string.Format("throttle = {0}", throttleValue));
-            (engine.EvaluatePropertyInstruction("throttle") as ComputerTypeFloat).Value.Should().Be(throttleValue);
+            engine.EvaluateInstruction(string.Format("throttle = {0}", throttleValue));
+            (engine.EvaluateInstruction("throttle") as ComputerTypeFloat).Value.Should().Be(throttleValue);
         }
 
         [TestMethod]
@@ -40,7 +40,7 @@ namespace Engine.UnitTests
 
             Action action = () =>
                             {
-                                engine.EvaluatePropertyInstruction(instruction);
+                                engine.EvaluateInstruction(instruction);
                             };
             action.ShouldThrow<RobotException>();
         }
@@ -51,7 +51,7 @@ namespace Engine.UnitTests
             const float range = 15.0f;
             var crane = new ProgrammableCrane(new Robot("AZ15"), range);
 
-            Action action = () => crane.EvaluatePropertyInstruction("range = 1.0");
+            Action action = () => crane.EvaluateInstruction("range = 1.0");
             action.ShouldThrow<SettingReadOnlyPropertyException>();
         }
     }

@@ -12,6 +12,7 @@ namespace Engine.UnitTests
     using Moq;
     using UserInput;
     using VectorMath;
+    using Engine.UnitTests.Stubs;
 
     [TestClass]
     public class RobotTests
@@ -126,7 +127,6 @@ namespace Engine.UnitTests
         [TestMethod]
         public void PickingUpAnItemThatWouldExceedTheRobotsCapacityThrowsException()
         {
-            const float robotBaseMass = 100.0f;
             const float itemBaseMass = 20.0f;
 
             var robot = new Robot("AZ15");
@@ -139,6 +139,57 @@ namespace Engine.UnitTests
 
             Action action = () => robot.CargoBay.LoadItem(item2);
             action.ShouldThrow<RobotException>();
+        }
+
+        [TestMethod]
+        public void RobotMassCanBeInspected()
+        {
+            var robot = new Robot("AZ15");
+            (robot.EvaluateInstruction("mass") as ComputerTypeFloat).Value.Should().Be(robot.Mass);
+        }
+
+        [TestMethod]
+        public void EngineSpeedCanBeInspected()
+        {
+            var engine = new ProgrammableEngine();
+            engine.Throttle = 1.0f;
+            (engine.EvaluateInstruction("speed") as ComputerTypeFloat).Value.Should().BeGreaterThan(0.0f);
+        }
+
+        [TestMethod]
+        public void RobotComponentPropertyValueCanBeSetToDecimalValue()
+        {
+            const string propertyName = "p";
+            float value = 0f;
+
+            var robot = new TestableRobot("AZ15");
+            var component = new TestableProgrammableComponent();
+            component.AddProperty(
+                new ProgrammableProperty<ComputerTypeFloat>(
+                    propertyName,
+                    () => { return new ComputerTypeFloat(0f); },
+                    ct => { value = ct.Value; }));
+
+            robot.AddComponent(component);
+            robot.EvaluateInstruction(string.Format("{0}.{1} = 1.5", component.Name, propertyName));
+            value.Should().Be(1.5f);
+        }
+
+        [TestMethod]
+        public void RobotPropertyValueCanBeSetToDecimalValue()
+        {
+            const string propertyName = "p";
+            float value = 0f;
+
+            var robot = new TestableRobot("AZ15");
+            robot.AddProperty(
+                new ProgrammableProperty<ComputerTypeFloat>(
+                    propertyName,
+                    () => { return new ComputerTypeFloat(0f); },
+                    ct => { value = ct.Value; }));
+
+            robot.EvaluateInstruction(string.Format("{0} = 1.5", propertyName));
+            value.Should().Be(1.5f);
         }
     }
 }

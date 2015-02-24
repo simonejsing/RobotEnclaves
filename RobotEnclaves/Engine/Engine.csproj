@@ -39,6 +39,10 @@
       <Project>{70C59C48-432D-410A-9298-BB42AEFCDE65}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExtensionMethods\ExtensionMethods.csproj">
+      <Project>{10151759-4783-4ab1-af24-9303ead0d69f}</Project>
+      <Name>ExtensionMethods</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserInput\UserInput.csproj">
       <Project>{E760BBD1-FBF1-40C1-A604-ABF79FFFF7DE}</Project>
       <Name>UserInput</Name>
@@ -63,11 +67,12 @@
     <Compile Include="Computer\IComputerType.cs" />
     <Compile Include="Exceptions\SettingReadOnlyPropertyException.cs" />
     <Compile Include="Exceptions\ComputerSyntaxException.cs" />
+    <Compile Include="Robotics\IProgrammableMethod.cs" />
     <Compile Include="Robotics\IProgrammableProperty.cs" />
     <Compile Include="Robotics\ProgrammableCargoBay.cs" />
+    <Compile Include="Robotics\ProgrammableMethod.cs" />
     <Compile Include="Robotics\ProgrammableProperty.cs" />
     <Compile Include="TimeCounter.cs" />
-    <Compile Include="Exceptions\PropertyDoesNotExistException.cs" />
     <Compile Include="Exceptions\InvalidRobotMethodException.cs" />
     <Compile Include="Exceptions\InvalidRobotPropertyException.cs" />
     <Compile Include="Exceptions\RobotException.cs" />

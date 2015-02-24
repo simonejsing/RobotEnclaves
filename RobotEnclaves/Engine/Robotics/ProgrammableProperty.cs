@@ -7,21 +7,23 @@ using System.Threading.Tasks;
 namespace Engine.Robotics
 {
     using Engine.Computer;
-
-    public enum ProgrammablePropertyType { ReadWrite, ReadOnly }
+    using Engine.Exceptions;
 
     public class ProgrammableProperty<T> : IProgrammableProperty where T : ComputerType
     {
-        private readonly ProgrammablePropertyType Type;
         private readonly Func<T> Getter;
         private readonly Action<T> Setter;
 
-        public ProgrammableProperty(string name, Func<T> getter, Action<T> setter, ProgrammablePropertyType type = ProgrammablePropertyType.ReadWrite)
+        public ProgrammableProperty(string name, Func<T> getter, Action<T> setter = null)
         {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (getter == null)
+                throw new ArgumentNullException("getter");
+
             this.Name = name;
             this.Getter = getter;
             this.Setter = setter;
-            this.Type = type;
         }
 
         public string Name { get; private set; }
@@ -30,7 +32,7 @@ namespace Engine.Robotics
         {
             get
             {
-                return Type == ProgrammablePropertyType.ReadOnly;
+                return Setter == null;
             }
         }
 
@@ -41,6 +43,10 @@ namespace Engine.Robotics
 
         public void Set(IComputerType value)
         {
+            if (Setter == null)
+            {
+                throw new SettingReadOnlyPropertyException(Name);
+            }
             Setter(value as T);
         }
     }
