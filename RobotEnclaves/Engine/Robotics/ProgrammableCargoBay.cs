@@ -18,10 +18,13 @@ namespace Engine.Robotics
         {
             var capacityProperty = new ProgrammableProperty<ComputerTypeFloat>(
                 "capacity",
-                () => new ComputerTypeFloat(this.Capacity),
-                ct => this.Capacity = ct.Value);
+                () => new ComputerTypeFloat(this.Capacity));
+            var loadProperty = new ProgrammableProperty<ComputerTypeFloat>(
+                "load",
+                () => new ComputerTypeFloat(this.TotalMass));
 
             this.RegisterProperty(capacityProperty);
+            this.RegisterProperty(loadProperty);
             this.RegisterMethod(new ProgrammableMethod("items", ct => this.ListItems()));
 
             Capacity = capacity;
@@ -48,7 +51,8 @@ namespace Engine.Robotics
             }
         }
 
-        public float TotalMass {
+        public float TotalMass 
+        {
             get
             {
                 return items.Sum(i => i.Mass);

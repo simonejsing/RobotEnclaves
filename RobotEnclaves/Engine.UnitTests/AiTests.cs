@@ -4,12 +4,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Engine.UnitTests
 {
     using System.Linq;
+    using Common;
     using Engine.Computer;
     using Engine.Exceptions;
     using Engine.Items;
     using Engine.Robotics;
     using Engine.Spaceship;
+    using Engine.UnitTests.Stubs;
     using FluentAssertions;
+    using Moq;
+    using UserInput;
+    using VectorMath;
 
     [TestClass]
     public class AiTests

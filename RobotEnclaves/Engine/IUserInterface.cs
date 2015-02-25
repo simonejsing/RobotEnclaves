@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Engine
 {
+    using System.Collections.Generic;
     using Common;
     using VectorMath;
 
@@ -15,7 +16,7 @@ namespace Engine
 
         void Render(IRenderEngine renderEngine);
 
-        void SetConsoleBuffer(TextList buffer);
+        void SetConsole(IGameConsole console);
 
         void SetInputLabel(TextLabel label);
     }

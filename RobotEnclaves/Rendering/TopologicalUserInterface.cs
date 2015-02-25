@@ -62,9 +62,9 @@ namespace Rendering
             }
         }
 
-        public void SetConsoleBuffer(TextList buffer)
+        public void SetConsole(IGameConsole console)
         {
-            Console.SetBuffer(buffer);
+            Console.SetConsole(console);
         }
 
         public void SetInputLabel(TextLabel label)

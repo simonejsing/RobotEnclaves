@@ -8,7 +8,6 @@ namespace Engine.Robotics
 {
     using Engine.Computer;
     using VectorMath;
-    using ExtensionMethods;
 
     public class Robot : ProgrammableComponentBase, IComputer, IObject
     {

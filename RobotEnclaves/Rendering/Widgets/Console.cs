@@ -12,16 +12,16 @@ namespace Rendering.Widgets
 
     public class Console : Widget
     {
-        private TextList ConsoleBuffer = null;
+        private IGameConsole consoleBuffer;
 
         public Console(Vector2 position, Vector2 size)
             : base(position, size)
         {
         }
 
-        public void SetBuffer(TextList buffer)
+        public void SetConsole(IGameConsole console)
         {
-            ConsoleBuffer = buffer;
+            consoleBuffer = console;
         }
 
         public override void Render(IRenderEngine renderEngine)
@@ -32,9 +32,11 @@ namespace Rendering.Widgets
 
             var numberOfLinesOnScreen = (int)Math.Floor(Size.Y/20);
             var offset = 0;
-            foreach (var line in ConsoleBuffer.Lines.AsEnumerable().Reverse().Take(numberOfLinesOnScreen).Reverse())
+            var visibleLines = consoleBuffer.Lines.AsEnumerable().Reverse().Take(numberOfLinesOnScreen).Reverse();
+            foreach (var line in visibleLines)
             {
-                renderEngine.DrawText(new Vector2(0, offset * 20), line, Color.White);
+                var color = line.Value ? Color.White : Color.Red;
+                renderEngine.DrawText(new Vector2(0, offset * 20), line.Key, color);
                 offset++;
             }
 

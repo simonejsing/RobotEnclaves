@@ -47,6 +47,12 @@ namespace VectorMath
             return new UnitVector2(this);
         }
 
+        public new UnitVector2 Rotate(float radians)
+        {
+            // Recreate the unit vector to ensure the vector stays close to unit over multiple rotations
+            return UnitVector2.GetInstance((this as Vector2).Rotate(radians));
+        }
+
         public override bool TooSmall()
         {
             return false;

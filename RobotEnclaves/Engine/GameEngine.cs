@@ -27,7 +27,7 @@ namespace Engine
         private readonly TimeCounter fpsCounter = new FrequencyTimeCounter(50);
         private readonly TimeCounter updateTimer = new AverageTimeCounter(50);
         private readonly TimeCounter renderTimer = new AverageTimeCounter(50);
-        private readonly TextList console = new TextList();
+        private readonly GameConsole console = new GameConsole();
         private readonly TextLabel inputLabel = new TextLabel();
         private readonly TextLabel fpsLabel = new TextLabel();
         private readonly List<string> inputHistory = new List<string>();
@@ -40,14 +40,15 @@ namespace Engine
         {
             this.World = new World();
             this.Ai = new Ai();
-            this.Ai.Boot(this.console);
             this.userInterface = userInterface;
 
-            this.userInterface.SetConsoleBuffer(this.console);
+            this.userInterface.SetConsole(this.console);
             this.userInterface.SetInputLabel(this.inputLabel);
             this.userInterface.UpdateWorld(this.World);
 
             this.userInterface.AddLabel(Vector2.Zero, new Vector2(), fpsLabel);
+
+            console.WriteResult(this.Ai.Boot());
         }
 
         public static GameEngine CreateTutorialWorld(IUserInterface userInterface)
@@ -142,11 +143,11 @@ namespace Engine
 
         private void ExecuteCommand(string command)
         {
-            this.console.Add("> " + command);
+            this.console.WriteResult(new CommandResult(true, "> " + command));
             this.AddCommandToHistory(command);
             
             var result = this.Ai.InterpretCommand(command);
-            this.console.AddRange(result.Messages);
+            this.console.WriteResult(result);
             this.inputLabel.Text = "";
         }
 
@@ -206,6 +207,7 @@ namespace Engine
         {
             foreach (var robot in World.Robots)
             {
+                robot.Direction = robot.Direction.Rotate(robot.Engine.RadiansPerSecond*deltaT);
                 robot.Position += robot.Direction*robot.Engine.Speed*deltaT;
             }
         }

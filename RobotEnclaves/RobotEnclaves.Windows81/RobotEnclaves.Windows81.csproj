@@ -152,6 +152,10 @@
     <Folder Include="Fonts\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{70c59c48-432d-410a-9298-bb42aefcde65}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{510947F5-A241-4B25-9022-DF61AB0FB379}</Project>
       <Name>Engine</Name>

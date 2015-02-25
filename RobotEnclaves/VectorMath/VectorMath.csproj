@@ -37,7 +37,6 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Color.cs" />
     <Compile Include="ComponentizedVector2.cs" />
     <Compile Include="Line2.cs" />
     <Compile Include="PointVector2.cs" />

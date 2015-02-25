@@ -3,9 +3,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Engine.UnitTests
 {
+    using System.Collections.Generic;
     using System.Linq;
+    using Common;
+    using Engine.Exceptions;
     using Engine.Items;
     using Engine.Robotics;
+    using Engine.Spaceship;
+    using Engine.UnitTests.Stubs;
     using FluentAssertions;
     using Moq;
     using Rendering;
@@ -75,6 +80,22 @@ namespace Engine.UnitTests
             var widget = new CollectableItemSprite(item);
             widget.Render(mockRenderEngine.Object);
             mockRenderEngine.Verify(r => r.DrawText(It.IsAny<Vector2>(), name + ":" + label, Color.Green), Times.Once);
+        }
+
+        [TestMethod]
+        public void ErrorMessagesRendersAsRedTextInConsole()
+        {
+            const string errorMessage = "some error";
+
+            var console = new GameConsole();
+            var widget = new Console(Vector2.Zero, new Vector2(100, 100));
+            widget.SetConsole(console);
+            
+            console.WriteResult(new CommandResult(false, errorMessage));
+            var mockRenderEngine = new Mock<IRenderEngine>();
+            widget.Render(mockRenderEngine.Object);
+
+            mockRenderEngine.Verify(r => r.DrawText(It.IsAny<Vector2>(), errorMessage, Color.Red), Times.Once);
         }
     }
 }

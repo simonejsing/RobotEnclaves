@@ -26,7 +26,7 @@ namespace Engine.Spaceship
             OwnedRobots.Add(r);
         }
 
-        public void Boot(TextList console)
+        public CommandResult Boot()
         {
             const string consoleInitialContent =
 @"Hard-Core OS v" + Version.Text + @" booting...
@@ -41,9 +41,7 @@ Entering recovery mode...
 Available RAM: 0 MB
 
 Systems online";
-            console.AddRange(
-                consoleInitialContent.Split(new[] { Environment.NewLine },
-                StringSplitOptions.None));
+            return new CommandResult(true, consoleInitialContent);
         }
 
         public CommandResult InterpretCommand(string command)
@@ -87,7 +85,7 @@ Systems online";
                 }
             }
 
-            return result;
+            return new CommandResult(false, "Invalid instruction");
         }
     }
 }

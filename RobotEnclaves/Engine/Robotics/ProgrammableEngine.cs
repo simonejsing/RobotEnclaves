@@ -11,7 +11,8 @@ namespace Engine.Robotics
 
     public class ProgrammableEngine : ProgrammableComponentBase
     {
-        const float MaxSpeed = 80.0f / 3.6f;
+        private const float MaxSteeringSpeed = (float)(Math.PI/16.0);
+        private const float MaxSpeed = 80.0f / 3.6f;
 
         public ProgrammableEngine()
         {
@@ -19,14 +20,27 @@ namespace Engine.Robotics
                 "throttle",
                 () => new ComputerTypeFloat(this.Throttle),
                 ct => { this.Throttle = ct.Value; });
+            var steeringProperty = new ProgrammableProperty<ComputerTypeFloat>(
+                "Steering",
+                () => new ComputerTypeFloat(this.Steering),
+                ct => { this.Steering = ct.Value; });
             var speedProperty = new ProgrammableProperty<ComputerTypeFloat>(
                 "speed",
                 () => new ComputerTypeFloat(this.Speed));
 
             this.RegisterProperty(throttleProperty);
+            this.RegisterProperty(steeringProperty);
             this.RegisterProperty(speedProperty);
 
             Throttle = 0f;
+        }
+
+        public float RadiansPerSecond
+        {
+            get
+            {
+                return Steering*MaxSteeringSpeed;
+            }
         }
 
         public float Speed
@@ -34,6 +48,23 @@ namespace Engine.Robotics
             get
             {
                 return Throttle*MaxSpeed;
+            }
+        }
+
+        private float steering;
+        public float Steering {
+            get
+            {
+                return this.steering;
+            }
+            set
+            {
+                if (value > 1.0f || value < -1.0f)
+                {
+                    throw new RobotException(string.Format("Steering must be a value between -1.0 and 1.0, attempt to set to {0}", value));
+                }
+
+                this.steering = value;
             }
         }
 
@@ -46,9 +77,9 @@ namespace Engine.Robotics
             }
             set
             {
-                if (value > 1.0f)
+                if (value > 1.0f || value < -1.0f)
                 {
-                    throw new RobotException(string.Format("Throttle level cannot exceed 1.0, attempt to set to {0}", value));
+                    throw new RobotException(string.Format("Throttle must be a value between -1.0 and 1.0, attempt to set to {0}", value));
                 }
 
                 throttle = value;

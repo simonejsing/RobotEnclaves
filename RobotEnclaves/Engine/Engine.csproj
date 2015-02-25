@@ -67,6 +67,8 @@
     <Compile Include="Computer\IComputerType.cs" />
     <Compile Include="Exceptions\SettingReadOnlyPropertyException.cs" />
     <Compile Include="Exceptions\ComputerSyntaxException.cs" />
+    <Compile Include="GameConsole.cs" />
+    <Compile Include="IGameConsole.cs" />
     <Compile Include="Robotics\IProgrammableMethod.cs" />
     <Compile Include="Robotics\IProgrammableProperty.cs" />
     <Compile Include="Robotics\ProgrammableCargoBay.cs" />

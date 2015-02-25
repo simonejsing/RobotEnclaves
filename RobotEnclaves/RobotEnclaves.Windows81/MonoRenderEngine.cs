@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Vector2 = VectorMath.Vector2;
-using Color = VectorMath.Color;
+using Color = Common.Color;
 using XnaVector2 = Microsoft.Xna.Framework.Vector2;
 using XnaColor = Microsoft.Xna.Framework.Color;
 using Rendering;
@@ -27,7 +27,7 @@ namespace RobotEnclaves.Windows81
         private SpriteFont _defaultFont;
 
         private XnaVector2 TranslationVector = new XnaVector2(0f, 0f);
-        private float ScalingFactor = 1.0f;
+        private XnaVector2 ScalingVector = new XnaVector2(1f, 1f);
 
         public MonoRenderEngine(Game game)
         {
@@ -72,33 +72,33 @@ namespace RobotEnclaves.Windows81
 
         private XnaVector2 ScaleVector(XnaVector2 vector)
         {
-            return vector*ScalingFactor;
+            return vector*this.ScalingVector;
         }
 
         private XnaVector2 TransformVector(XnaVector2 vector)
         {
-            return vector * ScalingFactor + TranslationVector;
+            return vector * this.ScalingVector + TranslationVector;
         }
 
         private float TransformScalar(float radius)
         {
-            return radius * ScalingFactor;
+            return radius * this.ScalingVector.X;
         }
 
-        public void Translate(Vector2 vector)
+        public void Translate(Vector2 translateVector)
         {
-            TranslationVector += new XnaVector2(vector.X, vector.Y);
+            TranslationVector += new XnaVector2(translateVector.X, translateVector.Y);
         }
 
-        public void Scale(float factor)
+        public void Scale(Vector2 scaleVector)
         {
-            ScalingFactor *= factor;
+            ScalingVector *= new XnaVector2(scaleVector.X, scaleVector.Y);
         }
 
         public void ResetTransformation()
         {
             TranslationVector = new XnaVector2(0f, 0f);
-            ScalingFactor = 1.0f;
+            ScalingVector = new XnaVector2(1f, 1f);
         }
 
         public void DrawPolygon(Vector2[] points, Color color, float thickness = 1.0f)

@@ -128,7 +128,15 @@ namespace VectorMath
             return a.X*b.X + a.Y*b.Y;
         }
 
-        public static float Angle(Vector2 a, Vector2 b)
+        public virtual Vector2 Rotate(float radians)
+        {
+            float cosAngle = (float)Math.Cos(radians);
+            float sinAngle = (float)Math.Sin(radians);
+
+            return new Vector2(X*cosAngle - Y*sinAngle, X*sinAngle + Y*cosAngle);
+        }
+
+        public static float AngleBetween(Vector2 a, Vector2 b)
         {
             var dotProduct = Dot(a, b)/(a.Length*b.Length);
             return (float) Math.Acos(dotProduct);

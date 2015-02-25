@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine
 {
+    using Common;
     using VectorMath;
 
     public interface IRenderEngine
@@ -20,9 +21,9 @@ namespace Engine
         void Begin();
         void End();
 
-        void Translate(Vector2 vector);
+        void Translate(Vector2 translateVector);
 
-        void Scale(float factor);
+        void Scale(Vector2 scaleVector);
 
         void ResetTransformation();
 

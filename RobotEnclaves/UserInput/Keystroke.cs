@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ExtensionMethods;
 
 namespace UserInput
 {
+    using ExtensionMethods;
+
     public class Keystroke
     {
         public enum KeystrokeType { Literal, Backspace, Enter, Up, Down }
@@ -16,7 +17,7 @@ namespace UserInput
 
         private readonly char[] validSigns =
         {
-            '(', ')', '.', '=', ' ', '"'
+            '(', ')', '.', '=', ' ', '"', '-'
         };
 
         public bool IsValid
@@ -52,9 +53,12 @@ namespace UserInput
         {
             List<Keystroke> keys = new List<Keystroke>();
 
-            for (int i = 0; i < s.Length; i++)
+            foreach(char c in s)
             {
-                keys.Add(Keystroke.LiteralKeystroke(s[i]));
+                if(c == '\n')
+                    keys.Add(Keystroke.SpecialKeystroke(KeystrokeType.Enter));
+                else
+                    keys.Add(Keystroke.LiteralKeystroke(c));
             }
 
             return keys.ToArray();

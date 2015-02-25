@@ -64,6 +64,9 @@ namespace RobotEnclaves.Windows81
                     keystrokeBuffer.Add(Keystroke.SpecialKeystroke(Keystroke.KeystrokeType.Down));
                     return;
 
+                case Keys.OemMinus:
+                    c = '-';
+                    break;
                 case Keys.Space:
                     c = ' ';
                     break;

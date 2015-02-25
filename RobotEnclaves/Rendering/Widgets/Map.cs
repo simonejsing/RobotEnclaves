@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rendering.Widgets
 {
+    using Common;
     using Engine;
     using VectorMath;
 
@@ -28,9 +29,9 @@ namespace Rendering.Widgets
             renderEngine.Translate(this.Position);
             renderEngine.FillRectangle(Vector2.Zero, this.Size, Color.Sand);
 
-            // Center (0,0)
+            // Center (0,0) and flip Y-axis (+ is then up)
             renderEngine.Translate(this.Size / 2);
-            renderEngine.Scale(ZoomFactor);
+            renderEngine.Scale(new Vector2(ZoomFactor, -ZoomFactor));
 
             this.RenderGridLines(renderEngine);
 
