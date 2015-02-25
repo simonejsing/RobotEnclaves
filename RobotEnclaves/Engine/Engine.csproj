@@ -68,12 +68,15 @@
     <Compile Include="Exceptions\SettingReadOnlyPropertyException.cs" />
     <Compile Include="Exceptions\ComputerSyntaxException.cs" />
     <Compile Include="GameConsole.cs" />
+    <Compile Include="GameTime.cs" />
     <Compile Include="IGameConsole.cs" />
     <Compile Include="Robotics\IProgrammableMethod.cs" />
     <Compile Include="Robotics\IProgrammableProperty.cs" />
     <Compile Include="Robotics\ProgrammableCargoBay.cs" />
     <Compile Include="Robotics\ProgrammableMethod.cs" />
     <Compile Include="Robotics\ProgrammableProperty.cs" />
+    <Compile Include="Storyline\Story.cs" />
+    <Compile Include="Storyline\StoryEvent.cs" />
     <Compile Include="TimeCounter.cs" />
     <Compile Include="Exceptions\InvalidRobotMethodException.cs" />
     <Compile Include="Exceptions\InvalidRobotPropertyException.cs" />

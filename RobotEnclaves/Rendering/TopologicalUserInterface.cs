@@ -67,6 +67,11 @@ namespace Rendering
             Console.SetConsole(console);
         }
 
+        public void SetMapSensors(bool active)
+        {
+            Map.Sensors = active;
+        }
+
         public void SetInputLabel(TextLabel label)
         {
             this.InputLabel.SetLabel(label);

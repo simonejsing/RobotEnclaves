@@ -18,6 +18,8 @@ namespace Engine
 
         void SetConsole(IGameConsole console);
 
+        void SetMapSensors(bool active);
+
         void SetInputLabel(TextLabel label);
     }
 }

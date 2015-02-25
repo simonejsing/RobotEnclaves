@@ -12,6 +12,7 @@ namespace Engine
     using Engine.Items;
     using Engine.Robotics;
     using Engine.Spaceship;
+    using Engine.Storyline;
     using UserInput;
     using VectorMath;
 
@@ -24,6 +25,7 @@ namespace Engine
         private long lastFrameTime = DateTime.Now.Ticks;
         private readonly LapStopwatch stopwatch = new LapStopwatch();
 
+        private readonly GameTimer gameTimer = new GameTimer();
         private readonly TimeCounter fpsCounter = new FrequencyTimeCounter(50);
         private readonly TimeCounter updateTimer = new AverageTimeCounter(50);
         private readonly TimeCounter renderTimer = new AverageTimeCounter(50);
@@ -33,12 +35,15 @@ namespace Engine
         private readonly List<string> inputHistory = new List<string>();
         private int inputHistoryIndex = -1;
 
+        public Story Story { get; private set; }
+
         public Ai Ai { get; private set; }
         public World World { get; private set; }
 
         public GameEngine(IUserInterface userInterface)
         {
             this.World = new World();
+            this.Story = new Story();
             this.Ai = new Ai();
             this.userInterface = userInterface;
 
@@ -47,31 +52,36 @@ namespace Engine
             this.userInterface.UpdateWorld(this.World);
 
             this.userInterface.AddLabel(Vector2.Zero, new Vector2(), fpsLabel);
-
-            console.WriteResult(this.Ai.Boot());
         }
 
         public static GameEngine CreateTutorialWorld(IUserInterface userInterface)
         {
             var gameEngine = new GameEngine(userInterface);
             gameEngine.World.AddObject(new Spaceship.Spaceship() { Position = Vector2.Zero });
-            gameEngine.AddRobot(new Robot("AZ15") {Position = new Vector2(0f, 0f)});
             gameEngine.AddItem(new CollectableItem("memory", "Memory Core [1 MB]") { Position = new Vector2(140, -10)});
 
-            gameEngine.userInterface.UpdateWorld(gameEngine.World);
+            gameEngine.Story = Story.TutorialStory(gameEngine, 0.0f);
+
 
             return gameEngine;
+        }
+
+        public void WriteConsole(CommandResult result)
+        {
+            console.WriteResult(result);
         }
 
         public void AddRobot(Robot robot)
         {
             this.Ai.AddRobot(robot);
             this.World.AddRobot(robot);
+            userInterface.UpdateWorld(World);
         }
 
         public void AddItem(CollectableItem item)
         {
             this.World.AddItem(item);
+            userInterface.UpdateWorld(World);
         }
 
         private void ProcessKeystrokes(IEnumerable<Keystroke> keystrokes)
@@ -84,6 +94,9 @@ namespace Engine
 
         private void ProcessSingleKeystroke(Keystroke keystroke)
         {
+            if (!Ai.Booted)
+                return;
+
             switch (keystroke.Type)
             {
                 case Keystroke.KeystrokeType.Literal:
@@ -168,6 +181,9 @@ namespace Engine
 
         public void ProgressTime(float deltaT)
         {
+            this.gameTimer.Progress(deltaT);
+
+            Story.Progress(this.gameTimer);
             this.MoveRobots(deltaT);
             this.DiscoverItemInCloseProximity();
 
@@ -212,5 +228,9 @@ namespace Engine
             }
         }
 
+        public void ActivateSensors()
+        {
+            userInterface.SetMapSensors(true);
+        }
     }
 }

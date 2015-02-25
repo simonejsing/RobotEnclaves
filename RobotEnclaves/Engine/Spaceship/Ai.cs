@@ -15,6 +15,7 @@ namespace Engine.Spaceship
     public class Ai
     {
         private List<Robot> OwnedRobots = new List<Robot>();
+        public bool Booted { get; set; }
 
         public Robot FindRobotByName(string name)
         {
@@ -24,24 +25,6 @@ namespace Engine.Spaceship
         public void AddRobot(Robot r)
         {
             OwnedRobots.Add(r);
-        }
-
-        public CommandResult Boot()
-        {
-            const string consoleInitialContent =
-@"Hard-Core OS v" + Version.Text + @" booting...
-BIOS check... OK
-RAM check... FATAL ERROR
-Peripheral sensor calibration... FATAL ERROR
-
-FATAL ERRORS ENCOUNTERED!
-
-Entering recovery mode...
-
-Available RAM: 0 MB
-
-Systems online";
-            return new CommandResult(true, consoleInitialContent);
         }
 
         public CommandResult InterpretCommand(string command)

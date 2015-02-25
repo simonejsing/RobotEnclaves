@@ -17,6 +17,7 @@ namespace Rendering.Widgets
         private float ZoomFactor = 1.0f;
 
         public List<IGraphics> Graphics { get; set; }
+        public bool Sensors { get; set; }
 
         public Map(Vector2 position, Vector2 size)
             : base(position, size)
@@ -27,20 +28,46 @@ namespace Rendering.Widgets
         public override void Render(IRenderEngine renderEngine)
         {
             renderEngine.Translate(this.Position);
-            renderEngine.FillRectangle(Vector2.Zero, this.Size, Color.Sand);
-
-            // Center (0,0) and flip Y-axis (+ is then up)
-            renderEngine.Translate(this.Size / 2);
-            renderEngine.Scale(new Vector2(ZoomFactor, -ZoomFactor));
-
-            this.RenderGridLines(renderEngine);
-
-            foreach (var graphic in Graphics.Where(g => g.Visible))
+            if (Sensors)
             {
-                graphic.Render(renderEngine);
+                this.RenderActiveMap(renderEngine);
+            }
+            else
+            {
+                this.RenderStaticNoise(renderEngine);
             }
 
             renderEngine.ResetTransformation();
+        }
+
+        private static readonly Random rand = new Random();
+
+        private void RenderStaticNoise(IRenderEngine renderEngine)
+        {
+            renderEngine.FillRectangle(Vector2.Zero, this.Size, Color.Black);
+            var randomPoint = new Vector2(0, 0);
+            for (var i = 0; i < 1000; i++)
+            {
+                randomPoint.X = (float)rand.Next(0, (int)this.Size.X);
+                randomPoint.Y = (float)rand.Next(0, (int)this.Size.Y);
+                renderEngine.DrawPoint(randomPoint, Color.White);
+            }
+        }
+
+        private void RenderActiveMap(IRenderEngine renderEngine)
+        {
+            renderEngine.FillRectangle(Vector2.Zero, this.Size, Color.Sand);
+
+            // Center (0,0) and flip Y-axis (+ is then up)
+            renderEngine.Translate(this.Size/2);
+            renderEngine.Scale(new Vector2(this.ZoomFactor, -this.ZoomFactor));
+
+            this.RenderGridLines(renderEngine);
+
+            foreach (var graphic in this.Graphics.Where(g => g.Visible))
+            {
+                graphic.Render(renderEngine);
+            }
         }
 
         private void RenderGridLines(IRenderEngine renderEngine)

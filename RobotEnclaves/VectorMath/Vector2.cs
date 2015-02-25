@@ -6,8 +6,8 @@ namespace VectorMath
     {
         public const float VectorLengthPrecission = 0.001f;
 
-        public float X { get; protected set; }
-        public float Y { get; protected set; }
+        public float X { get; set; }
+        public float Y { get; set; }
 
         public virtual float Length {
             get
