@@ -78,6 +78,8 @@ Systems online";
                                 new[] {Environment.NewLine},
                                 StringSplitOptions.RemoveEmptyEntries));
                     }
+
+                    return result;
                 }
                 catch (RobotException rex)
                 {
