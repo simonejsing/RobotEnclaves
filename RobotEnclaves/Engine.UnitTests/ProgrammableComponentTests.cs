@@ -5,6 +5,7 @@ namespace Engine.UnitTests
 {
     using Engine.Computer;
     using Engine.Exceptions;
+    using Engine.Items;
     using Engine.Robotics;
     using FluentAssertions;
 
@@ -54,5 +55,6 @@ namespace Engine.UnitTests
             Action action = () => crane.EvaluateInstruction("range = 1.0");
             action.ShouldThrow<SettingReadOnlyPropertyException>();
         }
+
     }
 }

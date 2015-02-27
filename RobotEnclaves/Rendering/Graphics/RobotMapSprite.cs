@@ -13,18 +13,19 @@ namespace Rendering.Graphics
 
     class RobotMapSprite : ObjectMapSprite
     {
-        private readonly Robot Robot;
+        private readonly RobotObject Robot;
 
         const float Radius = 10f;
 
-        public RobotMapSprite(Robot robot) : base(robot.Position)
+        public RobotMapSprite(RobotObject robot) : base(robot.Position)
         {
             Robot = robot;
         }
 
         public override void Render(IRenderEngine renderEngine)
         {
-            renderEngine.DrawCircle(Robot.Position, Radius, Color.Red);
+            renderEngine.DrawCircle(Robot.Position, Radius, Color.Red, 5f);
+            renderEngine.DrawVector(Robot.Position, Robot.Direction * 20, Color.Red, 3f);
         }
     }
 }

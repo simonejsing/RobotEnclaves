@@ -11,6 +11,8 @@ namespace Engine.Spaceship
     public class Spaceship : IObject
     {
         public Vector2 Position { get; set; }
+        public UnitVector2 Direction { get; set; }
+
         public float Mass {
             get
             {
@@ -24,6 +26,12 @@ namespace Engine.Spaceship
             {
                 return true;
             }
+        }
+
+        public Spaceship()
+        {
+            Position = Vector2.Zero;
+            Direction = UnitVector2.GetInstance(1, 0);
         }
     }
 }

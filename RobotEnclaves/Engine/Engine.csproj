@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AverageTimeCounter.cs" />
+    <Compile Include="Computer\Computer.cs" />
     <Compile Include="Computer\ComputerType.cs" />
     <Compile Include="Computer\ComputerTypeBoolean.cs" />
     <Compile Include="Computer\ComputerTypeList.cs" />
@@ -70,11 +71,20 @@
     <Compile Include="GameConsole.cs" />
     <Compile Include="GameTime.cs" />
     <Compile Include="IGameConsole.cs" />
+    <Compile Include="Items\SensorUpgrade.cs" />
+    <Compile Include="Items\IComputerUpgrade.cs" />
+    <Compile Include="Robotics\CatarpillarHull.cs" />
+    <Compile Include="Robotics\IHull.cs" />
     <Compile Include="Robotics\IProgrammableMethod.cs" />
     <Compile Include="Robotics\IProgrammableProperty.cs" />
+    <Compile Include="Robotics\IRobot.cs" />
+    <Compile Include="Robotics\ISensor.cs" />
     <Compile Include="Robotics\ProgrammableCargoBay.cs" />
     <Compile Include="Robotics\ProgrammableMethod.cs" />
     <Compile Include="Robotics\ProgrammableProperty.cs" />
+    <Compile Include="Robotics\RadarSensor.cs" />
+    <Compile Include="Robotics\RobotObject.cs" />
+    <Compile Include="Storyline\IStory.cs" />
     <Compile Include="Storyline\Story.cs" />
     <Compile Include="Storyline\StoryEvent.cs" />
     <Compile Include="TimeCounter.cs" />
@@ -104,6 +114,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Robotics\Robot.cs" />
     <Compile Include="World.cs" />
+    <Compile Include="WorldObject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -32,7 +32,7 @@ namespace Rendering.Graphics
 
         public override void Render(IRenderEngine renderEngine)
         {
-            renderEngine.DrawCircle(Spaceship.Position, Radius, Color.Blue);
+            renderEngine.DrawCircle(Spaceship.Position, Radius, Color.Blue, 5f);
 
             // When crashed the spaceship is rendered as a crossed out circle
             if (Spaceship.Crashed)
@@ -40,12 +40,14 @@ namespace Rendering.Graphics
                 renderEngine.DrawVector(
                     Spaceship.Position + crossTopRight,
                     -crossTopRight * 2, 
-                    Color.Blue);
+                    Color.Blue,
+                    5f);
 
                 renderEngine.DrawVector(
                     Spaceship.Position + crossTopLeft,
                     -crossTopLeft * 2,
-                    Color.Blue);
+                    Color.Blue,
+                    5f);
             }
         }
     }

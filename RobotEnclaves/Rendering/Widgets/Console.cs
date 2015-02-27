@@ -42,5 +42,9 @@ namespace Rendering.Widgets
 
             renderEngine.ResetTransformation();
         }
+
+        public override void Update(GameTimer timer)
+        {
+        }
     }
 }

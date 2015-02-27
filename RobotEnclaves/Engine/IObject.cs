@@ -11,6 +11,7 @@ namespace Engine
     public interface IObject
     {
         Vector2 Position { get; set; }
+        UnitVector2 Direction { get; set; }
 
         float Mass { get; }
     }

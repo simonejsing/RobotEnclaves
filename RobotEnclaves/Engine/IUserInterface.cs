@@ -16,6 +16,8 @@ namespace Engine
 
         void Render(IRenderEngine renderEngine);
 
+        void Update(GameTimer gameTimer);
+
         void SetConsole(IGameConsole console);
 
         void SetMapSensors(bool active);

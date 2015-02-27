@@ -10,6 +10,7 @@ namespace Engine.UnitTests
     using Engine.Items;
     using Engine.Robotics;
     using Engine.Spaceship;
+    using Engine.Storyline;
     using Engine.UnitTests.Stubs;
     using FluentAssertions;
     using Moq;
@@ -19,31 +20,48 @@ namespace Engine.UnitTests
     [TestClass]
     public class AiTests
     {
+        private static Ai DefaultAi()
+        {
+            return new Ai(new GameTimer());
+        }
+
+        [TestMethod]
+        public void AiCoreCanInterpretCommandToChangeRobotsThrottleLevel()
+        {
+            var ai = DefaultAi();
+            var robot = new Robot("AZ15");
+            ai.AddRobot(robot);
+
+            ai.InterpretCommand("AZ15.engine.throttle = 1.0");
+
+            robot.Hull.Engine.Throttle.Should().Be(1.0f);
+        }
+
         [TestMethod]
         public void AiReturnsUnsuccessfulResultWhenTheSpecifiedRobotDoesNotExist()
         {
-            var result = new Ai().InterpretCommand("robot.component.property = 1.0");
+            var result = DefaultAi().InterpretCommand("robot.component.property = 1.0");
             result.Success.Should().BeFalse();
         }
 
         [TestMethod]
         public void AiCoreCanInspectRobotsCargoBay()
         {
-            var ai = new Ai();
+            var ai = DefaultAi();
             var robot = new Robot("AZ15");
             var item = new CollectableItem("cpu", "CPU 1 Ghz");
-            robot.CargoBay.LoadItem(item);
+            robot.Hull.CargoBay.LoadItem(item);
             ai.AddRobot(robot);
 
             var result = ai.InterpretCommand("AZ15.cargobay.items()");
 
-            result.Messages.Should().Contain("cpu");
+            result.Messages.Should().Contain(item.ToString());
         }
 
         [TestMethod]
         public void AiCoreCanQueryRobotComponents()
         {
-            var ai = new Ai();
+            var ai = DefaultAi();
             var robot = new Robot("AZ15");
             ai.AddRobot(robot);
 
@@ -55,7 +73,7 @@ namespace Engine.UnitTests
         [TestMethod]
         public void AiCoreCanQueryRobotProperties()
         {
-            var ai = new Ai();
+            var ai = DefaultAi();
             var robot = new Robot("AZ15");
             ai.AddRobot(robot);
 
@@ -69,7 +87,7 @@ namespace Engine.UnitTests
         {
             var expectedException = new InvalidRobotMethodException("incorrectMethodName");
 
-            var ai = new Ai();
+            var ai = DefaultAi();
             var robot = new Robot("AZ15");
             ai.AddRobot(robot);
 
@@ -84,7 +102,7 @@ namespace Engine.UnitTests
         {
             var expectedException = new InvalidRobotPropertyException("incorrectPropertyName");
 
-            var ai = new Ai();
+            var ai = DefaultAi();
             var robot = new Robot("AZ15");
             ai.AddRobot(robot);
 
@@ -92,6 +110,36 @@ namespace Engine.UnitTests
 
             result.Success.Should().BeFalse();
             result.Messages.Should().BeEquivalentTo(expectedException.Message);
+        }
+
+        [TestMethod]
+        public void RobotCanInstallItemInAi()
+        {
+            var world = new World();
+            var ai = DefaultAi();
+            var robot = new Robot("AZ15");
+            ai.AddRobot(robot);
+
+            world.AddComputer(ai.Computer);
+            world.AddRobot(robot);
+            robot.SetCurrentWorld(world);
+
+            var item = new SensorUpgrade(new RadarSensor(), "item", "label");
+            robot.Hull.CargoBay.LoadItem(item);
+            robot.EvaluateInstruction("install(\"item\",\"HardCore\")");
+
+            ai.Computer.PendingUpgrades.Should().Contain(item);
+        }
+
+        [TestMethod]
+        public void AiInstallsPendingUpgradesOnReboot()
+        {
+            var ai = DefaultAi();
+            var sensor = new RadarSensor();
+            var item = new SensorUpgrade(sensor, "item", "label");
+            ai.Computer.InstallUpgrade(item);
+            ai.Reboot();
+            ai.Computer.Sensor.Should().Be(sensor);
         }
     }
 }

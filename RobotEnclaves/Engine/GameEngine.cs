@@ -29,7 +29,6 @@ namespace Engine
         private readonly TimeCounter fpsCounter = new FrequencyTimeCounter(50);
         private readonly TimeCounter updateTimer = new AverageTimeCounter(50);
         private readonly TimeCounter renderTimer = new AverageTimeCounter(50);
-        private readonly GameConsole console = new GameConsole();
         private readonly TextLabel inputLabel = new TextLabel();
         private readonly TextLabel fpsLabel = new TextLabel();
         private readonly List<string> inputHistory = new List<string>();
@@ -44,10 +43,12 @@ namespace Engine
         {
             this.World = new World();
             this.Story = new Story();
-            this.Ai = new Ai();
+            this.Ai = new Ai(gameTimer);
             this.userInterface = userInterface;
 
-            this.userInterface.SetConsole(this.console);
+            this.World.AddComputer(Ai.Computer);
+
+            this.userInterface.SetConsole(this.Ai.Console);
             this.userInterface.SetInputLabel(this.inputLabel);
             this.userInterface.UpdateWorld(this.World);
 
@@ -58,7 +59,13 @@ namespace Engine
         {
             var gameEngine = new GameEngine(userInterface);
             gameEngine.World.AddObject(new Spaceship.Spaceship() { Position = Vector2.Zero });
-            gameEngine.AddItem(new CollectableItem("memory", "Memory Core [1 MB]") { Position = new Vector2(140, -10)});
+            var repairBotAz15 = new Robot("az15") { Position = new Vector2(-52.4f, 27.2f) };
+            gameEngine.AddRobot(repairBotAz15);
+            gameEngine.AddItem(
+                new SensorUpgrade(
+                    new RadarSensor(), 
+                    "sensor",
+                    "Damaged sensor array") { Position = new Vector2(140, -10) });
 
             gameEngine.Story = Story.TutorialStory(gameEngine, 0.0f);
 
@@ -68,7 +75,7 @@ namespace Engine
 
         public void WriteConsole(CommandResult result)
         {
-            console.WriteResult(result);
+            Ai.Console.WriteResult(result);
         }
 
         public void AddRobot(Robot robot)
@@ -156,11 +163,10 @@ namespace Engine
 
         private void ExecuteCommand(string command)
         {
-            this.console.WriteResult(new CommandResult(true, "> " + command));
+            this.Ai.Console.WriteResult(new CommandResult(true, "> " + command));
             this.AddCommandToHistory(command);
             
-            var result = this.Ai.InterpretCommand(command);
-            this.console.WriteResult(result);
+            this.Ai.ExecuteCommand(command);
             this.inputLabel.Text = "";
         }
 
@@ -183,7 +189,11 @@ namespace Engine
         {
             this.gameTimer.Progress(deltaT);
 
-            Story.Progress(this.gameTimer);
+            this.userInterface.Update(gameTimer);
+
+            this.Story.Progress(this.gameTimer);
+            this.Ai.Progress(this.gameTimer);
+
             this.MoveRobots(deltaT);
             this.DiscoverItemInCloseProximity();
 
@@ -192,6 +202,8 @@ namespace Engine
 
         public void RenderFrame(IRenderEngine renderEngine)
         {
+            userInterface.SetMapSensors(Ai.Sensor != null);
+
             // Update FPS label
             fpsLabel.Text = String.Format("FPS: {0}, U/R: {1}/{2}", this.fpsCounter, this.updateTimer, this.renderTimer);
             renderEngine.Clear();
@@ -223,14 +235,9 @@ namespace Engine
         {
             foreach (var robot in World.Robots)
             {
-                robot.Direction = robot.Direction.Rotate(robot.Engine.RadiansPerSecond*deltaT);
-                robot.Position += robot.Direction*robot.Engine.Speed*deltaT;
+                robot.Direction = robot.Direction.Rotate(robot.Hull.Engine.RadiansPerSecond*deltaT);
+                robot.Position += robot.Direction*robot.Hull.Engine.Speed*deltaT;
             }
-        }
-
-        public void ActivateSensors()
-        {
-            userInterface.SetMapSensors(true);
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Engine.Robotics
             if (ItemInRange(item))
             {
                 item.SetPickedUp(robot);
-                robot.CargoBay.LoadItem(item);
+                robot.Hull.CargoBay.LoadItem(item);
 
                 return true;
             }

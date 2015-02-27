@@ -40,7 +40,7 @@ namespace Engine.UnitTests
             var robotB = new Robot("AZ16") { Position = Vector2.Zero + smallDistance };
 
             item.SetPickedUp(robotA);
-            Action action = () => robotB.Crane.PickUpItem(item);
+            Action action = () => robotB.Hull.Crane.PickUpItem(item);
             action.ShouldThrow<RobotException>();
         }
     }

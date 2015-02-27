@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 namespace Engine
 {
     using System.Linq;
+    using Engine.Computer;
     using Engine.Items;
     using Engine.Robotics;
     using VectorMath;
 
     public class World
     {
+        private readonly List<IComputer> computers; 
         private readonly List<Robot> robots;
         private readonly List<CollectableItem> items;
         private readonly List<IObject> objects;
@@ -42,9 +44,15 @@ namespace Engine
 
         public World()
         {
+            this.computers = new List<IComputer>();
             this.robots = new List<Robot>();
             this.items = new List<CollectableItem>();
             this.objects = new List<IObject>();
+        }
+
+        public void AddComputer(IComputer computer)
+        {
+            this.computers.Add(computer);
         }
 
         public void AddItem(CollectableItem item)
@@ -56,8 +64,9 @@ namespace Engine
 
         public void AddRobot(Robot robot)
         {
+            this.computers.Add(robot.Computer);
             this.robots.Add(robot);
-            AddObject(robot);
+            AddObject(robot.Object);
             robot.SetCurrentWorld(this);
         }
 
@@ -69,6 +78,11 @@ namespace Engine
         public CollectableItem FindItemByName(string name)
         {
             return items.First(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public IComputer FindComputerByName(string name)
+        {
+            return computers.First(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

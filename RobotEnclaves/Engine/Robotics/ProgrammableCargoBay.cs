@@ -43,7 +43,7 @@ namespace Engine.Robotics
 
         public float Capacity { get; private set; }
 
-        public IEnumerable<CollectableItem> Items
+        public IList<CollectableItem> Items
         {
             get
             {
@@ -61,7 +61,7 @@ namespace Engine.Robotics
 
         private ComputerType ListItems()
         {
-            var itemList = this.Items.Select(i => new ComputerTypeString(i.Name));
+            var itemList = this.Items.Select(i => new ComputerTypeString(i.ToString()));
             return new ComputerTypeList(itemList);
         }
 
@@ -73,6 +73,11 @@ namespace Engine.Robotics
             }
 
             items.Add(item);
+        }
+
+        public CollectableItem FindItemByName(string name)
+        {
+            return Items.First(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

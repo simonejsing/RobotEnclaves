@@ -17,7 +17,7 @@ namespace UserInput
 
         private readonly char[] validSigns =
         {
-            '(', ')', '.', '=', ' ', '"', '-'
+            '(', ')', '.', ',', '=', ' ', '"', '-'
         };
 
         public bool IsValid

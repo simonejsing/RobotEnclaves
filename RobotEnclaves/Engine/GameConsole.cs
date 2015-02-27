@@ -26,5 +26,10 @@ namespace Engine
             var messages = result.Messages.SelectMany(m => m.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
             lines.AddRange(messages.Select(m => new KeyValuePair<string, bool>(m, result.Success)));
         }
+
+        public void Clear()
+        {
+            lines.Clear();
+        }
     }
 }

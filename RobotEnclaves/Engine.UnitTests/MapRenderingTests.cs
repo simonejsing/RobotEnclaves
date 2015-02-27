@@ -27,6 +27,7 @@ namespace Engine.UnitTests
             var mockRenderEngine = new Mock<IRenderEngine>();
             var map = new Map(Vector2.Zero, Vector2.Zero);
 
+            map.Sensors = true;
             map.Render(mockRenderEngine.Object);
 
             mockRenderEngine.Verify(r => r.FillRectangle(It.IsAny<Vector2>(), It.IsAny<Vector2>(), Color.Sand));
@@ -47,7 +48,7 @@ namespace Engine.UnitTests
             item.SetDiscovered();
             itemWidget.Render(mockRenderEngine.Object);
 
-            mockRenderEngine.Verify(r => r.DrawText(It.IsAny<Vector2>(), name + ":" + label, It.IsAny<Color>()), Times.Once);
+            mockRenderEngine.Verify(r => r.DrawText(It.IsAny<Vector2>(), name, It.IsAny<Color>()), Times.Once);
         }
 
         [TestMethod]
@@ -70,7 +71,7 @@ namespace Engine.UnitTests
 
             var world = new World();
             var robot = new Robot("AZ15") { Position = Vector2.Zero };
-            var distance = robot.Crane.Range - 0.1f;
+            var distance = robot.Hull.Crane.Range - 0.1f;
             var item = new CollectableItem(name, label) { Position = robot.Position + UnitVector2.GetInstance(1, 0) * distance };
             item.SetDiscovered();
 
@@ -79,7 +80,7 @@ namespace Engine.UnitTests
 
             var widget = new CollectableItemSprite(item);
             widget.Render(mockRenderEngine.Object);
-            mockRenderEngine.Verify(r => r.DrawText(It.IsAny<Vector2>(), name + ":" + label, Color.Green), Times.Once);
+            mockRenderEngine.Verify(r => r.DrawText(It.IsAny<Vector2>(), name, Color.Green), Times.Once);
         }
 
         [TestMethod]

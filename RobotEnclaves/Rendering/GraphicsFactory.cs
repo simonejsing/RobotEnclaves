@@ -16,8 +16,8 @@ namespace Rendering
     {
         public static IGraphics CreateFromObject(IObject obj)
         {
-            if (obj is Robot)
-                return new RobotMapSprite(obj as Robot);
+            if (obj is RobotObject)
+                return new RobotMapSprite(obj as RobotObject);
             if(obj is CollectableItem)
                 return new CollectableItemSprite(obj as CollectableItem);
             if (obj is Spaceship)

@@ -26,7 +26,7 @@ namespace Rendering.Graphics
         private Color Color {
             get
             {
-                if (Item.World.Robots.Any(r => r.Crane.ItemInRange(Item)))
+                if (Item.World.Robots.Any(r => r.Hull.Crane.ItemInRange(Item)))
                     return Color.Green;
 
                 return Item.Discovered ? Color.White : Color.Black;
@@ -41,12 +41,12 @@ namespace Rendering.Graphics
 
         public override void Render(IRenderEngine renderEngine)
         {
-            renderEngine.DrawVector(ObjectPosition - new Vector2(5, 5), new Vector2(10, 10), this.Color, 2f);
-            renderEngine.DrawVector(ObjectPosition - new Vector2(5, -5), new Vector2(10, -10), this.Color, 2f);
+            renderEngine.DrawVector(ObjectPosition - new Vector2(5, 5), new Vector2(10, 10), this.Color, 5f);
+            renderEngine.DrawVector(ObjectPosition - new Vector2(5, -5), new Vector2(10, -10), this.Color, 5f);
 
             if (Item.Discovered)
             {
-                renderEngine.DrawText(ObjectPosition, Item.ToString(), this.Color);
+                renderEngine.DrawText(ObjectPosition, Item.Name, this.Color);
             }
         }
     }

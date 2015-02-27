@@ -28,23 +28,11 @@ namespace Engine.UnitTests
             program.Setup(p => p.GetNextStatement()).Returns(statement.Object);
             statement.Setup(s => s.Execute(It.IsAny<IComputer>())).Callback((IComputer c) => c.MemoryBank.Set(0, expected));
 
-            robot.MemoryBank.Set(0, 0);
-            robot.CurrentProgram = program.Object;
+            robot.Computer.MemoryBank.Set(0, 0);
+            robot.Computer.SetCurrentProgram(program.Object);
             robot.ExecuteNextProgramStatement();
 
-            robot.MemoryBank.GetByte(0).Should().Be(expected);
-        }
-
-        [TestMethod]
-        public void AiCoreCanInterpretCommandToChangeRobotsThrottleLevel()
-        {
-            var ai = new Ai();
-            var robot = new Robot("AZ15");
-            ai.AddRobot(robot);
-
-            ai.InterpretCommand("AZ15.engine.throttle = 1.0");
-
-            robot.Engine.Throttle.Should().Be(1.0f);
+            robot.Computer.MemoryBank.GetByte(0).Should().Be(expected);
         }
 
         [TestMethod]
@@ -54,7 +42,7 @@ namespace Engine.UnitTests
             var gameEngine = new GameEngine(mockUi.Object);
 
             var robot = new Robot("AZ15");
-            robot.Engine.Throttle = 1.0f;
+            robot.Hull.Engine.Throttle = 1.0f;
             gameEngine.AddRobot(robot);
             gameEngine.ProgressTime(1.0f);
 
@@ -68,7 +56,7 @@ namespace Engine.UnitTests
             var robot = new Robot("AZ15") {Position = Vector2.Zero};
             var item = new CollectableItem("cpu", "CPU") {Position = Vector2.Zero + smallDistance};
 
-            robot.Crane.PickUpItem(item).Should().BeTrue();
+            robot.Hull.Crane.PickUpItem(item).Should().BeTrue();
             item.Collected.Should().BeTrue();
         }
 
@@ -77,9 +65,9 @@ namespace Engine.UnitTests
         {
             var smallDistance = new Vector2(1, 1);
             var robot = new Robot("AZ15") { Position = Vector2.Zero };
-            var item = new CollectableItem("cpu", "CPU") { Position = robot.Position + new Vector2(robot.Crane.Range, 0) + smallDistance };
+            var item = new CollectableItem("cpu", "CPU") { Position = robot.Position + new Vector2(robot.Hull.Crane.Range, 0) + smallDistance };
 
-            robot.Crane.PickUpItem(item).Should().BeFalse();
+            robot.Hull.Crane.PickUpItem(item).Should().BeFalse();
             item.Collected.Should().BeFalse();
         }
 
@@ -90,8 +78,8 @@ namespace Engine.UnitTests
             var robot = new Robot("AZ15") { Position = Vector2.Zero };
             var item = new CollectableItem("cpu", "CPU") { Position = Vector2.Zero + smallDistance };
 
-            robot.Crane.PickUpItem(item);
-            robot.CargoBay.Items.Should().Contain(item);
+            robot.Hull.Crane.PickUpItem(item);
+            robot.Hull.CargoBay.Items.Should().Contain(item);
         }
 
         [TestMethod]
@@ -119,9 +107,9 @@ namespace Engine.UnitTests
             robot.BaseMass = robotBaseMass;
             item.Mass = itemBaseMass;
 
-            robot.CargoBay.LoadItem(item);
+            robot.Hull.CargoBay.LoadItem(item);
             
-            robot.Mass.Should().Be(robotBaseMass + itemBaseMass);
+            robot.Object.Mass.Should().Be(robotBaseMass + itemBaseMass);
         }
 
         [TestMethod]
@@ -132,12 +120,12 @@ namespace Engine.UnitTests
             var robot = new Robot("AZ15");
             var item1 = new CollectableItem("cpu", "CPU 1 Ghz") {Mass = itemBaseMass};
 
-            robot.CargoBay.LoadItem(item1);
+            robot.Hull.CargoBay.LoadItem(item1);
 
-            var extraRoom = robot.CargoBay.Capacity - itemBaseMass;
+            var extraRoom = robot.Hull.CargoBay.Capacity - itemBaseMass;
             var item2 = new CollectableItem("memory", "20 Mb") {Mass = extraRoom + 10.0f};
 
-            Action action = () => robot.CargoBay.LoadItem(item2);
+            Action action = () => robot.Hull.CargoBay.LoadItem(item2);
             action.ShouldThrow<RobotException>();
         }
 
@@ -145,7 +133,7 @@ namespace Engine.UnitTests
         public void RobotMassCanBeInspected()
         {
             var robot = new Robot("AZ15");
-            (robot.EvaluateInstruction("mass") as ComputerTypeFloat).Value.Should().Be(robot.Mass);
+            (robot.EvaluateInstruction("mass") as ComputerTypeFloat).Value.Should().Be(robot.Object.Mass);
         }
 
         [TestMethod]

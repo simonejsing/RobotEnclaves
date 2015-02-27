@@ -73,6 +73,9 @@ namespace RobotEnclaves.Windows81
                 case Keys.OemPeriod:
                     c = '.';
                     break;
+                case Keys.OemComma:
+                    c = ',';
+                    break;
                 case Keys.OemPlus:
                     c = '=';
                     break;

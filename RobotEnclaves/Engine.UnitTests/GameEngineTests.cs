@@ -61,20 +61,14 @@ namespace Engine.UnitTests
             var robot = new TestableRobot("az15");
             robot.AddMethod(new ProgrammableMethod("foo", ct => { throw new RobotException(errorMessage); }));
 
-            IGameConsole console = null;
-
-            var mockInput = new Mock<ITextInput>();
-            mockInput.Setup(m => m.GetNewKeystrokes()).Returns(Keystroke.FromString("az15.foo()\n"));
             var mockUi = new Mock<IUserInterface>();
-            mockUi.Setup(m => m.SetConsole(It.IsAny<IGameConsole>())).Callback<IGameConsole>(c => console = c);
             var gameEngine = new GameEngine(mockUi.Object);
-            console.Should().NotBeNull("GameEngine is supposed to set the console of the UI");
             
             gameEngine.AddRobot(robot);
-            gameEngine.ProcessInput(mockInput.Object);
+            gameEngine.Ai.ExecuteCommand("az15.foo()");
 
-            console.Lines.Last().Key.Should().Be(errorMessage);
-            console.Lines.Last().Value.Should().Be(false);
+            gameEngine.Ai.Console.Lines.Last().Key.Should().Be(errorMessage);
+            gameEngine.Ai.Console.Lines.Last().Value.Should().Be(false);
         }
     }
 }

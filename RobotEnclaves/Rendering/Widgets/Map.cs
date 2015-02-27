@@ -23,6 +23,7 @@ namespace Rendering.Widgets
             : base(position, size)
         {
             Graphics = new List<IGraphics>();
+            GenerateNoiseMap();
         }
 
         public override void Render(IRenderEngine renderEngine)
@@ -37,27 +38,69 @@ namespace Rendering.Widgets
                 this.RenderStaticNoise(renderEngine);
             }
 
+            this.RenderMapContent(renderEngine);
+
             renderEngine.ResetTransformation();
+        }
+
+        private const int noiseBlockSize = 10;
+        private Color[,] noiseMap;
+
+        public override void Update(GameTimer timer)
+        {
+            if (Sensors)
+                return;
+
+            if (timer.Frame % 20 == 0)
+            {
+                GenerateNoiseMap();
+            }
+        }
+
+        private void GenerateNoiseMap()
+        {
+            var columns = (int)Math.Ceiling(Size.X/noiseBlockSize);
+            var rows = (int)Math.Ceiling(Size.Y / noiseBlockSize);
+            noiseMap = new Color[columns,rows];
+
+            for (var y = 0; y < rows; y++)
+            {
+                for (var x = 0; x < columns; x++)
+                {
+                    var randomValue = rand.Next(50, 200);
+                    noiseMap[x, y] = new Color() { R = randomValue, G = randomValue, B = randomValue };
+                }
+            }
         }
 
         private static readonly Random rand = new Random();
 
         private void RenderStaticNoise(IRenderEngine renderEngine)
         {
+            var columns = (int)Math.Ceiling(Size.X / noiseBlockSize);
+            var rows = (int)Math.Ceiling(Size.Y / noiseBlockSize);
+
+            var p = new Vector2(0, 0);
+            var blockSizeV = new Vector2(noiseBlockSize, noiseBlockSize);
             renderEngine.FillRectangle(Vector2.Zero, this.Size, Color.Black);
-            var randomPoint = new Vector2(0, 0);
-            for (var i = 0; i < 1000; i++)
+            for (var y = 0; y < rows; y++)
             {
-                randomPoint.X = (float)rand.Next(0, (int)this.Size.X);
-                randomPoint.Y = (float)rand.Next(0, (int)this.Size.Y);
-                renderEngine.DrawPoint(randomPoint, Color.White);
+                p.Y = y * noiseBlockSize;
+                for (var x = 0; x < columns; x++)
+                {
+                    p.X = x * noiseBlockSize;
+                    renderEngine.FillRectangle(p, blockSizeV, noiseMap[x, y]);
+                }
             }
         }
 
         private void RenderActiveMap(IRenderEngine renderEngine)
         {
             renderEngine.FillRectangle(Vector2.Zero, this.Size, Color.Sand);
+        }
 
+        private void RenderMapContent(IRenderEngine renderEngine)
+        {
             // Center (0,0) and flip Y-axis (+ is then up)
             renderEngine.Translate(this.Size/2);
             renderEngine.Scale(new Vector2(this.ZoomFactor, -this.ZoomFactor));

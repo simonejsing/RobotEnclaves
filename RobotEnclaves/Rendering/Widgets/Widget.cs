@@ -21,5 +21,6 @@ namespace Rendering.Widgets
         }
 
         public abstract void Render(IRenderEngine renderEngine);
+        public abstract void Update(GameTimer timer);
     }
 }

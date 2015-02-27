@@ -32,5 +32,9 @@ namespace Rendering.Widgets
 
             renderEngine.DrawText(Vector2.Zero, this.text.Text, Color.White);
         }
+
+        public override void Update(GameTimer timer)
+        {
+        }
     }
 }

@@ -62,6 +62,14 @@ namespace Rendering
             }
         }
 
+        public void Update(GameTimer gameTimer)
+        {
+            foreach (var widget in Widgets)
+            {
+                widget.Update(gameTimer);
+            }
+        }
+
         public void SetConsole(IGameConsole console)
         {
             Console.SetConsole(console);
