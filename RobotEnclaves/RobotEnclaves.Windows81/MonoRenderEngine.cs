@@ -29,6 +29,8 @@ namespace RobotEnclaves.Windows81
         private XnaVector2 TranslationVector = new XnaVector2(0f, 0f);
         private XnaVector2 ScalingVector = new XnaVector2(1f, 1f);
 
+        private List<KeyValuePair<string, Texture2D>> namedTextures = new List<KeyValuePair<string, Texture2D>>();
+
         public MonoRenderEngine(Game game)
         {
             _game = game;
@@ -53,6 +55,15 @@ namespace RobotEnclaves.Windows81
         {
             // Load fonts
             _defaultFont = _game.Content.Load<SpriteFont>("DefaultFont");
+
+            // Load sprites
+            LoadTexture("Circular-highlight");
+            LoadTexture("RepairBot");
+        }
+
+        private void LoadTexture(string name)
+        {
+            namedTextures.Add(new KeyValuePair<string, Texture2D>(name, _game.Content.Load<Texture2D>(name)));
         }
 
         public void Clear()
@@ -99,6 +110,34 @@ namespace RobotEnclaves.Windows81
         {
             TranslationVector = new XnaVector2(0f, 0f);
             ScalingVector = new XnaVector2(1f, 1f);
+        }
+
+        public void DrawTexture(string name, Vector2 position, Vector2 size, float rotation, TextureDrawMode drawMode)
+        {
+            var topLeft = this.TransformVector(new XnaVector2(position.X, position.Y));
+            var bottomRight = this.TransformVector(new XnaVector2(position.X + size.X, position.Y + size.Y));
+            var transformedSize = bottomRight - topLeft;
+
+            var namedTexture = namedTextures.First(t => t.Key.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            var origin = new XnaVector2(0, 0);
+
+            switch (drawMode)
+            {
+                case TextureDrawMode.Centered:
+                    origin = new XnaVector2((float)namedTexture.Value.Width / 2, (float)namedTexture.Value.Height / 2);
+                    break;
+            }
+
+            _spriteBatch.Draw(
+                namedTexture.Value,
+                new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)transformedSize.X, (int)transformedSize.Y),
+                null,
+                XnaColor.White,
+                rotation,
+                origin,
+                SpriteEffects.None,
+                0f);
         }
 
         public void DrawPolygon(Vector2[] points, Color color, float thickness = 1.0f)

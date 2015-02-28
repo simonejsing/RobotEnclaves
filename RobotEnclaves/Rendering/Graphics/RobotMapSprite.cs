@@ -24,7 +24,8 @@ namespace Rendering.Graphics
 
         public override void Render(IRenderEngine renderEngine)
         {
-            renderEngine.DrawCircle(Robot.Position, Radius, Color.Red, 5f);
+            renderEngine.DrawTexture("RepairBot", Robot.Position, new Vector2(40, 40), Robot.Direction.Angle, TextureDrawMode.Centered);
+            //renderEngine.DrawCircle(Robot.Position, Radius, Color.Red, 5f);
             renderEngine.DrawVector(Robot.Position, Robot.Direction * 20, Color.Red, 3f);
         }
     }

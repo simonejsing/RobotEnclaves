@@ -24,7 +24,7 @@ namespace Engine.UnitTests
             var gameEngine = new GameEngine(mockUi.Object);
 
             gameEngine.AddRobot(robot);
-            gameEngine.AddItem(item);
+            gameEngine.DiscoverItem(item);
 
             gameEngine.ProgressTime(0.1f);
 

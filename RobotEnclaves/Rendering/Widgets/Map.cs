@@ -8,6 +8,7 @@ namespace Rendering.Widgets
 {
     using Common;
     using Engine;
+    using Rendering.Animation;
     using VectorMath;
 
     public class Map : Widget
@@ -15,6 +16,8 @@ namespace Rendering.Widgets
         const float GridSpacing = 100.0f;
 
         private float ZoomFactor = 1.0f;
+
+        private List<IAnimation> animations = new List<IAnimation>();
 
         public List<IGraphics> Graphics { get; set; }
         public bool Sensors { get; set; }
@@ -24,6 +27,11 @@ namespace Rendering.Widgets
         {
             Graphics = new List<IGraphics>();
             GenerateNoiseMap();
+        }
+
+        public void AddAnimation(IAnimation animation)
+        {
+            animations.Add(animation);
         }
 
         public override void Render(IRenderEngine renderEngine)
@@ -48,12 +56,19 @@ namespace Rendering.Widgets
 
         public override void Update(GameTimer timer)
         {
-            if (Sensors)
-                return;
-
-            if (timer.Frame % 20 == 0)
+            foreach(var animation in animations)
             {
-                GenerateNoiseMap();
+                animation.Update(timer);
+            }
+
+            animations.RemoveAll(a => a.Completed);
+
+            if (!Sensors)
+            {
+                if (timer.Frame % 20 == 0)
+                {
+                    GenerateNoiseMap();
+                }
             }
         }
 
@@ -101,15 +116,20 @@ namespace Rendering.Widgets
 
         private void RenderMapContent(IRenderEngine renderEngine)
         {
-            // Center (0,0) and flip Y-axis (+ is then up)
+            // Center (0,0)
             renderEngine.Translate(this.Size/2);
-            renderEngine.Scale(new Vector2(this.ZoomFactor, -this.ZoomFactor));
+            renderEngine.Scale(new Vector2(this.ZoomFactor, this.ZoomFactor));
 
             this.RenderGridLines(renderEngine);
 
             foreach (var graphic in this.Graphics.Where(g => g.Visible))
             {
                 graphic.Render(renderEngine);
+            }
+
+            foreach (var animation in animations)
+            {
+                animation.Render(renderEngine);
             }
         }
 

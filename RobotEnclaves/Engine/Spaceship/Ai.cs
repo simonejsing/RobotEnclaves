@@ -150,6 +150,7 @@ namespace Engine.Spaceship
 
             Computer.ApplyUpgrades();
 
+            story.Clear();
             story.AddEvents(Story.AiBootEvents(this, ref t));
         }
     }

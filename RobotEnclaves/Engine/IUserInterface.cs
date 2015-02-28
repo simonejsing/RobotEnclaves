@@ -8,6 +8,7 @@ namespace Engine
     using System.Collections.Generic;
     using Common;
     using VectorMath;
+    using Engine.Items;
 
     public interface IUserInterface
     {
@@ -23,5 +24,7 @@ namespace Engine
         void SetMapSensors(bool active);
 
         void SetInputLabel(TextLabel label);
+
+        void AddItemDiscoveredAnimation(GameTimer timer, CollectableItem item);
     }
 }

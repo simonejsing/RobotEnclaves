@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Engine.Storyline
 {
     using Common;
+    using Engine.Items;
     using Engine.Robotics;
     using Engine.Spaceship;
     using VectorMath;
@@ -43,6 +44,11 @@ namespace Engine.Storyline
             }
         }
 
+        public void Clear()
+        {
+            timeline.Clear();
+        }
+
         public static Story TutorialStory(GameEngine gameEngine, float startTime)
         {
             var story = new Story();
@@ -50,6 +56,19 @@ namespace Engine.Storyline
             
             // Boot Ai
             story.AddEvent(new StoryEvent(t, () => gameEngine.Ai.Reboot()));
+
+            // AI discovers sensor upgrade
+            story.AddEvent(new StoryEvent(t += 15.0f, () =>
+                                                     {
+                                                         var itemLocation = new Vector2(140, -10);
+                                                         gameEngine.DiscoverItem(
+                                                             new SensorUpgrade(
+                                                                 new RadarSensor(),
+                                                                 "sensor",
+                                                                 "Damaged sensor array") { Position = itemLocation });
+                                                         gameEngine.Ai.Console.WriteResult(
+                                                             new CommandResult(true, string.Format("Unknown object detected at ({0}, {1})", itemLocation.X, itemLocation.Y)));
+                                                     }));
             return story;
         }
 

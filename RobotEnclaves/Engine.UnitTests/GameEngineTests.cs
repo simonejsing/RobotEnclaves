@@ -31,7 +31,7 @@ namespace Engine.UnitTests
             var item = new CollectableItem("cpu", "CPU 7.2 THz") { Position = robot.Position };
 
             gameEngine.AddRobot(robot);
-            gameEngine.AddItem(item);
+            gameEngine.DiscoverItem(item);
 
             gameEngine.Ai.InterpretCommand("az15.crane.pickup(\"cpu\")");
 

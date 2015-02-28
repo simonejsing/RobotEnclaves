@@ -140,6 +140,14 @@
     <Content Include="Content\DefaultFont.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\Art\bin\Sprites\Circular-highlight.xnb">
+      <Link>Content\Circular-highlight.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Art\bin\Sprites\RepairBot.xnb">
+      <Link>Content\RepairBot.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="RobotEnclaves.Windows81_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

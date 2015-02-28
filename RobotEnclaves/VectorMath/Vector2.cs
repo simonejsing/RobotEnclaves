@@ -24,6 +24,14 @@ namespace VectorMath
             }
         }
 
+        public float Angle
+        {
+            get
+            {
+                return (float) Math.Atan2(Y, X);
+            }
+        }
+
         public Vector2()
         {
             this.X = 0;

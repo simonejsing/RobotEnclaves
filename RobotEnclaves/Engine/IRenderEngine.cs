@@ -9,6 +9,8 @@ namespace Engine
     using Common;
     using VectorMath;
 
+    public enum TextureDrawMode { TopLeft, Centered }
+
     public interface IRenderEngine
     {
         Vector2 Viewport { get; }
@@ -26,6 +28,8 @@ namespace Engine
         void Scale(Vector2 scaleVector);
 
         void ResetTransformation();
+
+        void DrawTexture(string name, Vector2 position, Vector2 size, float rotation, TextureDrawMode drawMode);
 
         void DrawPolygon(Vector2[] points, Color color, float thickness = 1.0f);
         void DrawPoint(Vector2 origin, Color color);

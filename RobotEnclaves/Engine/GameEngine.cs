@@ -53,6 +53,7 @@ namespace Engine
             this.userInterface.UpdateWorld(this.World);
 
             this.userInterface.AddLabel(Vector2.Zero, new Vector2(), fpsLabel);
+            //this.userInterface.AddItemDiscoveredAnimation(gameTimer, new CollectableItem("a", "b") { Position = new Vector2(0, 0) });
         }
 
         public static GameEngine CreateTutorialWorld(IUserInterface userInterface)
@@ -61,14 +62,8 @@ namespace Engine
             gameEngine.World.AddObject(new Spaceship.Spaceship() { Position = Vector2.Zero });
             var repairBotAz15 = new Robot("az15") { Position = new Vector2(-52.4f, 27.2f) };
             gameEngine.AddRobot(repairBotAz15);
-            gameEngine.AddItem(
-                new SensorUpgrade(
-                    new RadarSensor(), 
-                    "sensor",
-                    "Damaged sensor array") { Position = new Vector2(140, -10) });
 
             gameEngine.Story = Story.TutorialStory(gameEngine, 0.0f);
-
 
             return gameEngine;
         }
@@ -85,9 +80,10 @@ namespace Engine
             userInterface.UpdateWorld(World);
         }
 
-        public void AddItem(CollectableItem item)
+        public void DiscoverItem(CollectableItem item)
         {
             this.World.AddItem(item);
+            userInterface.AddItemDiscoveredAnimation(gameTimer, item);
             userInterface.UpdateWorld(World);
         }
 

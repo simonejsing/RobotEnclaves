@@ -57,6 +57,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animation\IAnimation.cs" />
+    <Compile Include="Animation\MapHighlightAnimation.cs" />
     <Compile Include="Graphics\CollectableItemSprite.cs" />
     <Compile Include="Widgets\Console.cs" />
     <Compile Include="GraphicsFactory.cs" />

@@ -12,6 +12,8 @@ namespace Rendering
     using Rendering.Graphics;
     using Rendering.Widgets;
     using VectorMath;
+    using Engine.Items;
+    using Rendering.Animation;
 
     public class TopologicalUserInterface : IUserInterface
     {
@@ -88,6 +90,11 @@ namespace Rendering
         public void UpdateWorld(World world)
         {
             Map.Graphics = new List<IGraphics>(world.Objects.Select(GraphicsFactory.CreateFromObject));
+        }
+
+        public void AddItemDiscoveredAnimation(GameTimer timer, CollectableItem item)
+        {
+            Map.AddAnimation(new MapHighlightAnimation(timer, item.Position));
         }
     }
 }
