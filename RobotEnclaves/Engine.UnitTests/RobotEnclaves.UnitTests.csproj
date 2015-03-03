@@ -72,6 +72,7 @@
     <Compile Include="TimerTests.cs" />
     <Compile Include="ComputerTests.cs" />
     <Compile Include="ProgrammableComponentTests.cs" />
+    <Compile Include="RepairBotTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

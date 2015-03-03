@@ -13,6 +13,8 @@ namespace Engine.Spaceship
         public Vector2 Position { get; set; }
         public UnitVector2 Direction { get; set; }
 
+        public IObjectHealth ObjectHealth { get; private set; }
+
         public float Mass {
             get
             {
@@ -30,6 +32,8 @@ namespace Engine.Spaceship
 
         public Spaceship()
         {
+            ObjectHealth = new ObjectHealth(10000);
+            ObjectHealth.Destroy();
             Position = Vector2.Zero;
             Direction = UnitVector2.GetInstance(1, 0);
         }

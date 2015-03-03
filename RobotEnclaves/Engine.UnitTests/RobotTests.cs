@@ -20,7 +20,7 @@ namespace Engine.UnitTests
         [TestMethod]
         public void RobotExecutesNextStatementOfCurrentProgramWhenRequestedTo()
         {
-            const byte expected = 0x7F;
+            var expected = new ComputerTypeFloat(12.5f);
 
             var robot = new Robot("");
             var statement = new Mock<IStatement>();
@@ -28,7 +28,7 @@ namespace Engine.UnitTests
             program.Setup(p => p.GetNextStatement()).Returns(statement.Object);
             statement.Setup(s => s.Execute(It.IsAny<IComputer>())).Callback((IComputer c) => c.MemoryBank.Set(0, expected));
 
-            robot.Computer.MemoryBank.Set(0, 0);
+            robot.Computer.MemoryBank.Set(0, new ComputerTypeFloat(0f));
             robot.Computer.SetCurrentProgram(program.Object);
             robot.ExecuteNextProgramStatement();
 
@@ -178,6 +178,55 @@ namespace Engine.UnitTests
 
             robot.EvaluateInstruction(string.Format("{0} = 1.5", propertyName));
             value.Should().Be(1.5f);
+        }
+
+        [TestMethod]
+        public void RobotCanInstallItemInSelf()
+        {
+            var robot = new Robot("AZ15");
+            var item = new MemoryUpgrade(1, "ram", "Memory bank [1MB]");
+            var world = new World();
+
+            robot.SetCurrentWorld(world);
+            world.AddComputer(robot.Computer);
+            robot.Hull.CargoBay.LoadItem(item);
+            robot.EvaluateInstruction("install(\"ram\", \"az15\")");
+
+            robot.Computer.PendingUpgrades.Should().Contain(item);
+        }
+
+        [TestMethod]
+        public void RobotInstallsPendingUpgradesOnReboot()
+        {
+            const int extraMb = 1;
+            var robot = new Robot("AZ15");
+            var item = new MemoryUpgrade(extraMb, "ram", "Memory bank [1MB]");
+
+            var expectedSize = robot.Computer.MemoryBank.SizeMB + extraMb;
+            robot.Computer.InstallUpgrade(item);
+            robot.EvaluateInstruction("reboot()");
+
+            robot.Computer.MemoryBank.SizeMB.Should().Be(expectedSize);
+        }
+
+        [TestMethod]
+        public void RobotExecutesProgramWithArguments()
+        {
+            IComputerType arguments = null;
+            var mockProgram = new Mock<IProgram>();
+            mockProgram.Setup(m => m.Name).Returns("program");
+            mockProgram.Setup(m => m.Execute(It.IsAny<IComputerType>())).Callback<IComputerType>(ct => arguments = ct);
+            var robot = new TestableRobot("AZ15");
+            robot.AddProgram(mockProgram.Object);
+
+            var result = robot.EvaluateInstruction("program(1.15,\"horse\")");
+            result.Should().BeOfType<ComputerTypeVoid>();
+            arguments.Should().NotBeNull();
+            var listArgs = (ComputerTypeList)arguments;
+            var floatArg = listArgs.Value[0] as ComputerTypeFloat;
+            floatArg.Value.Should().Be(1.15f);
+            var stringArg = listArgs.Value[1] as ComputerTypeString;
+            stringArg.Value.Should().Be("horse");
         }
     }
 }

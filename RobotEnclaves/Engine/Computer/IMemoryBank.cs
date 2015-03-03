@@ -10,8 +10,10 @@ namespace Engine.Computer
     {
         int SizeMB { get; }
 
-        void Set(int address, byte value);
+        void Set(int address, IComputerType value);
 
-        byte GetByte(int address);
+        IComputerType GetByte(int address);
+
+        void Upgrade(int extraMb);
     }
 }

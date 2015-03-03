@@ -12,9 +12,9 @@ namespace Engine
         public float DeltaSeconds { get; private set; }
         public long Frame { get; private set; }
 
-        public GameTimer(float totalSeconds = 0.0f)
+        public GameTimer(float startTime = 0.0f)
         {
-            this.TotalSeconds = totalSeconds;
+            this.TotalSeconds = startTime;
             this.DeltaSeconds = 0.0f;
             this.Frame = 0;
         }

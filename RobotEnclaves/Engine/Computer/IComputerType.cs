@@ -5,5 +5,7 @@
         string TypeName { get; }
 
         string ToString();
+
+        IComputerType Cast<T>() where T : IComputerType, new();
     }
 }

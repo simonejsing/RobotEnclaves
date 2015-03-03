@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine.UnitTests.Stubs
 {
+    using Engine.Computer;
     using Robotics;
 
     internal class TestableRobot : Robot
@@ -38,6 +39,11 @@ namespace Engine.UnitTests.Stubs
         public void AddMethod(IProgrammableMethod method)
         {
             this.RegisterMethod(method);
+        }
+
+        public void AddProgram(IProgram program)
+        {
+            this.RegisterProgram(program);
         }
     }
 }

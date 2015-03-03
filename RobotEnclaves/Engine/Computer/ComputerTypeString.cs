@@ -6,9 +6,24 @@ using System.Threading.Tasks;
 
 namespace Engine.Computer
 {
-    public class ComputerTypeString : ComputerType
+    using Engine.Exceptions;
+
+    public sealed class ComputerTypeString : ComputerType
     {
         public string Value { get; private set; }
+
+        public ComputerTypeString()
+        {
+        }
+
+        public ComputerTypeString(IComputerType ct)
+        {
+            ComputerTypeString stringType = (ComputerTypeString)ct;
+            if(stringType == null)
+                throw new ComputerInvalidArgumentException(this, ct);
+
+            Value = stringType.Value;
+        }
 
         public ComputerTypeString(string value)
         {

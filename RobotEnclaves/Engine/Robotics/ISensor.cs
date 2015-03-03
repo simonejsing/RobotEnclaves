@@ -8,6 +8,9 @@ namespace Engine.Robotics
 {
     public interface ISensor
     {
+        bool Active { get; set; }
         float Range { get; }
+
+        IEnumerable<string> Errors { get; }
     }
 }

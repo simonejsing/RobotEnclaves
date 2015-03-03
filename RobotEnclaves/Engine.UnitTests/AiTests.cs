@@ -132,13 +132,33 @@ namespace Engine.UnitTests
         }
 
         [TestMethod]
+        public void RobotCannotInstallItemInAiIfOutOfRange()
+        {
+            var world = new World();
+            var ai = DefaultAi();
+            var robot = new Robot("AZ15") {Position = new Vector2(100, 100)};
+            ai.AddRobot(robot);
+
+            world.AddComputer(ai.Computer);
+            world.AddRobot(robot);
+            robot.SetCurrentWorld(world);
+
+            var item = new SensorUpgrade(new RadarSensor(), "item", "label");
+            robot.Hull.CargoBay.LoadItem(item);
+            Action action = () => robot.EvaluateInstruction("install(\"item\",\"HardCore\")");
+            action.ShouldThrow<RobotException>();
+            ai.Computer.PendingUpgrades.Should().NotContain(item);
+            robot.Hull.CargoBay.Items.Should().Contain(item);
+        }
+
+        [TestMethod]
         public void AiInstallsPendingUpgradesOnReboot()
         {
             var ai = DefaultAi();
             var sensor = new RadarSensor();
             var item = new SensorUpgrade(sensor, "item", "label");
             ai.Computer.InstallUpgrade(item);
-            ai.Reboot();
+            ai.Reboot(0);
             ai.Computer.Sensor.Should().Be(sensor);
         }
     }

@@ -62,7 +62,7 @@ namespace Engine.Robotics
             return false;
         }
 
-        public bool ItemInRange(CollectableItem item)
+        public bool ItemInRange(IObject item)
         {
             return robot.ObjectInRange(item, this.Range);
         }

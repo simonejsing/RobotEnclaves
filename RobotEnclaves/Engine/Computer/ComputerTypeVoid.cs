@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Engine.Computer
 {
-    public class ComputerTypeVoid : ComputerType
+    using Engine.Exceptions;
+
+    public sealed class ComputerTypeVoid : ComputerType
     {
         public override string TypeName
         {
@@ -14,6 +16,10 @@ namespace Engine.Computer
             {
                 return "Void";
             }
+        }
+
+        public ComputerTypeVoid()
+        {
         }
 
         public override string ToString()

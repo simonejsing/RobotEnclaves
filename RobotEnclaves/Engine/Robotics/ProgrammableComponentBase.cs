@@ -32,8 +32,11 @@ namespace Engine.Robotics
             }
         }
 
+        public IEnumerable<string> Errors { get; private set; }
+
         protected ProgrammableComponentBase()
         {
+            this.Errors = new List<string>();
             this.RegisterMethod(new ProgrammableMethod("properties", ct => ListProperties()));
         }
 
@@ -106,7 +109,7 @@ namespace Engine.Robotics
             if (methodTokens.Length > 1)
             {
                 var methodName = methodTokens[0].Trim();
-                var method = methods.FirstOrDefault(m => m.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase));
+                var method = this.methods.FirstOrDefault(m => m.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase));
 
                 if (method == null)
                 {
@@ -115,30 +118,10 @@ namespace Engine.Robotics
 
                 var arguments = methodTokens[1].Trim();
                 arguments = arguments.Substring(0, arguments.Length - 1);
-
-                ComputerType methodArgument;
-                if (string.IsNullOrEmpty(arguments))
-                {
-                    methodArgument = new ComputerTypeVoid();
-                }
-                else
-                {
-                    var argumentList = arguments.Split(',');
-                    if (argumentList.Length == 1)
-                    {
-                        methodArgument = ComputerType.Parse(argumentList[0]);
-                    }
-                    else
-                    {
-                        methodArgument = new ComputerTypeList(argumentList.Select(ComputerType.Parse));
-                    }
-                }
-
-                return method.Invoke(methodArgument);
+                return method.Invoke(ComputerType.Parse(arguments));
             }
 
             throw new InvalidRobotMethodException();
         }
-
     }
 }

@@ -13,5 +13,7 @@ namespace Engine.Robotics
         string Name { get; }
 
         IComputerType EvaluateInstruction(string instruction);
+
+        IEnumerable<string> Errors { get; }
     }
 }

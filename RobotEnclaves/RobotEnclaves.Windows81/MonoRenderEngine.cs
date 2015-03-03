@@ -175,6 +175,9 @@ namespace RobotEnclaves.Windows81
 
         public void FillRectangle(Vector2 topLeft, Vector2 size, Color color)
         {
+            if (color == null)
+                return;
+
             _spriteBatch.FillRectangle(
                 this.TransformVector(new XnaVector2(topLeft.X, topLeft.Y)),
                 this.ScaleVector(new XnaVector2(size.X, size.Y)),

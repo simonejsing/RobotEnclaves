@@ -28,6 +28,14 @@ namespace Engine.Spaceship
         public IHull Hull { get; private set; }
         public IObject Object { get; private set; }
 
+        public IEnumerable<IProgram> Programs
+        {
+            get
+            {
+                return Enumerable.Empty<IProgram>();
+            }
+        }
+
         public GameConsole Console
         {
             get
@@ -65,8 +73,8 @@ namespace Engine.Spaceship
             this.story = new Story();
             this.timer = timer;
             this.Hull = null;
-            this.Computer = new Computer("HardCore");
             this.Object = new WorldObject(0f);
+            this.Computer = new Computer(this.Object, "HardCore");
         }
 
         public Robot FindRobotByName(string name)
@@ -97,7 +105,7 @@ namespace Engine.Spaceship
 
             if (command.Equals("reboot()", StringComparison.OrdinalIgnoreCase))
             {
-                Reboot();
+                Reboot(timer.TotalSeconds);
                 return result;
             }
 
@@ -142,16 +150,19 @@ namespace Engine.Spaceship
             this.story.Progress(gameTimer);
         }
 
-        public void Reboot()
+        public float Reboot(float startTime)
         {
-            var t = timer.TotalSeconds;
+            var t = startTime;
             Console.Clear();
             Booted = false;
 
             Computer.ApplyUpgrades();
+            Computer.Sensor.Active = false;
 
             story.Clear();
             story.AddEvents(Story.AiBootEvents(this, ref t));
+
+            return t;
         }
     }
 }

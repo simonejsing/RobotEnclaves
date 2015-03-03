@@ -15,8 +15,6 @@ namespace Rendering.Graphics
     {
         private readonly RobotObject Robot;
 
-        const float Radius = 10f;
-
         public RobotMapSprite(RobotObject robot) : base(robot.Position)
         {
             Robot = robot;
@@ -25,8 +23,6 @@ namespace Rendering.Graphics
         public override void Render(IRenderEngine renderEngine)
         {
             renderEngine.DrawTexture("RepairBot", Robot.Position, new Vector2(40, 40), Robot.Direction.Angle, TextureDrawMode.Centered);
-            //renderEngine.DrawCircle(Robot.Position, Radius, Color.Red, 5f);
-            renderEngine.DrawVector(Robot.Position, Robot.Direction * 20, Color.Red, 3f);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Engine
         Vector2 Position { get; set; }
         UnitVector2 Direction { get; set; }
 
+        IObjectHealth ObjectHealth { get; }
         float Mass { get; }
     }
 }

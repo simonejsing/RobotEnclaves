@@ -9,7 +9,7 @@ namespace Engine.Robotics
     using Engine.Computer;
     using Engine.Exceptions;
 
-    public class ProgrammableProperty<T> : IProgrammableProperty where T : ComputerType
+    public class ProgrammableProperty<T> : IProgrammableProperty where T : ComputerType, new()
     {
         private readonly Func<T> Getter;
         private readonly Action<T> Setter;
@@ -47,7 +47,19 @@ namespace Engine.Robotics
             {
                 throw new SettingReadOnlyPropertyException(Name);
             }
-            Setter(value as T);
+
+            T arg;
+            if (value is T)
+            {
+                arg = value as T;
+            }
+            else
+            {
+                // Attemp cast
+                arg = value.Cast<T>() as T;
+            }
+
+            Setter(arg);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine.Computer
 {
+    using Engine.Computer.Programs;
     using Engine.Items;
     using Engine.Robotics;
 
@@ -14,15 +15,26 @@ namespace Engine.Computer
         private readonly List<IComputerUpgrade> pendingUpgrades = new List<IComputerUpgrade>(); 
         public string Name { get; private set; }
 
-        public IMemoryBank MemoryBank { get; private set; }
-        public IProgram CurrentProgram { get; set; }
+        public IObject Object { get; private set; }
+
+        private readonly MemoryBank memoryBank;
+
+        public IMemoryBank MemoryBank
+        {
+            get
+            {
+                return memoryBank;
+            }
+        }
+
+        public IProgram CurrentProgram { get; private set; }
         public ISensor Sensor { get; set; }
 
         public virtual IEnumerable<IProgrammableComponent> Components
         {
             get
             {
-                return Enumerable.Empty<IProgrammableComponent>();
+                yield return memoryBank;
             }
         }
 
@@ -52,12 +64,13 @@ namespace Engine.Computer
             }
         }
 
-        public Computer(string name)
+        public Computer(IObject obj, string name)
         {
+            Object = obj;
             Name = name;
-            MemoryBank = new MemoryBank(200);
-            CurrentProgram = null;
-            Sensor = null;
+            memoryBank = new MemoryBank(200);
+            CurrentProgram = new NullProgram();
+            Sensor = new NullSensor();
         }
     }
 }

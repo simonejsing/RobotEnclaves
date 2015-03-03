@@ -13,5 +13,8 @@ namespace Engine.Robotics
         IComputer Computer { get; }
         IHull Hull { get; }
         IObject Object { get; }
+        IEnumerable<IProgram> Programs { get; }
+
+        void Progress(GameTimer timer);
     }
 }

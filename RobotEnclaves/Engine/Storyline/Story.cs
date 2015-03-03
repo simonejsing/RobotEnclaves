@@ -55,19 +55,22 @@ namespace Engine.Storyline
             var t = startTime;
             
             // Boot Ai
-            story.AddEvent(new StoryEvent(t, () => gameEngine.Ai.Reboot()));
+            t = gameEngine.Ai.Reboot(t);
+
+            // AI near-field scan
+            story.AddEvent(new StoryEvent(t += 1.0f, () => gameEngine.Ai.Console.WriteResult(new CommandResult(true, "\r\nNear-field sensor scan initiated..."))));
+            story.AddEvent(new StoryEvent(t += 2.0f, () => gameEngine.Ai.Console.WriteResult(new CommandResult(true, "  Repair-Bot 'az15' detected at (-52.4, 27.2)."))));
+            story.AddEvent(new StoryEvent(t += 0.5f, () => gameEngine.Ai.Console.WriteResult(new CommandResult(true, "\r\nEstablished near-field communication link to 'az15'."))));
+            story.AddEvent(new StoryEvent(t, () => gameEngine.Ai.Console.WriteResult(new CommandResult(true, "\r\nExecuting diagnostics routines..."))));
+            story.AddEvent(new StoryEvent(t += 0.3f, () => gameEngine.Ai.Console.WriteResult(new CommandResult(true, "> az15.diagnostics()"))));
+            story.AddEvent(new StoryEvent(t += 0.1f, () => gameEngine.Ai.ExecuteCommand("az15.diagnostics()")));
 
             // AI discovers sensor upgrade
-            story.AddEvent(new StoryEvent(t += 15.0f, () =>
+            story.AddEvent(new StoryEvent(t += 5.0f, () =>
                                                      {
-                                                         var itemLocation = new Vector2(140, -10);
-                                                         gameEngine.DiscoverItem(
-                                                             new SensorUpgrade(
-                                                                 new RadarSensor(),
-                                                                 "sensor",
-                                                                 "Damaged sensor array") { Position = itemLocation });
-                                                         gameEngine.Ai.Console.WriteResult(
-                                                             new CommandResult(true, string.Format("Unknown object detected at ({0}, {1})", itemLocation.X, itemLocation.Y)));
+                                                         var sensor = new SensorUpgrade(new RadarSensor(),"sensor","Damaged sensor array") { Position = new Vector2(340, -260) };
+                                                         sensor.ObjectHealth.TakeDamage(83);
+                                                         gameEngine.DiscoverItem(sensor);
                                                      }));
             return story;
         }
@@ -78,7 +81,7 @@ namespace Engine.Storyline
             const string aiBootLine1 = "Hard-Core OS v" + Version.Text + " booting...";
             const string aiBootLine2 = "BIOS check... OK";
             const string aiBootLine3 = "RAM check... ERROR";
-            string aiBootLine4 = string.Format("Peripheral sensor calibration... {0}", ai.Sensor == null ? "ERROR" : "OK");
+            string aiBootLine4 = string.Format("Peripheral sensor calibration... {0}", ai.Sensor.Errors.Any() ? "ERROR" : "OK");
             const string aiBootLine5 = "\r\nFATAL ERRORS ENCOUNTERED!";
             const string aiBootLine6 = "\r\nEntering recovery mode...";
             string aiBootLine7 = string.Format("\r\nAvailable RAM: {0} MB", availableRam);
@@ -99,7 +102,7 @@ namespace Engine.Storyline
 
             // Long-range sensor scan (attempt)
             events.Add(new StoryEvent(t, () => ai.Console.WriteResult(new CommandResult(true, "\r\nLong-range sensor scan initiated..."))));
-            if (ai.Sensor == null)
+            if (ai.Sensor.Errors.Any())
             {
                 events.Add(new StoryEvent(t += 2.5f, () => ai.Console.WriteResult(new CommandResult(false, "  <error: Hardware error>"))));
                 events.Add(new StoryEvent(t += 2.5f, () => ai.Console.WriteResult(new CommandResult(true, "Long-range sensor status: DISABLED"))));
@@ -107,20 +110,9 @@ namespace Engine.Storyline
             else
             {
                 events.Add(new StoryEvent(t += 2.5f, () => ai.Console.WriteResult(new CommandResult(true, "Long-range sensor status: ENABLED"))));
+                events.Add(new StoryEvent(t, () => ai.Sensor.Active = true));
             }
 
-            // Near-field sensor scan
-            events.Add(new StoryEvent(t, () => ai.Console.WriteResult(new CommandResult(true, "\r\nNear-field sensor scan initiated..."))));
-            events.Add(new StoryEvent(t += 2.0f, () => ai.Console.WriteResult(new CommandResult(true, "  Repair-Bot 'az15' detected at (-52.4, 27.2)."))));
-            events.Add(new StoryEvent(t += 0.5f, () => ai.Console.WriteResult(new CommandResult(true, "\r\nEstablished near-field communication link to 'az15'."))));
-            events.Add(new StoryEvent(t, () => ai.Console.WriteResult(new CommandResult(true, "\r\nExecuting diagnostics routines..."))));
-            events.Add(new StoryEvent(t += 3.0f, () => ai.Console.WriteResult(new CommandResult(true, "\r\nDiagnostics report:"))));
-            events.Add(new StoryEvent(t += 0.2f, () => ai.Console.WriteResult(new CommandResult(true, "  CPU: OK (1.7 GHz)"))));
-            events.Add(new StoryEvent(t += 0.2f, () => ai.Console.WriteResult(new CommandResult(true, "  RAM: <error: No memory core found>"))));
-            events.Add(new StoryEvent(t += 0.2f, () => ai.Console.WriteResult(new CommandResult(true, "  Engine: OK"))));
-            events.Add(new StoryEvent(t += 0.2f, () => ai.Console.WriteResult(new CommandResult(true, "  Crane: OK"))));
-            events.Add(new StoryEvent(t += 0.2f, () => ai.Console.WriteResult(new CommandResult(true, "  Cargobay: OK (100.0 metric ton)"))));
-            events.Add(new StoryEvent(t += 0.2f, () => ai.Console.WriteResult(new CommandResult(true, "  Sensors: <error: Hardware error>"))));
             events.Add(new StoryEvent(t, () => ai.Console.WriteResult(new CommandResult(true, "\r\nCore awaiting instructions from AI subsystem\r\n"))));
 
             return events;

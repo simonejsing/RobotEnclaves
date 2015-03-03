@@ -9,10 +9,29 @@ namespace Engine.Computer
     using System.Globalization;
     using Engine.Exceptions;
 
-    public abstract class ComputerType : IComputerType
+    public class ComputerType : IComputerType
     {
-        public abstract string TypeName { get; }
-        public abstract override string ToString();
+        public ComputerType()
+        {
+        }
+
+        public virtual string TypeName
+        {
+            get
+            {
+                return "";
+            }
+        }
+
+        public override string ToString()
+        {
+            return "";
+        }
+
+        public virtual IComputerType Cast<T>() where T : IComputerType, new()
+        {
+            throw new ComputerInvalidCastException(this, new T());
+        }
 
         public static ComputerType Parse(string value)
         {
@@ -27,11 +46,11 @@ namespace Engine.Computer
                 var argumentList = value.Split(',');
                 if (argumentList.Length == 1)
                 {
-                    methodArgument = ParseSingleComputerType(argumentList[0]);
+                    methodArgument = ParseSingleComputerType(argumentList[0].Trim());
                 }
                 else
                 {
-                    methodArgument = new ComputerTypeList(argumentList.Select(ComputerType.ParseSingleComputerType));
+                    methodArgument = new ComputerTypeList(argumentList.Select(a => ComputerType.ParseSingleComputerType(a.Trim())));
                 }
             }
 
@@ -55,8 +74,14 @@ namespace Engine.Computer
                 return new ComputerTypeBoolean(false);
             }
 
+            int intValue;
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.CurrentCulture, out intValue))
+            {
+                return new ComputerTypeInt(intValue);
+            }
+
             float floatValue;
-            if (float.TryParse(value, NumberStyles.Any, CultureInfo.CurrentCulture, out floatValue))
+            if (float.TryParse(value, NumberStyles.Float, CultureInfo.CurrentCulture, out floatValue))
             {
                 return new ComputerTypeFloat(floatValue);
             }

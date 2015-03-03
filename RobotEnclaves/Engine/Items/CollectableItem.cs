@@ -31,6 +31,7 @@ namespace Engine.Items
 
         public CollectableItem(string name, string label)
         {
+            ObjectHealth = new ObjectHealth(100);
             OwningRobot = null;
             Mass = 1.0f;
             Name = name;
@@ -63,6 +64,8 @@ namespace Engine.Items
                 return OwningRobot != null;
             }
         }
+
+        public IObjectHealth ObjectHealth { get; private set; }
 
         public void SetCurrentWorld(World world)
         {

@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Engine.UnitTests
 {
     using Engine.Computer;
+    using Engine.Exceptions;
     using FluentAssertions;
 
     [TestClass]
@@ -92,6 +93,34 @@ namespace Engine.UnitTests
             (listType.Value[0] as ComputerTypeFloat).Value.Should().Be(1.12f);
             listType.Value[1].Should().BeOfType<ComputerTypeString>();
             (listType.Value[1] as ComputerTypeString).Value.Should().Be("def");
+        }
+
+        [TestMethod]
+        public void TypeSystemCanParseInteger()
+        {
+            const string value = "12";
+            var type = ComputerType.Parse(value);
+            type.Should().BeOfType<ComputerTypeInt>();
+            var intType = type as ComputerTypeInt;
+            intType.Value.Should().Be(12);
+        }
+
+        [TestMethod]
+        public void TypeSystemCanCastIntegerToFloat()
+        {
+            IComputerType intType = new ComputerTypeInt(12);
+            ComputerTypeFloat floatType = intType.Cast<ComputerTypeFloat>() as ComputerTypeFloat;
+
+            floatType.Value.Should().Be(12f);
+        }
+
+        [TestMethod]
+        public void CastingIntegerToStringThrowsInvalidCastException()
+        {
+            IComputerType intType = new ComputerTypeInt(12);
+            Action action = () => intType.Cast<ComputerTypeString>();
+
+            action.ShouldThrow<ComputerInvalidCastException>();
         }
     }
 }

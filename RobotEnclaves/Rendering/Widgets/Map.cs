@@ -17,7 +17,7 @@ namespace Rendering.Widgets
 
         private float ZoomFactor = 1.0f;
 
-        private List<IAnimation> animations = new List<IAnimation>();
+        private readonly List<IAnimation> animations = new List<IAnimation>();
 
         public List<IGraphics> Graphics { get; set; }
         public bool Sensors { get; set; }
@@ -65,11 +65,29 @@ namespace Rendering.Widgets
 
             if (!Sensors)
             {
-                if (timer.Frame % 20 == 0)
+                var columns = (int)Math.Ceiling(Size.X / noiseBlockSize);
+                var rows = (int)Math.Ceiling(Size.Y / noiseBlockSize);
+                if (timer.Frame % 3 == 0)
                 {
-                    GenerateNoiseMap();
+                    UpdateNoiseMap();
+                    this.SmoothNoiseMap(0, rows, columns);
                 }
             }
+        }
+
+        private int updateStartRow = 0;
+
+        private void UpdateNoiseMap()
+        {
+            const int updateBlockSize = 1;
+
+            var columns = (int)Math.Ceiling(Size.X / noiseBlockSize);
+            var rows = (int)Math.Ceiling(Size.Y / noiseBlockSize);
+
+            this.GenerateRandomDither(updateStartRow, Math.Min(updateStartRow + updateBlockSize, rows - 1), columns);
+            this.SmoothNoiseMap(Math.Max(updateStartRow - 1, 0), Math.Min(updateStartRow + updateBlockSize + 1, rows - 1), columns);
+            
+            updateStartRow = (updateStartRow + updateBlockSize) % rows;
         }
 
         private void GenerateNoiseMap()
@@ -78,12 +96,58 @@ namespace Rendering.Widgets
             var rows = (int)Math.Ceiling(Size.Y / noiseBlockSize);
             noiseMap = new Color[columns,rows];
 
-            for (var y = 0; y < rows; y++)
+            this.GenerateRandomDither(0, rows, columns);
+            this.SmoothNoiseMap(0, rows, columns);
+
+            /*for (var y = 0; y < rows; y++)
             {
                 for (var x = 0; x < columns; x++)
                 {
                     var randomValue = rand.Next(50, 200);
                     noiseMap[x, y] = new Color() { R = randomValue, G = randomValue, B = randomValue };
+                }
+            }*/
+        }
+
+        private void GenerateRandomDither(int startRow, int endRow, int columns)
+        {
+            for (var y = 0; startRow < endRow; startRow++)
+            {
+                for (var x = startRow%2; x < columns; x += 2)
+                {
+                    var randomValue = rand.Next(50, 255);
+                    this.noiseMap[x, startRow] = new Color() {R = randomValue, G = randomValue, B = randomValue};
+                }
+            }
+        }
+
+        private void SmoothNoiseMap(int startRow, int endRow, int columns)
+        {
+            for (var y = startRow; y < endRow; y++)
+            {
+                for (var x = (y + 1)%2; x < columns; x += 2)
+                {
+                    float average = 0f;
+                    if (x > 0)
+                    {
+                        average += this.noiseMap[x - 1, y].R;
+                    }
+                    if (x < columns - 1)
+                    {
+                        average += this.noiseMap[x + 1, y].R;
+                    }
+                    if (y > 0)
+                    {
+                        average += this.noiseMap[x, y - 1].R;
+                    }
+                    if (y < endRow - 1)
+                    {
+                        average += this.noiseMap[x, y + 1].R;
+                    }
+
+                    average /= 4;
+
+                    this.noiseMap[x, y] = new Color() {R = (int)average, G = (int)average, B = (int)average};
                 }
             }
         }

@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace Engine.Computer
 {
-    public class ComputerTypeFloat : ComputerType
+    public sealed class ComputerTypeFloat : ComputerType
     {
         public float Value { get; private set; }
+
+        public ComputerTypeFloat()
+        {
+        }
 
         public ComputerTypeFloat(float value)
         {

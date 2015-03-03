@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Engine.Computer
 {
-    public class ComputerTypeList : ComputerType
+    using Engine.Exceptions;
+
+    public sealed class ComputerTypeList : ComputerType
     {
         public List<ComputerType> Value { get; private set; }
 

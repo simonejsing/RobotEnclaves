@@ -15,6 +15,8 @@ namespace Engine.Robotics
         public Vector2 Position { get; set; }
         public UnitVector2 Direction { get; set; }
 
+        public IObjectHealth ObjectHealth { get; private set; }
+
         public float Mass
         {
             get
@@ -25,6 +27,7 @@ namespace Engine.Robotics
 
         public RobotObject(Robot robot)
         {
+            this.ObjectHealth = new ObjectHealth(100);
             this.Position = Vector2.Zero;
             this.Direction = UnitVector2.GetInstance(1, 0);
             this.robot = robot;

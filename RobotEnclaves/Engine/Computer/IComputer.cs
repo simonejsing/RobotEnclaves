@@ -13,6 +13,8 @@ namespace Engine.Computer
     {
         string Name { get; }
 
+        IObject Object { get; }
+
         IMemoryBank MemoryBank { get; }
         ISensor Sensor { get; set; }
 

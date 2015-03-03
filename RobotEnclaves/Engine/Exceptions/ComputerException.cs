@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Engine.Exceptions
 {
-    class ComputerSyntaxException : ComputerException
+    public class ComputerException : RobotException
     {
-        public ComputerSyntaxException()
+        public ComputerException()
         {
         }
 
-        public ComputerSyntaxException(string message)
+        public ComputerException(string message)
             : base(message)
         {
         }

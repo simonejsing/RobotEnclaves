@@ -53,14 +53,13 @@ namespace Engine
             this.userInterface.UpdateWorld(this.World);
 
             this.userInterface.AddLabel(Vector2.Zero, new Vector2(), fpsLabel);
-            //this.userInterface.AddItemDiscoveredAnimation(gameTimer, new CollectableItem("a", "b") { Position = new Vector2(0, 0) });
         }
 
         public static GameEngine CreateTutorialWorld(IUserInterface userInterface)
         {
             var gameEngine = new GameEngine(userInterface);
             gameEngine.World.AddObject(new Spaceship.Spaceship() { Position = Vector2.Zero });
-            var repairBotAz15 = new Robot("az15") { Position = new Vector2(-52.4f, 27.2f) };
+            var repairBotAz15 = new RepairBot("az15") { Position = new Vector2(-52.4f, 27.2f) };
             gameEngine.AddRobot(repairBotAz15);
 
             gameEngine.Story = Story.TutorialStory(gameEngine, 0.0f);
@@ -85,6 +84,7 @@ namespace Engine
             this.World.AddItem(item);
             userInterface.AddItemDiscoveredAnimation(gameTimer, item);
             userInterface.UpdateWorld(World);
+            Ai.Console.WriteResult(new CommandResult(true, string.Format("Unknown object detected at ({0}, {1})", item.Position.X, item.Position.Y)));
         }
 
         private void ProcessKeystrokes(IEnumerable<Keystroke> keystrokes)
@@ -189,6 +189,10 @@ namespace Engine
 
             this.Story.Progress(this.gameTimer);
             this.Ai.Progress(this.gameTimer);
+            foreach (var robot in World.Robots)
+            {
+                robot.Progress(this.gameTimer);
+            }
 
             this.MoveRobots(deltaT);
             this.DiscoverItemInCloseProximity();
@@ -198,7 +202,7 @@ namespace Engine
 
         public void RenderFrame(IRenderEngine renderEngine)
         {
-            userInterface.SetMapSensors(Ai.Sensor != null);
+            userInterface.SetMapSensors(Ai.Sensor.Active);
 
             // Update FPS label
             fpsLabel.Text = String.Format("FPS: {0}, U/R: {1}/{2}", this.fpsCounter, this.updateTimer, this.renderTimer);

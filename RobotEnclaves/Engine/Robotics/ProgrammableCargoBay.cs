@@ -77,7 +77,11 @@ namespace Engine.Robotics
 
         public CollectableItem FindItemByName(string name)
         {
-            return Items.First(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var item = Items.FirstOrDefault(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if(item == null)
+                throw new RobotException(string.Format("Item '{0}' was not found in cargo bay.", name));
+
+            return item;
         }
     }
 }
