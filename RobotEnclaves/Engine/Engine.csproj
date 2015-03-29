@@ -90,8 +90,10 @@
     <Compile Include="Robotics\IProgrammableProperty.cs" />
     <Compile Include="Robotics\IRobot.cs" />
     <Compile Include="Robotics\ISensor.cs" />
+    <Compile Include="Robotics\NullProgrammableComponent.cs" />
     <Compile Include="Robotics\NullSensor.cs" />
     <Compile Include="Robotics\ProgrammableCargoBay.cs" />
+    <Compile Include="Robotics\ProgrammableComputerWrapper.cs" />
     <Compile Include="Robotics\ProgrammableMethod.cs" />
     <Compile Include="Robotics\ProgrammableProperty.cs" />
     <Compile Include="Robotics\RadarSensor.cs" />

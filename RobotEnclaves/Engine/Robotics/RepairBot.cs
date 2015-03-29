@@ -15,7 +15,7 @@ namespace Engine.Robotics
             : base(name)
         {
             this.RegisterMethod(new ProgrammableMethod("inspect", this.InspectItem));
-            this.RegisterProgram(new RepairProgram(this));
+            this.Computer.AddProgram(new RepairProgram(this));
         }
 
         private IComputerType InspectItem(IComputerType ct)

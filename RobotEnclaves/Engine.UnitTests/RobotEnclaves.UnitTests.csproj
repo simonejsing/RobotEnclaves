@@ -73,6 +73,7 @@
     <Compile Include="ComputerTests.cs" />
     <Compile Include="ProgrammableComponentTests.cs" />
     <Compile Include="RepairBotTests.cs" />
+    <Compile Include="ComputerProgramTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

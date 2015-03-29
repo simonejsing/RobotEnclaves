@@ -29,6 +29,7 @@ namespace Engine.UnitTests.Stubs
         public void AddComponent(IProgrammableComponent component)
         {
             components.Add(component);
+            Computer.AddProxyComponents(new [] {component});
         }
 
         public void AddProperty(IProgrammableProperty property)
@@ -39,11 +40,6 @@ namespace Engine.UnitTests.Stubs
         public void AddMethod(IProgrammableMethod method)
         {
             this.RegisterMethod(method);
-        }
-
-        public void AddProgram(IProgram program)
-        {
-            this.RegisterProgram(program);
         }
     }
 }

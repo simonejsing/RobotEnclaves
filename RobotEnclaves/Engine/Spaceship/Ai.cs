@@ -14,7 +14,7 @@ namespace Engine.Spaceship
     using Engine.Storyline;
     using UserInput;
 
-    public class Ai : IRobot
+    public class Ai : ProgrammableComponentBase, IRobot
     {
         private GameTimer timer;
         private Story story;
@@ -27,6 +27,12 @@ namespace Engine.Spaceship
         public IComputer Computer { get; private set; }
         public IHull Hull { get; private set; }
         public IObject Object { get; private set; }
+
+        public override string Name
+        {
+            get { return "Oddysey"; }
+            protected set { }
+        }
 
         public IEnumerable<IProgram> Programs
         {
@@ -74,7 +80,7 @@ namespace Engine.Spaceship
             this.timer = timer;
             this.Hull = null;
             this.Object = new WorldObject(0f);
-            this.Computer = new Computer(this.Object, "HardCore");
+            this.Computer = new Computer(this.Object, this, "HardCore");
         }
 
         public Robot FindRobotByName(string name)
@@ -85,6 +91,7 @@ namespace Engine.Spaceship
         public void AddRobot(Robot r)
         {
             OwnedRobots.Add(r);
+            this.Computer.AddProxyComponents(new []{new ProgrammableComputerWrapper(r.Name, r.Computer)});
         }
 
         public void ExecuteCommand(string command)
@@ -95,54 +102,24 @@ namespace Engine.Spaceship
 
         public CommandResult InterpretCommand(string command)
         {
-            var result = new CommandResult(true);
-
-            if (command.Equals("robots()", StringComparison.OrdinalIgnoreCase))
+            try
             {
-                result.AddMessages(this.OwnedRobots.Select(r => r.Name));
+                var result = new CommandResult(true);
+                var robotResult = this.Computer.EvaluateInstruction(command);
+                if (!(robotResult is ComputerTypeVoid))
+                {
+                    result.AddMessages(
+                        robotResult.ToString().Split(
+                            new[] { Environment.NewLine },
+                            StringSplitOptions.RemoveEmptyEntries));
+                }
+
                 return result;
             }
-
-            if (command.Equals("reboot()", StringComparison.OrdinalIgnoreCase))
+            catch (RobotException rex)
             {
-                Reboot(timer.TotalSeconds);
-                return result;
+                return new CommandResult(false, rex.Message);
             }
-
-            var tokens = command.Split(new[] { '.' }, 2);
-            if (tokens.Length > 1)
-            {
-                var robotName = tokens[0];
-                var instruction = tokens[1];
-
-                var robot = this.FindRobotByName(robotName);
-                if (robot == null)
-                {
-                    var noSuchRobotResult = new CommandResult(false);
-                    noSuchRobotResult.AddMessages(String.Format("Robot with name '{0}' does not exist.", robotName));
-                    return noSuchRobotResult;
-                }
-
-                try
-                {
-                    var robotResult = robot.EvaluateInstruction(instruction);
-                    if (!(robotResult is ComputerTypeVoid))
-                    {
-                        result.AddMessages(
-                            robotResult.ToString().Split(
-                                new[] {Environment.NewLine},
-                                StringSplitOptions.RemoveEmptyEntries));
-                    }
-
-                    return result;
-                }
-                catch (RobotException rex)
-                {
-                    return new CommandResult(false, rex.Message);
-                }
-            }
-
-            return new CommandResult(false, "Invalid instruction");
         }
 
         public void Progress(GameTimer gameTimer)

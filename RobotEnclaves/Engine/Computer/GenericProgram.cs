@@ -42,5 +42,15 @@ namespace Engine.Computer
             currentLineNumber++;
             return line;
         }
+
+        public static IProgram FromCode(string name, string code)
+        {
+            var program = new GenericProgram(name);
+            foreach (var line in code.Split(new [] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries))
+            {
+                program.AddStatement(GenericStatement.FromCode(line));
+            }
+            return program;
+        }
     }
 }

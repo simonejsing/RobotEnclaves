@@ -17,7 +17,7 @@ namespace Engine.UnitTests
         {
             IRobot robot = new RepairBot("az15");
 
-            robot.Programs.Should().Contain(p => p.Name.Equals("repair", StringComparison.OrdinalIgnoreCase));
+            robot.Computer.Programs.Should().Contain(p => p.Name.Equals("repair", StringComparison.OrdinalIgnoreCase));
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace Engine.UnitTests
             item.ObjectHealth.TakeDamage(20);
             robot.Hull.CargoBay.LoadItem(item);
 
-            var repairProgram = robot.Programs.First(p => p.Name.Equals("repair", StringComparison.OrdinalIgnoreCase));
+            var repairProgram = robot.Computer.Programs.First(p => p.Name.Equals("repair", StringComparison.OrdinalIgnoreCase));
 
             repairProgram.Execute(new ComputerTypeString(item.Name));
             while (!repairProgram.Finished)

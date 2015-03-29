@@ -19,5 +19,10 @@ namespace Engine.Computer
         {
             body(computer);
         }
+
+        public static IStatement FromCode(string code)
+        {
+            return new GenericStatement(c => c.EvaluateInstruction(code));
+        }
     }
 }

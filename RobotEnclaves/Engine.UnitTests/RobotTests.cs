@@ -18,24 +18,6 @@ namespace Engine.UnitTests
     public class RobotTests
     {
         [TestMethod]
-        public void RobotExecutesNextStatementOfCurrentProgramWhenRequestedTo()
-        {
-            var expected = new ComputerTypeFloat(12.5f);
-
-            var robot = new Robot("");
-            var statement = new Mock<IStatement>();
-            var program = new Mock<IProgram>();
-            program.Setup(p => p.GetNextStatement()).Returns(statement.Object);
-            statement.Setup(s => s.Execute(It.IsAny<IComputer>())).Callback((IComputer c) => c.MemoryBank.Set(0, expected));
-
-            robot.Computer.MemoryBank.Set(0, new ComputerTypeFloat(0f));
-            robot.Computer.SetCurrentProgram(program.Object);
-            robot.ExecuteNextProgramStatement();
-
-            robot.Computer.MemoryBank.GetByte(0).Should().Be(expected);
-        }
-
-        [TestMethod]
         public void ARobotWithAPositiveThrottleLevelMovesWhenTimeProgresses()
         {
             var mockUi = new Mock<IUserInterface>();
@@ -159,7 +141,7 @@ namespace Engine.UnitTests
                     ct => { value = ct.Value; }));
 
             robot.AddComponent(component);
-            robot.EvaluateInstruction(string.Format("{0}.{1} = 1.5", component.Name, propertyName));
+            robot.Computer.EvaluateInstruction(string.Format("{0}.{1} = 1.5", component.Name, propertyName));
             value.Should().Be(1.5f);
         }
 
@@ -209,24 +191,5 @@ namespace Engine.UnitTests
             robot.Computer.MemoryBank.SizeMB.Should().Be(expectedSize);
         }
 
-        [TestMethod]
-        public void RobotExecutesProgramWithArguments()
-        {
-            IComputerType arguments = null;
-            var mockProgram = new Mock<IProgram>();
-            mockProgram.Setup(m => m.Name).Returns("program");
-            mockProgram.Setup(m => m.Execute(It.IsAny<IComputerType>())).Callback<IComputerType>(ct => arguments = ct);
-            var robot = new TestableRobot("AZ15");
-            robot.AddProgram(mockProgram.Object);
-
-            var result = robot.EvaluateInstruction("program(1.15,\"horse\")");
-            result.Should().BeOfType<ComputerTypeVoid>();
-            arguments.Should().NotBeNull();
-            var listArgs = (ComputerTypeList)arguments;
-            var floatArg = listArgs.Value[0] as ComputerTypeFloat;
-            floatArg.Value.Should().Be(1.15f);
-            var stringArg = listArgs.Value[1] as ComputerTypeString;
-            stringArg.Value.Should().Be("horse");
-        }
     }
 }

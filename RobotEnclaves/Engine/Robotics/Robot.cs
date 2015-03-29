@@ -13,19 +13,9 @@ namespace Engine.Robotics
 
     public class Robot : ProgrammableComponentBase, IRobot
     {
-        private readonly List<IProgram> programs = new List<IProgram>();
- 
         public IComputer Computer { get; private set; }
         public IHull Hull { get; private set; }
         public IObject Object { get; private set; }
-
-        public IEnumerable<IProgram> Programs
-        {
-            get
-            {
-                return programs;
-            }
-        }
 
         public void Progress(GameTimer timer)
         {
@@ -39,7 +29,7 @@ namespace Engine.Robotics
         {
             get
             {
-                return Hull.Components.Concat(Computer.Components);
+                return Hull.Components;
             }
         }
 
@@ -48,7 +38,7 @@ namespace Engine.Robotics
             return new ComputerTypeList(Components.Select(c => new ComputerTypeString(c.Name)));
         }
 
-        public override string Name { get; protected set; }
+        public override sealed string Name { get; protected set; }
 
         public Vector2 Position
         {
@@ -96,8 +86,10 @@ namespace Engine.Robotics
         public Robot(string name)
         {
             Object = new RobotObject(this);
-            Computer = new Computer(this.Object, name);
             Hull = new CatarpillarHull(this);
+
+            Computer = new Computer(this.Object, this, name);
+            Computer.AddProxyComponents(Hull.Components);
 
             var massProperty = new ProgrammableProperty<ComputerTypeFloat>(
                 "mass",
@@ -106,7 +98,7 @@ namespace Engine.Robotics
 
             this.RegisterMethod(new ProgrammableMethod("reboot", ct => this.Reboot()));
             this.RegisterMethod(new ProgrammableMethod("components", ct => this.ListComponents()));
-            this.RegisterMethod(new ProgrammableMethod("install", ct => this.InstallItem(ct)));
+            this.RegisterMethod(new ProgrammableMethod("install", this.InstallItem));
             this.RegisterMethod(new ProgrammableMethod("diagnostics", ct => this.RunDiagnosticsReport()));
 
             Position = Vector2.Zero;
@@ -120,11 +112,6 @@ namespace Engine.Robotics
         {
             Computer.ApplyUpgrades();
             return new ComputerTypeVoid();
-        }
-
-        protected void RegisterProgram(IProgram program)
-        {
-            programs.Add(program);
         }
 
         private IComputerType RunDiagnosticsReport()
@@ -172,48 +159,6 @@ namespace Engine.Robotics
         public void SetCurrentWorld(World world)
         {
             this.World = world;
-        }
-
-        public override IComputerType EvaluateInstruction(string instruction)
-        {
-            var componentTokens = instruction.Split(new[] { '.' }, 2);
-            var componentName = componentTokens[0];
-            if (componentTokens.Length > 1 && ComponentExists(componentName))
-            {
-                var componentInstruction = componentTokens[1].Trim();
-                var component = Components.First(c => c.Name.Equals(componentName));
-
-                return component.EvaluateInstruction(componentInstruction);
-            }
-
-            // Check if the instruction is a program
-            if (instruction.EndsWith(")"))
-            {
-                var programTokens = instruction.Split(new[] { '(' }, 2);
-                var programName = programTokens[0];
-
-                var program = this.Programs.FirstOrDefault(p => p.Name.Equals(programName, StringComparison.OrdinalIgnoreCase));
-                if (programTokens.Length > 1 && program != null)
-                {
-                    var argumentString = programTokens[1].Trim();
-                    argumentString = argumentString.Substring(0, argumentString.Length - 1);
-                    program.Execute(ComputerType.Parse(argumentString));
-                    this.Computer.SetCurrentProgram(program);
-                    return new ComputerTypeVoid();
-                }
-            }
-
-            return base.EvaluateInstruction(instruction);
-        }
-
-        private bool ComponentExists(string name)
-        {
-            return Components.Any(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public void ExecuteNextProgramStatement()
-        {
-            Computer.CurrentProgram.GetNextStatement().Execute(this.Computer);
         }
 
         public bool ObjectInRange(IObject obj, float range)
