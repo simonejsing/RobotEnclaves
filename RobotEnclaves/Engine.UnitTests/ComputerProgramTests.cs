@@ -51,6 +51,18 @@ namespace Engine.UnitTests
         }
 
         [TestMethod]
+        public void ARunningProgramCanChangePropertiesOfDefaultComponent()
+        {
+            var engine = new ProgrammableEngine();
+            var program = GenericProgram.FromCode("fullspeedahead", "throttle = 1.0");
+            var computer = new Computer.Computer(null, engine, "computer");
+
+            computer.SetCurrentProgram(program);
+            computer.ExecuteNextProgramStatement();
+            engine.Throttle.Should().Be(1.0f);
+        }
+
+        [TestMethod]
         public void ARunningProgramCanChangePropertiesOfProxyComponents()
         {
             var engine = new ProgrammableEngine();
