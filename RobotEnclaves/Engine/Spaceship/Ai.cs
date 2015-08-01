@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Engine.Network;
 
 namespace Engine.Spaceship
 {
@@ -25,6 +26,7 @@ namespace Engine.Spaceship
 
 
         public IComputer Computer { get; private set; }
+        public ICommunicationArray Comm { get; private set; }
         public IHull Hull { get; private set; }
         public IObject Object { get; private set; }
 
@@ -81,6 +83,7 @@ namespace Engine.Spaceship
             this.Hull = null;
             this.Object = new WorldObject(0f);
             this.Computer = new Computer(this.Object, this, "HardCore");
+            this.Comm = new NullCommunicationArray();
         }
 
         public Robot FindRobotByName(string name)

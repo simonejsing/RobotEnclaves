@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,6 +54,21 @@ namespace Engine
             this.userInterface.UpdateWorld(this.World);
 
             this.userInterface.AddLabel(Vector2.Zero, new Vector2(), fpsLabel);
+        }
+
+        public static GameEngine CreateExperimentalWorld(IUserInterface userInterface)
+        {
+            var gameEngine = new GameEngine(userInterface);
+            gameEngine.Ai.Computer.Sensor = new RadarSensor() {Active = true};
+
+            var r1 = new RepairBot("r1") { Position = new Vector2(-52.4f, 42.2f) };
+            var r2 = new RepairBot("r2") { Position = new Vector2(52.4f, 127.2f) };
+            var r3 = new RepairBot("r3") { Position = new Vector2(52.4f, -27.2f) };
+            gameEngine.AddRobot(r1);
+            gameEngine.AddRobot(r2);
+            gameEngine.AddRobot(r3);
+
+            return gameEngine;
         }
 
         public static GameEngine CreateTutorialWorld(IUserInterface userInterface)

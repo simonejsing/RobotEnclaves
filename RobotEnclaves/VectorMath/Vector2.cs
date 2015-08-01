@@ -144,6 +144,16 @@ namespace VectorMath
             return new Vector2(X*cosAngle - Y*sinAngle, X*sinAngle + Y*cosAngle);
         }
 
+        public static float DistanceBetween(Vector2 a, Vector2 b)
+        {
+            return (a - b).Length;
+        }
+
+        public static float DistanceBetweenSquared(Vector2 a, Vector2 b)
+        {
+            return (a - b).LengthSquared;
+        }
+
         public static float AngleBetween(Vector2 a, Vector2 b)
         {
             var dotProduct = Dot(a, b)/(a.Length*b.Length);

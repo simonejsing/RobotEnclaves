@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Engine.Network;
 
 namespace Engine.Robotics
 {
@@ -14,6 +15,7 @@ namespace Engine.Robotics
     public class Robot : ProgrammableComponentBase, IRobot
     {
         public IComputer Computer { get; private set; }
+        public ICommunicationArray Comm { get; set; }
         public IHull Hull { get; private set; }
         public IObject Object { get; private set; }
 
@@ -91,6 +93,19 @@ namespace Engine.Robotics
             Computer = new Computer(this.Object, this, name);
             Computer.AddProxyComponents(Hull.Components);
 
+            Comm = new NullCommunicationArray();
+
+            Position = Vector2.Zero;
+            BaseMass = 100.0f;
+
+            Direction = UnitVector2.GetInstance(1f, 0f);
+            Name = name;
+
+            SetupProgrammability();
+        }
+
+        private void SetupProgrammability()
+        {
             var massProperty = new ProgrammableProperty<ComputerTypeFloat>(
                 "mass",
                 () => new ComputerTypeFloat(this.Object.Mass));
@@ -100,12 +115,6 @@ namespace Engine.Robotics
             this.RegisterMethod(new ProgrammableMethod("components", ct => this.ListComponents()));
             this.RegisterMethod(new ProgrammableMethod("install", this.InstallItem));
             this.RegisterMethod(new ProgrammableMethod("diagnostics", ct => this.RunDiagnosticsReport()));
-
-            Position = Vector2.Zero;
-            BaseMass = 100.0f;
-
-            Direction = UnitVector2.GetInstance(1f, 0f);
-            Name = name;
         }
 
         private IComputerType Reboot()

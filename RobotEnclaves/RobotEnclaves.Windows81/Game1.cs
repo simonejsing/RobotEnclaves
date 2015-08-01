@@ -31,7 +31,7 @@ namespace RobotEnclaves.Windows81
         protected override void Initialize()
         {
             renderEngine.Initialize();
-            this.gameEngine = GameEngine.CreateTutorialWorld(new TopologicalUserInterface(this.renderEngine.Viewport));
+            this.gameEngine = GameEngine.CreateExperimentalWorld(new TopologicalUserInterface(this.renderEngine.Viewport));
 
             base.Initialize();
         }
