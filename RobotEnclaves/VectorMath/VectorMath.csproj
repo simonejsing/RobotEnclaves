@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="ComponentizedVector2.cs" />
     <Compile Include="Line2.cs" />
+    <Compile Include="Matrix2x2.cs" />
     <Compile Include="PointVector2.cs" />
     <Compile Include="Polygon2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

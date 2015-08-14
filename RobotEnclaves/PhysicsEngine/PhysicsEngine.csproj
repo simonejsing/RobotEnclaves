@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0FFF41F8-80E0-44D7-9BE1-DB28AA6966AE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PhysicsEngine</RootNamespace>
+    <AssemblyName>PhysicsEngine</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile78</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Bounding\BoundingObject.cs" />
+    <Compile Include="Bounding\BoundingPolygon.cs" />
+    <Compile Include="Bounding\NoBounds.cs" />
+    <Compile Include="CollidableObject.cs" />
+    <Compile Include="Collision\CollisionLineSegment.cs" />
+    <Compile Include="Collision\Collision.cs" />
+    <Compile Include="Collision\CollisionObject.cs" />
+    <Compile Include="Collision\CollisionObjectGroup.cs" />
+    <Compile Include="Collision\CollisionPlane.cs" />
+    <Compile Include="Collision\CollisionResolver.cs" />
+    <Compile Include="Interfaces\IBoundingObject.cs" />
+    <Compile Include="Interfaces\ICollisionObject.cs" />
+    <Compile Include="Collision\LinearCollisionObject.cs" />
+    <Compile Include="Collision\Violation.cs" />
+    <Compile Include="ExternalForce.cs" />
+    <Compile Include="Forces\ForceField.cs" />
+    <Compile Include="Forces\MassInvariantForce.cs" />
+    <Compile Include="Forces\UniformForceField.cs" />
+    <Compile Include="Interfaces\IPhysicsEngine.cs" />
+    <Compile Include="Interfaces\IPhysicsRule.cs" />
+    <Compile Include="Engine.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TemporaryObjectTransformation.cs" />
+    <Compile Include="Collision\ViolationResolver.cs" />
+    <Compile Include="WorldEnvironment.cs" />
+    <Compile Include="Object.cs" />
+    <Compile Include="ObjectTransformation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExtensionMethods\ExtensionMethods.csproj">
+      <Project>{10151759-4783-4ab1-af24-9303ead0d69f}</Project>
+      <Name>ExtensionMethods</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VectorMath\VectorMath.csproj">
+      <Project>{5e6adaba-73e6-40c4-af13-c9b6d5baa8d0}</Project>
+      <Name>VectorMath</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
