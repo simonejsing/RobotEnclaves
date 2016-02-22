@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using PhysicsEngine.Collision;
 using PhysicsEngine.Interfaces;
@@ -124,6 +125,37 @@ namespace PhysicsEngine
         private Vector2 ApplyRules(Object obj)
         {
             return Rules.Aggregate(Vector2.Zero, (current, rule) => current + rule.Apply(obj));
+        }
+
+        public void ApplyTransformations(IEnumerable<ObjectTransformation> transformations, IEnumerable<Object> hitableObjects, float deltaTime)
+        {
+            foreach (var transformation in transformations)
+            {
+                ApplyTransformation(transformation, hitableObjects, deltaTime);
+            }
+        }
+
+        private static void ApplyTransformation(ObjectTransformation transformation, IEnumerable<Object> hitableObjects, float deltaTime)
+        {
+            transformation.Apply();
+
+            transformation.TargetObject.OnGround = false;
+
+            // Check if this moveable object hit any hitable objects
+            foreach (var hitObject in hitableObjects.Where(o => o.HitObject.Intersects(transformation.TargetObject.HitObject)))
+            {
+                hitObject.OnHit?.Invoke(hitObject, transformation.TargetObject);
+            }
+
+            // In case of collision, update velocity vector to reflect the actual movement
+            if (transformation.CollisionOccured)
+            {
+                transformation.PrimaryCollision.CollisionObject.OnCollision(transformation.TargetObject);
+
+                var angleOfImpactObject = Vector2.AngleBetween(transformation.PrimaryCollision.ImpactNormal, new Vector2(0, 1));
+                transformation.TargetObject.OnGround = angleOfImpactObject < Math.PI / 8;
+                transformation.TargetObject.Velocity = transformation.CollisionMomentum / deltaTime;
+            }
         }
     }
 }

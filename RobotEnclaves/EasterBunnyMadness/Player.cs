@@ -14,6 +14,7 @@ namespace EasterBunnyMadness
             jumpEndTime = 0.0;
             Jumping = false;
             BoundingObject = BoundingPolygon.Box(new Vector2(0, 0), new Vector2(1, 1));
+            HitObject = BoundingPolygon.Box(new Vector2(0, 0), new Vector2(1, 1));
         }
 
         public void Update(double time)

@@ -22,6 +22,7 @@ namespace MonoShims
             sprites.LoadSprite(SpriteLibrary.SpriteIdentifier.Player, @"Sprites\player");
             sprites.LoadSprite(SpriteLibrary.SpriteIdentifier.Block, @"Sprites\block");
             sprites.LoadSprite(SpriteLibrary.SpriteIdentifier.Spikes, @"Sprites\spikes");
+            sprites.LoadSprite(SpriteLibrary.SpriteIdentifier.Coin, @"Sprites\coin");
 
             DefaultFont = manager.Load<SpriteFont>("DefaultFont");
 

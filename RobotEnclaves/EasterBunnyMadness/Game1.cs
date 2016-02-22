@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using ActionPlatformer;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoShims;
 using PhysicsEngine;
+using PhysicsEngine.Bounding;
 using PhysicsEngine.Collision;
 using PhysicsEngine.Interfaces;
 using VectorMath;
+using World;
 using Object = PhysicsEngine.Object;
 using Vector2 = VectorMath.Vector2;
 
@@ -23,13 +25,15 @@ namespace EasterBunnyMadness
         private readonly MonoKeyboardInput keyboard;
 
         private List<Object> movableObjects;
+        private List<Object> hitableObjects;
         private List<CollisionLineSegment> collisionObjects;
 
         private Engine physics;
         private Renderer renderer;
         private Player player;
-        private Block[] blocks;
-        private Spikes[] spikes;
+        private int score = 0;
+
+        private readonly TiledWorldMap TiledWorldMap = new TiledWorldMap(new Vector2(30, 30));
 
         public Game1()
         {
@@ -48,37 +52,10 @@ namespace EasterBunnyMadness
         {
             physics = Engine.Default();
             player = new Player() { Position = new Vector2(20, -150) };
-            blocks = new[]
-            {
-                new Block() {Position = TilePosition(0, 10)},
-                new Block() {Position = TilePosition(1, 10)},
-                new Block() {Position = TilePosition(2, 10)},
-                new Block() {Position = TilePosition(3, 10)},
-                new Block() {Position = TilePosition(4, 10)},
-
-                new Block() {Position = TilePosition(8, 11)},
-                new Block() {Position = TilePosition(9, 11)},
-                new Block() {Position = TilePosition(10, 11)},
-                new Block() {Position = TilePosition(11, 11)},
-            };
-
-            spikes = new[]
-            {
-                new Spikes() {Position = TilePosition(5, 11)},
-                new Spikes() {Position = TilePosition(6, 11)},
-                new Spikes() {Position = TilePosition(7, 11)},
-            };
-
             movableObjects = new List<Object>() { player };
-            var killLineSegment = new CollisionLineSegment(new PointVector2(TilePosition(5, 11), TilePosition(3, 0)).Reverse);
-            killLineSegment.CollisionEvent += (sender, e) => { e.Target.Dead = true; };
+            hitableObjects = new List<Object>();
 
-            collisionObjects = new List<CollisionLineSegment>()
-            {
-                new CollisionLineSegment(new PointVector2(TilePosition(0, 10), TilePosition(5, 0)).Reverse),
-                new CollisionLineSegment(new PointVector2(TilePosition(8, 11), TilePosition(4, 0)).Reverse),
-                killLineSegment,
-            };
+            CreateMap();
 
             // Create a box for player 1
             /*var splineOrigin = new Vector2(0, -100);
@@ -98,9 +75,48 @@ namespace EasterBunnyMadness
             base.Initialize();
         }
 
-        private static Vector2 TilePosition(int x, int y)
+        private void CreateMap()
         {
-            return new Vector2(x * 30, -y * 30);
+            // Create tiles on map
+            for (int i = 0; i < 5; i++)
+            {
+                TiledWorldMap.AddBlock(i, 10);
+            }
+            for (int i = 5; i < 8; i++)
+            {
+                TiledWorldMap.AddSpikes(i, 11);
+            }
+            for (int i = 8; i < 12; i++)
+            {
+                TiledWorldMap.AddBlock(i, 11);
+            }
+
+            // Add coins to map
+            AddCoin(11, 8);
+            AddCoin(12, 8);
+            AddCoin(13, 8);
+
+            // Create collision segments
+            var killLineSegment = new CollisionLineSegment(new PointVector2(TiledWorldMap.TilePosition(5, 11), TiledWorldMap.TilePosition(3, 0)).Reverse);
+            killLineSegment.CollisionEvent += (sender, e) => { e.Target.Dead = true; };
+
+            collisionObjects = new List<CollisionLineSegment>()
+            {
+                new CollisionLineSegment(new PointVector2(TiledWorldMap.TilePosition(0, 10), TiledWorldMap.TilePosition(5, 0)).Reverse),
+                new CollisionLineSegment(new PointVector2(TiledWorldMap.TilePosition(8, 11), TiledWorldMap.TilePosition(4, 0)).Reverse),
+                killLineSegment,
+            };
+        }
+
+        private void AddCoin(int x, int y)
+        {
+            var coin = TiledWorldMap.AddCoin(x, y);
+            coin.OnHit += (source, target) =>
+            {
+                source.Dead = true;
+                score++;
+            };
+            hitableObjects.Add(coin);
         }
 
         /// <summary>
@@ -144,14 +160,20 @@ namespace EasterBunnyMadness
 
             var transformations = physics.ProgressTime(movableObjects, collisionObjects, playerForce, deltaT);
 
-            foreach (var transformation in transformations)
-            {
-                ApplyTransformation(transformation, deltaT);
-            }
+            physics.ApplyTransformations(transformations, hitableObjects, deltaT);
 
             CheckPlayerJump(time);
+            RemoveCollectedCoins();
 
             base.Update(gameTime);
+        }
+
+        private void RemoveCollectedCoins()
+        {
+            foreach (var coin in TiledWorldMap.Coins.Where(c => c.Dead))
+            {
+                hitableObjects.Remove(coin);
+            }
         }
 
         private void CheckPlayerJump(float time)
@@ -166,9 +188,9 @@ namespace EasterBunnyMadness
         {
             Vector2 force = Vector2.Zero;
             if (keyboard.MoveLeft())
-                force += new Vector2(-50, 0);
+                force += new Vector2(-150, 0);
             if (keyboard.MoveRight())
-                force += new Vector2(50, 0);
+                force += new Vector2(150, 0);
 
             if (player.Jumping)
             {
@@ -176,23 +198,6 @@ namespace EasterBunnyMadness
             }
 
             return force;
-        }
-
-        private static void ApplyTransformation(ObjectTransformation transformation, float deltaTime)
-        {
-            transformation.Apply();
-
-            transformation.TargetObject.OnGround = false;
-
-            // In case of collision, update velocity vector to reflect the actual movement
-            if (transformation.CollisionOccured)
-            {
-                transformation.PrimaryCollision.CollisionObject.OnCollision(transformation.TargetObject);
-
-                var angleOfImpactObject = Vector2.AngleBetween(transformation.PrimaryCollision.ImpactNormal, new Vector2(0, 1));
-                transformation.TargetObject.OnGround = angleOfImpactObject < Math.PI / 8;
-                transformation.TargetObject.Velocity = transformation.CollisionMomentum / deltaTime;
-            }
         }
 
         /// <summary>
@@ -212,14 +217,19 @@ namespace EasterBunnyMadness
                 RenderOpagueSprite(SpriteLibrary.SpriteIdentifier.Player, player.Position);
             }
 
-            foreach (var block in blocks)
+            foreach (var block in TiledWorldMap.Blocks)
             {
                 RenderOpagueSprite(SpriteLibrary.SpriteIdentifier.Block, block.Position);
             }
 
-            foreach (var spike in spikes)
+            foreach (var spike in TiledWorldMap.Spikes)
             {
                 RenderOpagueSprite(SpriteLibrary.SpriteIdentifier.Spikes, spike.Position);
+            }
+
+            foreach (var coin in TiledWorldMap.Coins.Where(c => !c.Dead))
+            {
+                RenderOpagueSprite(SpriteLibrary.SpriteIdentifier.Coin, coin.Position);
             }
 
             foreach (var collisionLine in collisionObjects)
@@ -227,7 +237,7 @@ namespace EasterBunnyMadness
                 renderer.DrawVector(spriteBatch, collisionLine.Segment.Origin, collisionLine.Segment.Vector, Color.Black);
             }
 
-            renderer.RenderText(spriteBatch, Vector2.Zero, string.Format("Player: {0}, Time: {1}", player.Position, time), Color.Black);
+            renderer.RenderText(spriteBatch, Vector2.Zero, string.Format("Score: {2}, Player: {0}, Time: {1}", player.Position, time, score), Color.Black);
 
             spriteBatch.End();
 

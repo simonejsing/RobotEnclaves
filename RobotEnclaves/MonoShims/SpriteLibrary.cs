@@ -10,6 +10,7 @@ namespace MonoShims
             Player,
             Block,
             Spikes,
+            Coin
         }
 
         private readonly ContentManager Manager;

@@ -29,14 +29,22 @@ namespace PhysicsEngine
         public bool Dead { get; set; }
 
         // Events
-        public Action<Object, Object> OnCollision;
+        public Action<Object, ICollisionObject> OnCollision;
+        public Action<Object, Object> OnHit;
 
         private IBoundingObject _relativeBoundingObject;
+        private IBoundingObject _relativeHitBox;
 
         public IBoundingObject BoundingObject
         {
             get { return _relativeBoundingObject.Scale(Size).Translate(Position); }
             protected set { _relativeBoundingObject = value; }
+        }
+
+        public IBoundingObject HitObject
+        {
+            get { return _relativeHitBox.Scale(Size).Translate(Position); }
+            protected set { _relativeHitBox = value; }
         }
 
         protected Object(Vector2 position, Vector2 size) : this()

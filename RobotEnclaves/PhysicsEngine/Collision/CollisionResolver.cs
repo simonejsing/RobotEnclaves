@@ -80,8 +80,8 @@ namespace PhysicsEngine.Collision
         {
             if (obj.OnCollision != null)
             {
-                //obj.OnCollision(obj, collisionObj);
-                obj.OnCollision(obj, null);
+                obj.OnCollision(obj, collisionObj);
+                //obj.OnCollision(obj, null);
             }
         }
 
