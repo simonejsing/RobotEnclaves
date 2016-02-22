@@ -37,6 +37,7 @@
     <Compile Include="Bounding\BoundingPolygon.cs" />
     <Compile Include="Bounding\NoBounds.cs" />
     <Compile Include="CollidableObject.cs" />
+    <Compile Include="Collision\CollisionEventArgs.cs" />
     <Compile Include="Collision\CollisionLineSegment.cs" />
     <Compile Include="Collision\Collision.cs" />
     <Compile Include="Collision\CollisionObject.cs" />

@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using VectorMath;
 using Vector2 = VectorMath.Vector2;
 
-namespace ActionPlatformer
+namespace MonoShims
 {
-    class Renderer
+    public class Renderer
     {
         private SpriteFont DefaultFont;
         private SpriteLibrary sprites;

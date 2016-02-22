@@ -19,6 +19,14 @@ namespace PhysicsEngine.Collision
         public abstract IEnumerable<Collision> CheckCollision(ObjectTransformation transformation);
         public abstract IEnumerable<Violation> CheckViolation(Object obj);
 
+        public virtual void OnCollision(Object target)
+        {
+            if(CollisionEvent != null)
+                CollisionEvent(this, new CollisionEventArgs(target));
+        }
+
+        public event CollisionEventHandler CollisionEvent;
+
         public static ICollisionObject FromBoundingObject(IBoundingObject boundary)
         {
             return new CollisionObjectGroup(boundary.Sides.Select(s => new CollisionLineSegment(s) as CollisionObject));

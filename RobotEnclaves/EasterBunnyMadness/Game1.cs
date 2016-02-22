@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Windows.UI.Xaml.Controls;
+using ActionPlatformer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoShims;
 using PhysicsEngine;
 using PhysicsEngine.Collision;
 using PhysicsEngine.Interfaces;
@@ -11,7 +11,7 @@ using VectorMath;
 using Object = PhysicsEngine.Object;
 using Vector2 = VectorMath.Vector2;
 
-namespace ActionPlatformer
+namespace EasterBunnyMadness
 {
     /// <summary>
     /// This is the main type for your game.
@@ -47,8 +47,8 @@ namespace ActionPlatformer
         protected override void Initialize()
         {
             physics = Engine.Default();
-            player = new Player() {Position = new Vector2(20, -150)};
-            blocks = new []
+            player = new Player() { Position = new Vector2(20, -150) };
+            blocks = new[]
             {
                 new Block() {Position = TilePosition(0, 10)},
                 new Block() {Position = TilePosition(1, 10)},
@@ -69,7 +69,7 @@ namespace ActionPlatformer
                 new Spikes() {Position = TilePosition(7, 11)},
             };
 
-            movableObjects = new List<Object>() {player};
+            movableObjects = new List<Object>() { player };
             var killLineSegment = new CollisionLineSegment(new PointVector2(TilePosition(5, 11), TilePosition(3, 0)).Reverse);
             killLineSegment.CollisionEvent += (sender, e) => { e.Target.Dead = true; };
 
@@ -100,7 +100,7 @@ namespace ActionPlatformer
 
         private static Vector2 TilePosition(int x, int y)
         {
-            return new Vector2(x*30,-y*30);
+            return new Vector2(x * 30, -y * 30);
         }
 
         /// <summary>
