@@ -20,20 +20,25 @@ namespace EasterBunnyMadness
     /// </summary>
     public class Game1 : Game
     {
+        private const int TILE_SIZE = 50;
+        readonly Vector2 playerStartingPosition = new Vector2(20, -150);
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private readonly MonoKeyboardInput keyboard;
 
         private List<Object> movableObjects;
         private List<Object> hitableObjects;
-        private List<CollisionLineSegment> collisionObjects;
+        private List<LinearCollisionObject> collisionObjects;
 
         private Engine physics;
         private Renderer renderer;
         private Player player;
         private int score = 0;
 
-        private readonly TiledWorldMap TiledWorldMap = new TiledWorldMap(new Vector2(30, 30));
+        private static readonly Vector2 tileSizeVector = new Vector2(TILE_SIZE, TILE_SIZE);
+
+        private readonly TiledWorldMap TiledWorldMap = new TiledWorldMap(tileSizeVector);
 
         public Game1()
         {
@@ -51,7 +56,7 @@ namespace EasterBunnyMadness
         protected override void Initialize()
         {
             physics = Engine.Default();
-            player = new Player() { Position = new Vector2(20, -150) };
+            player = new Player(new Vector2(TILE_SIZE, -TILE_SIZE)) { Position = playerStartingPosition };
             movableObjects = new List<Object>() { player };
             hitableObjects = new List<Object>();
 
@@ -91,26 +96,52 @@ namespace EasterBunnyMadness
                 TiledWorldMap.AddBlock(i, 11);
             }
 
-            // Add coins to map
-            AddCoin(11, 8);
-            AddCoin(12, 8);
-            AddCoin(13, 8);
-
             // Create collision segments
             var killLineSegment = new CollisionLineSegment(new PointVector2(TiledWorldMap.TilePosition(5, 11), TiledWorldMap.TilePosition(3, 0)).Reverse);
-            killLineSegment.CollisionEvent += (sender, e) => { e.Target.Dead = true; };
+            killLineSegment.CollisionEvent += OnKill;
 
-            collisionObjects = new List<CollisionLineSegment>()
+            // Create collision line at bottom of level
+            var killPlane = new CollisionPlane(TiledWorldMap.TilePosition(0, 15), new Vector2(0, 1));
+            killPlane.CollisionEvent += OnKill;
+
+            collisionObjects = new List<LinearCollisionObject>()
             {
                 new CollisionLineSegment(new PointVector2(TiledWorldMap.TilePosition(0, 10), TiledWorldMap.TilePosition(5, 0)).Reverse),
                 new CollisionLineSegment(new PointVector2(TiledWorldMap.TilePosition(8, 11), TiledWorldMap.TilePosition(4, 0)).Reverse),
                 killLineSegment,
+                killPlane,
             };
+
+            ResetLevel();
+        }
+
+        private void ResetLevel()
+        {
+            TiledWorldMap.ClearCoins();
+            hitableObjects.Clear();
+
+            // Add coins to map
+            AddCoin(11, 8);
+            AddCoin(12, 8);
+            AddCoin(13, 8);
+        }
+
+        private void ResetPlayer()
+        {
+            score = 0;
+
+            player.Reset();
+            player.Position = playerStartingPosition;
+        }
+
+        private void OnKill(object sender, CollisionEventArgs collisionEventArgs)
+        {
+            collisionEventArgs.Target.Dead = true;
         }
 
         private void AddCoin(int x, int y)
         {
-            var coin = TiledWorldMap.AddCoin(x, y);
+            var coin = TiledWorldMap.AddCoin(x, y, new Vector2(TILE_SIZE, -TILE_SIZE));
             coin.OnHit += (source, target) =>
             {
                 source.Dead = true;
@@ -149,6 +180,12 @@ namespace EasterBunnyMadness
         {
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
             var deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (player.Dead)
+            {
+                ResetPlayer();
+                ResetLevel();
+            }
 
             keyboard.Update();
             player.Update(time);
@@ -194,7 +231,7 @@ namespace EasterBunnyMadness
 
             if (player.Jumping)
             {
-                force += new Vector2(0, 500);
+                force += new Vector2(0, (500 * 50) / 30);
             }
 
             return force;
@@ -234,7 +271,7 @@ namespace EasterBunnyMadness
 
             foreach (var collisionLine in collisionObjects)
             {
-                renderer.DrawVector(spriteBatch, collisionLine.Segment.Origin, collisionLine.Segment.Vector, Color.Black);
+                //renderer.DrawVector(spriteBatch, collisionLine.Segment.Origin, collisionLine.Segment.Vector, Color.Black);
             }
 
             renderer.RenderText(spriteBatch, Vector2.Zero, string.Format("Score: {2}, Player: {0}, Time: {1}", player.Position, time, score), Color.Black);
@@ -246,7 +283,7 @@ namespace EasterBunnyMadness
 
         private void RenderOpagueSprite(SpriteLibrary.SpriteIdentifier spriteIdentifier, Vector2 position)
         {
-            renderer.RenderOpagueSprite(spriteBatch, spriteIdentifier, position);
+            renderer.RenderOpagueSprite(spriteBatch, spriteIdentifier, position, tileSizeVector);
         }
     }
 }

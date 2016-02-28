@@ -9,12 +9,22 @@ namespace EasterBunnyMadness
 
         public bool Jumping { get; private set; }
 
-        public Player() : base(Vector2.Zero, new Vector2(30, -30))
+        public Player(Vector2 size) : base(Vector2.Zero, size)
         {
             jumpEndTime = 0.0;
-            Jumping = false;
             BoundingObject = BoundingPolygon.Box(new Vector2(0, 0), new Vector2(1, 1));
             HitObject = BoundingPolygon.Box(new Vector2(0, 0), new Vector2(1, 1));
+
+            Reset();
+        }
+
+        public void Reset()
+        {
+            Velocity = Vector2.Zero;
+            Acceleration = Vector2.Zero;
+            Dead = false;
+            Jumping = false;
+            OnGround = false;
         }
 
         public void Update(double time)

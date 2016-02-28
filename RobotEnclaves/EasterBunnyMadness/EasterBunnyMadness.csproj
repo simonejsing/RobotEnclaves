@@ -127,6 +127,8 @@
     <Content Include="Content\Sprites\Coin.png" />
     <Content Include="Content\Sprites\Pixel.png" />
     <Content Include="Content\Sprites\Player.png" />
+    <Content Include="Content\Sprites\red-player-1.png" />
+    <Content Include="Content\Sprites\red-player-2.png" />
     <Content Include="Content\Sprites\RepairBot.png" />
     <Content Include="Content\Sprites\Spikes.png" />
     <Content Include="Properties\Default.rd.xml" />
