@@ -104,7 +104,7 @@ namespace ActionPlatformer
             Canvas.InkPresenter.StrokesCollected += InkPresenter_StrokesCollected;
             Canvas.InkPresenter.StrokesErased += InkPresenter_StrokesErased;
 
-            LoadInkStrokes().Wait();
+            //LoadInkStrokes().Wait();
         }
 
         private void InkPresenter_StrokesErased(InkPresenter sender, InkStrokesErasedEventArgs args)
@@ -113,7 +113,7 @@ namespace ActionPlatformer
 
         private void InkPresenter_StrokesCollected(InkPresenter sender, InkStrokesCollectedEventArgs args)
         {
-            SaveInkStrokes().Wait();
+            //SaveInkStrokes().Wait();
 
             foreach (var segment in args.Strokes[0].GetRenderingSegments())
             {
