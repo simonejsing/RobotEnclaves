@@ -182,3 +182,6 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 /RobotEnclaves/RobotEnclaves.Windows10/project.lock.json
+/RobotEnclaves/ActionPlatformer/project.lock.json
+/RobotEnclaves/EasterBunnyMadness/project.lock.json
+/RobotEnclaves/MonoShims/project.lock.json

@@ -17,10 +17,12 @@
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>RobotEnclaves.Windows10_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>
+    </PackageCertificateKeyFile>
     <MonoGamePlatform>WindowsStoreApp</MonoGamePlatform>
     <MonoGameContentBuilderExe>
     </MonoGameContentBuilderExe>
+    <PackageCertificateThumbprint>CA4E8D8E983C0E3C44CF2FD8AD862C92AC327240</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -94,7 +96,7 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Reference Include="MonoGame.Framework">
-      <HintPath>$(MSBuildProgramFiles32)\MonoGame\v3.0\Assemblies\WindowsUAP\MonoGame.Framework.dll</HintPath>
+      <HintPath>$(MSBuildProgramFiles32)\MonoGame\v3.0\Assemblies\WindowsUniversal\MonoGame.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +161,10 @@
     <ProjectReference Include="..\ExtensionMethods\ExtensionMethods.csproj">
       <Project>{10151759-4783-4ab1-af24-9303ead0d69f}</Project>
       <Name>ExtensionMethods</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhysicsEngine\PhysicsEngine.csproj">
+      <Project>{0fff41f8-80e0-44d7-9be1-db28aa6966ae}</Project>
+      <Name>PhysicsEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rendering\Rendering.csproj">
       <Project>{a1962d5e-3274-433b-955b-817f9145a5f7}</Project>
