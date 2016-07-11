@@ -20,7 +20,7 @@ namespace ActionPlatformer
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private readonly MonoKeyboardInput keyboard;
+        private readonly IMonoInput playerInput;
 
         private List<Object> movableObjects;
         private List<CollisionLineSegment> collisionObjects;
@@ -33,7 +33,8 @@ namespace ActionPlatformer
 
         public Game1()
         {
-            keyboard = new MonoKeyboardInput();
+            //playerInput = new MonoKeyboardInput();
+            playerInput = new MonoControllerInput(PlayerIndex.One);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -134,7 +135,7 @@ namespace ActionPlatformer
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
             var deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            keyboard.Update();
+            playerInput.Update();
             player.Update(time);
 
             var playerForce = new List<ExternalForce>()
@@ -156,7 +157,7 @@ namespace ActionPlatformer
 
         private void CheckPlayerJump(float time)
         {
-            if (player.OnGround && keyboard.Jump())
+            if (player.OnGround && playerInput.Jump())
             {
                 player.Jump(time);
             }
@@ -165,9 +166,9 @@ namespace ActionPlatformer
         private Vector2 GetPlayerMovementForce(double time)
         {
             Vector2 force = Vector2.Zero;
-            if (keyboard.MoveLeft())
+            if (playerInput.MoveLeft())
                 force += new Vector2(-50, 0);
-            if (keyboard.MoveRight())
+            if (playerInput.MoveRight())
                 force += new Vector2(50, 0);
 
             if (player.Jumping)

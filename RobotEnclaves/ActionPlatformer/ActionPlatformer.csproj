@@ -115,6 +115,8 @@
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Game1.cs" />
+    <Compile Include="IMonoInput.cs" />
+    <Compile Include="MonoControllerInput.cs" />
     <Compile Include="MonoKeyboardInput.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

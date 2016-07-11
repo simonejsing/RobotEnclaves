@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ActionPlatformer
 {
-    class MonoKeyboardInput
+    class MonoKeyboardInput : IMonoInput
     {
         private Keys[] pressedKeys;
 
